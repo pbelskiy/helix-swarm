@@ -1,5 +1,8 @@
 # helix-swarm
 
+![Tests](https://github.com/pbelskiy/helix-swarm/workflows/Tests/badge.svg)
+![Coveralls github](https://img.shields.io/coveralls/github/pbelskiy/helix-swarm?label=Coverage)
+
 Python client for Perforce Helix Swarm (review board)
 
 ## Installation

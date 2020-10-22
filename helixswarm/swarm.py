@@ -1,6 +1,6 @@
 import re
 
-from typing import Tuple, Any
+from typing import Any, Optional, Tuple
 
 import requests
 
@@ -27,16 +27,14 @@ class Swarm:
         self.reviews = Reviews(self)
 
     @staticmethod
-    def _get_host_and_api_version(url: str) -> Tuple[str, str]:
+    def _get_host_and_api_version(url: str) -> Tuple[str, Optional[str]]:
         match = re.match(r'.+(/api/v(\d+(?:\.\d+)?))', url)
         if match:
-            host = url[:match.start(1)]
+            host = url[:match.start(1)].strip('/')
             version = match.group(2)
-        else:
-            host = url
-            version = None
+            return host, version
 
-        return host.strip('/'), version
+        return url.strip('/'), None
 
     def _request(self, method: str, path: str, **kwargs: Any) -> dict:
         return self._session.request(
@@ -49,7 +47,7 @@ class Swarm:
             **kwargs
         ).json()
 
-    def _set_latest_api_version(self) -> str:
+    def _set_latest_api_version(self) -> None:
         known_versions = (1, 1.1, 1.2, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
         for version in reversed(known_versions):
