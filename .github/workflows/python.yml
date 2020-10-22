@@ -24,19 +24,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests flake8 isort pytest pytest-mypy pytest-cov coveralls
+        pip install tox coveralls
 
-    - name: Lint with flake8
+    - name: Testing with tox
       run: |
-        flake8 helixswarm --ignore E124,E128 --max-line-length=79
-
-    - name: Check import sorting
-      run: |
-        isort --diff --check-only helixswarm
-
-    - name: Test with pytest
-      run: |
-        pytest -v --mypy --cov=helixswarm --cov=tests --cov-report=term --ignore docs
+        tox
         COVERALLS_REPO_TOKEN=${{ secrets.coveralls }} COVERALLS_PARALLEL=true coveralls
 
   finish:
