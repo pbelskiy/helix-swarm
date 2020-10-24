@@ -4,18 +4,17 @@ from typing import Any, Optional, Tuple
 
 import requests
 
-from .reviews import Reviews
+from .endpoints.reviews import Reviews
 
 
 class Swarm:
+    """
+    Core library class
 
+    If API version isn`t specified in host URL then it will be detected
+    automatically (latest available on server).
+    """
     def __init__(self, url: str, user: str, password: str):
-        """
-        Core library class
-
-        If API version isn`t specified in host URL then it will be detected
-        automatically (latest available on server).
-        """
         self._host, self._api_version = self._get_host_and_api_version(url)
 
         self._session = requests.Session()
