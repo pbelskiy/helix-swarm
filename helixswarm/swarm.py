@@ -1,10 +1,12 @@
 import re
 
+from http import HTTPStatus
 from typing import Any, Optional, Tuple
 
 import requests
 
 from .endpoints.reviews import Reviews
+from .exceptions import SwarmError, SwarmNotFoundError
 
 
 class Swarm:
@@ -36,7 +38,7 @@ class Swarm:
         return url.strip('/'), None
 
     def _request(self, method: str, path: str, **kwargs: Any) -> dict:
-        return self._session.request(
+        response = self._session.request(
             method,
             '{host}/api/{version}/{path}'.format(
                 host=self._host,
@@ -44,7 +46,15 @@ class Swarm:
                 path=path,
             ),
             **kwargs
-        ).json()
+        )
+
+        if response.status_code == HTTPStatus.NOT_FOUND:
+            raise SwarmNotFoundError(response.json())
+
+        if response.status_code != HTTPStatus.OK:
+            raise SwarmError(response)
+
+        return response.json()
 
     def _set_latest_api_version(self) -> None:
         known_versions = (1, 1.1, 1.2, 2, 3, 4, 5, 6, 7, 8, 9, 10)

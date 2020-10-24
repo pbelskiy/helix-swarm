@@ -1,4 +1,6 @@
-from unittest.mock import Mock
+import re
+
+import responses
 
 from helixswarm import Swarm
 
@@ -25,7 +27,8 @@ def test_get_host_and_api_version():
     assert version == '1.2'
 
 
-def test_version_detect(monkeypatch):
+@responses.activate
+def test_version_detect():
     data = [
         # v10
         {
@@ -39,7 +42,8 @@ def test_version_detect(monkeypatch):
         }
     ]
 
-    monkeypatch.setattr('helixswarm.Swarm._request', Mock(side_effect=data))
+    responses.add(responses.GET, re.compile(r'.*'), json=data[0])
+    responses.add(responses.GET, re.compile(r'.*'), json=data[1])
 
-    client = Swarm('host', 'login', 'password')
+    client = Swarm('http://server', 'login', 'password')
     assert client._api_version == '9'
