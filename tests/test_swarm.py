@@ -28,7 +28,7 @@ def test_get_host_and_api_version():
 
 
 @responses.activate
-def test_version_detect():
+def test_api_version_detect():
     data = [
         # v10
         {
@@ -47,3 +47,8 @@ def test_version_detect():
 
     client = Swarm('http://server', 'login', 'password')
     assert client._api_version == '9'
+
+
+def test_api_version_not_detect():
+    client = Swarm('http://server/api/v5', 'login', 'password')
+    assert client._api_version == '5'
