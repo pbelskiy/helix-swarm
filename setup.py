@@ -19,13 +19,13 @@ setup_args = dict(
         'Programming Language :: Python :: 3.9',
     ],
     license='MIT',
-    packages=['helix-swarm'],
+    packages=['helixswarm'],
     package_data={
         '': ['py.typed', '*.pyi'],
     },
     author='Petr Belskiy',
     author_email='petr.belskiy@gmail.com',
-    keywords=['helix-swarm'],
+    keywords=['helix', 'swarm', 'swarm review', 'perforce helix swarm'],
     url='https://github.com/pbelskiy/helix-swarm',
     download_url='https://pypi.org/project/helix-swarm'
 )
