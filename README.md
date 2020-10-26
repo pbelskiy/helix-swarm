@@ -2,6 +2,8 @@
 
 ![Tests](https://github.com/pbelskiy/helix-swarm/workflows/Tests/badge.svg)
 ![Coveralls github](https://img.shields.io/coveralls/github/pbelskiy/helix-swarm?label=Coverage)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/helix-swarm?label=Python)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/helix-swarm?color=1&label=Downloads)
 
 Python client for Perforce Helix Swarm (review board)
 
