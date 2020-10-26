@@ -1,8 +1,19 @@
 class SwarmError(Exception):
-    def __init__(self, message=None, status=None):
-        self.message = message
-        self.status = status
+    """
+    Core library exception
+    """
+    ...
 
 
 class SwarmNotFoundError(SwarmError):
+    """
+    Raises when request return HTTP code 404 (not found)
+    """
+    ...
+
+
+class SwarmCompatibleError(SwarmError):
+    """
+    Raises when trying to use new API endpoints on old API version
+    """
     ...

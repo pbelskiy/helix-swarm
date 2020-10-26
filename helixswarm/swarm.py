@@ -5,6 +5,7 @@ from typing import Any, Optional, Tuple
 
 import requests
 
+from .endpoints.comments import Comments
 from .endpoints.reviews import Reviews
 from .exceptions import SwarmError, SwarmNotFoundError
 
@@ -26,6 +27,7 @@ class Swarm:
             self._set_latest_api_version()
 
         self.reviews = Reviews(self)
+        self.comments = Comments(self)
 
     @staticmethod
     def _get_host_and_api_version(url: str) -> Tuple[str, Optional[str]]:
@@ -63,6 +65,10 @@ class Swarm:
             self._api_version = str(version)
             if 'error' not in self.get_version():
                 break
+
+    @property
+    def api_version(self):
+        return float(self._api_version)
 
     def get_version(self) -> dict:
         return self._request('GET', 'version')
