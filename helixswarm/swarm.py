@@ -3,7 +3,7 @@ import re
 
 from collections import namedtuple
 from http import HTTPStatus
-from typing import Optional, Tuple
+from typing import Any, Tuple
 
 from .endpoints.comments import Comments
 from .endpoints.reviews import Reviews
@@ -27,14 +27,14 @@ class Swarm:
         self.reviews = Reviews(self)
         self.comments = Comments(self)
 
-    def connect(self, host, user, password, version):
+    def connect(self, host: str, user: str, password: str, version: str) -> Any:
         raise NotImplementedError
 
-    def close(self):
+    def close(self) -> None:
         return self.connector.close()
 
     @staticmethod
-    def _get_host_and_api_version(url: str) -> Tuple[str, Optional[str]]:
+    def _get_host_and_api_version(url: str) -> Tuple[str, str]:
         match = re.match(r'.+(/api/v(\d+(?:\.\d+)?))', url)
         if not match:
             raise SwarmError('Please specify using API version in host URL')
@@ -44,7 +44,7 @@ class Swarm:
         return host, version
 
     @property
-    def api_version(self):
+    def api_version(self) -> float:
         return float(self._api_version)
 
     @staticmethod

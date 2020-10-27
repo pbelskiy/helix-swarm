@@ -1,6 +1,6 @@
 import asyncio
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 import aiohttp
 
@@ -9,16 +9,16 @@ from helixswarm.swarm import Response, Swarm
 
 class Connector:
 
-    def __init__(self, host: str, user: str, password: str, version: Optional[str]):
-        self.loop = asyncio.get_event_loop()
-        self.session = aiohttp.ClientSession()
+    def __init__(self, host: str, user: str, password: str, version: str, loop=None):
+        self.loop = loop or asyncio.get_event_loop()
+        self.session = aiohttp.ClientSession(loop=loop)
 
         self.host = host
         self.version = version
         self.auth = aiohttp.BasicAuth(user, password)
 
     async def close(self) -> None:
-        await self. session.close()
+        await self.session.close()
 
     async def request(self,
                       callback: Callable[[Response], dict],
@@ -43,5 +43,5 @@ class Connector:
 
 class SwarmAsyncClient(Swarm):
 
-    def connect(self, host: str, user: str, password: str, version: Optional[str]) -> Connector:
+    def connect(self, host: str, user: str, password: str, version: str) -> Connector:
         return Connector(host, user, password, version)

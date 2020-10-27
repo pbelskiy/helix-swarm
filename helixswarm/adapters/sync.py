@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 import requests
 
@@ -7,14 +7,14 @@ from helixswarm.swarm import Response, Swarm
 
 class Connector:
 
-    def __init__(self, host: str, user: str, password: str, version: Optional[str]):
+    def __init__(self, host: str, user: str, password: str, version: str):
         self.session = requests.session()
         self.session.auth = (user, password)
 
         self.host = host
         self.version = version
 
-    def close(self):
+    def close(self) -> None:
         self.session.close()
 
     def request(self,
@@ -38,5 +38,5 @@ class Connector:
 
 class SwarmClient(Swarm):
 
-    def connect(self, host: str, user: str, password: str, version: Optional[str]) -> Connector:
+    def connect(self, host: str, user: str, password: str, version: str) -> Connector:
         return Connector(host, user, password, version)
