@@ -3,7 +3,7 @@ import re
 import pytest
 import responses
 
-from helixswarm import Swarm, SwarmNotFoundError
+from helixswarm import SwarmClient, SwarmNotFoundError
 
 
 @responses.activate
@@ -44,7 +44,7 @@ def test_reviews_all():
         json=data
     )
 
-    client = Swarm('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'login', 'password')
 
     reviews = client.reviews.get_all()
     assert len(reviews['reviews']) == 1
@@ -102,7 +102,7 @@ def test_get_review_info():
         json=data
     )
 
-    client = Swarm('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'login', 'password')
     reviews = client.reviews.get(12204)
     assert reviews['review']['id'] == 12204
 
@@ -120,6 +120,6 @@ def test_get_review_info_error():
         status=404
     )
 
-    client = Swarm('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmNotFoundError):
         client.reviews.get(12345)
