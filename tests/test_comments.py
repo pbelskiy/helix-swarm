@@ -3,7 +3,7 @@ import re
 import pytest
 import responses
 
-from helixswarm import Swarm, SwarmCompatibleError
+from helixswarm import SwarmClient, SwarmCompatibleError
 
 
 @responses.activate
@@ -27,13 +27,13 @@ def test_comments_add():
 
     responses.add(responses.POST, re.compile(r'.*\/comments'), json=data)
 
-    client = Swarm('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
     response = client.comments.add('reviews/123', 'Best. Comment. EVER!')
     assert response['comment']['body'] == 'Best. Comment. EVER!'
 
 
 def test_comments_add_old_api():
-    client = Swarm('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.add('reviews/123', 'Best. Comment. EVER!')
 
@@ -59,13 +59,13 @@ def test_comments_edit():
 
     responses.add(responses.PATCH, re.compile(r'.*\/comments/123'), json=data)
 
-    client = Swarm('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'login', 'password')
     response = client.comments.edit(123, 'Edited comment', flags=['closed'])
     assert response['comment']['body'] == 'Edited comment'
     assert 'closed' in response['comment']['flags']
 
 
 def test_comments_edit_old_api():
-    client = Swarm('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.edit(123, 'Edited comment')

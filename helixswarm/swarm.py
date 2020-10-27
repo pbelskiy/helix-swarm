@@ -1,13 +1,15 @@
+import json
 import re
 
+from collections import namedtuple
 from http import HTTPStatus
-from typing import Any, Optional, Tuple
-
-import requests
+from typing import Any, Tuple
 
 from .endpoints.comments import Comments
 from .endpoints.reviews import Reviews
 from .exceptions import SwarmError, SwarmNotFoundError
+
+Response = namedtuple('Response', ['status', 'body'])
 
 
 class Swarm:
@@ -18,57 +20,45 @@ class Swarm:
     automatically (latest available on server).
     """
     def __init__(self, url: str, user: str, password: str):
-        self._host, self._api_version = self._get_host_and_api_version(url)
+        host, self._api_version = self._get_host_and_api_version(url)
 
-        self._session = requests.Session()
-        self._session.auth = (user, password)
-
-        if self._api_version is None:
-            self._set_latest_api_version()
+        self.connector = self.connect(host, user, password, self._api_version)
 
         self.reviews = Reviews(self)
         self.comments = Comments(self)
 
+    def connect(self, host: str, user: str, password: str, version: str) -> Any:
+        raise NotImplementedError
+
+    def close(self) -> None:
+        return self.connector.close()
+
     @staticmethod
-    def _get_host_and_api_version(url: str) -> Tuple[str, Optional[str]]:
+    def _get_host_and_api_version(url: str) -> Tuple[str, str]:
         match = re.match(r'.+(/api/v(\d+(?:\.\d+)?))', url)
-        if match:
-            host = url[:match.start(1)].strip('/')
-            version = match.group(2)
-            return host, version
+        if not match:
+            raise SwarmError('Please specify using API version in host URL')
 
-        return url.strip('/'), None
-
-    def _request(self, method: str, path: str, **kwargs: Any) -> dict:
-        response = self._session.request(
-            method,
-            '{host}/api/v{version}/{path}'.format(
-                host=self._host,
-                version=self._api_version,
-                path=path,
-            ),
-            **kwargs
-        )
-
-        if response.status_code == HTTPStatus.NOT_FOUND:
-            raise SwarmNotFoundError(response.json())
-
-        if response.status_code != HTTPStatus.OK:
-            raise SwarmError(response)
-
-        return response.json()
-
-    def _set_latest_api_version(self) -> None:
-        known_versions = (1, 1.1, 1.2, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-
-        for version in reversed(known_versions):
-            self._api_version = str(version)
-            if 'error' not in self.get_version():
-                break
+        host = url[:match.start(1)].strip('/')
+        version = match.group(2)
+        return host, version
 
     @property
-    def api_version(self):
+    def api_version(self) -> float:
         return float(self._api_version)
+
+    @staticmethod
+    def _callback(response: Response) -> dict:
+        if response.status == HTTPStatus.NOT_FOUND:
+            raise SwarmNotFoundError(json.loads(response.body))
+
+        if response.status != HTTPStatus.OK:
+            raise SwarmError(response.body)
+
+        return json.loads(response.body)
+
+    def _request(self, method, path, data=None):
+        return self.connector.request(self._callback, method, path, data=data)
 
     def get_version(self) -> dict:
         return self._request('GET', 'version')
