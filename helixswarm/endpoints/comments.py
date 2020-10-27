@@ -104,3 +104,67 @@ class Comments:
             data['context[version]'] = context_version
 
         return self.swarm._request('POST', 'comments', data=data)
+
+    def edit(self,
+             comment_id: int,
+             body: str,
+             *,
+             topic: Optional[str] = None,
+             task_state: Optional[str] = None,
+             flags: Optional[List[str]] = None,
+             silence_notification: Optional[bool] = None,
+             delay_notification: Optional[bool] = None) -> dict:
+        """
+        Edit a comment.
+
+        Method will raise :class:`SwarmException` on failure.
+
+        :param comment_id:
+            ID of the comment to be edited.
+        :param body:
+            Content of the comment.
+        :param topic: (optional)
+            Topic to comment on. Examples: reviews/1234, changes/1234 or jobs/job001234
+        :param task_state: (optional)
+            Task state of the comment. Note that certain transitions (such as
+            moving from `open` to `verified`) are not possible without an intermediate
+            step (`addressed`, in this case).
+            Examples: `comment` (not a task), `open`, `addressed`, `verified`.
+        :param flags: (optional)
+            Flags on the comment. Typically set to `closed` to archive a comment.
+        :param silence_notification: (optional)
+            If set to 'true' no notifications will ever be sent for this edited comment.
+        :param delay_notification: (optional)
+            If set to 'true' notifications will be delayed
+
+        :returns: ``dict``
+        """
+        if self.swarm.api_version < 3:
+            raise SwarmCompatibleError('Comments supported from API version >= 3')
+
+        data = dict(
+            body=body,
+        )  # type: Dict[str, Any]
+
+        if topic:
+            data['topic'] = topic
+
+        if task_state:
+            data['taskState'] = task_state
+
+        if flags:
+            data['flags[]'] = flags
+
+        if silence_notification:
+            data['silenceNotification'] = 'true'
+
+        if delay_notification:
+            data['delayNotification'] = 'true'
+
+        response = self.swarm._request(
+            'PATCH',
+            'comments/{}'.format(comment_id),
+            data=data,
+        )
+
+        return response

@@ -36,3 +36,36 @@ def test_comments_add_old_api():
     client = Swarm('http://server/api/v2', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.add('reviews/123', 'Best. Comment. EVER!')
+
+
+@responses.activate
+def test_comments_edit():
+    data = {
+        'comment': {
+            'id': 1,
+            'attachments': [],
+            'body': 'Edited comment',
+            'context': [],
+            'edited': 123466790,
+            'flags': ['closed'],
+            'likes': [],
+            'taskState': 'comment',
+            'time': 123456789,
+            'topic': 'reviews/42',
+            'updated': 123456790,
+            'user': 'bruno'
+        }
+    }
+
+    responses.add(responses.PATCH, re.compile(r'.*\/comments/123'), json=data)
+
+    client = Swarm('http://server/api/v8', 'login', 'password')
+    response = client.comments.edit(123, 'Edited comment', flags=['closed'])
+    assert response['comment']['body'] == 'Edited comment'
+    assert 'closed' in response['comment']['flags']
+
+
+def test_comments_edit_old_api():
+    client = Swarm('http://server/api/v1', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client.comments.edit(123, 'Edited comment')
