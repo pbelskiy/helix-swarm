@@ -42,7 +42,7 @@ class Swarm:
     def _request(self, method: str, path: str, **kwargs: Any) -> dict:
         response = self._session.request(
             method,
-            '{host}/api/{version}/{path}'.format(
+            '{host}/api/v{version}/{path}'.format(
                 host=self._host,
                 version=self._api_version,
                 path=path,
