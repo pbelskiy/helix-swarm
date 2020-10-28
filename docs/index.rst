@@ -9,6 +9,12 @@ Core
 .. autoclass:: helixswarm.swarm.Swarm
    :members:
 
+Exceptions
+~~~~~~~~~~
+
+.. automodule:: helixswarm.exceptions
+   :members:
+
 Reviews
 ~~~~~~~
 
