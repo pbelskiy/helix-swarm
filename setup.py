@@ -1,11 +1,12 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
 
 with open('README.md') as readme_file:
     README = readme_file.read()
 
 setup_args = dict(
     name='helix-swarm',
-    version='0.2.0',
+    version='0.2.2',
     description='Python client for Perforce Helix Swarm (review board)',
     long_description_content_type='text/markdown',
     long_description=README,
@@ -19,10 +20,8 @@ setup_args = dict(
         'Programming Language :: Python :: 3.9',
     ],
     license='MIT',
-    packages=['helixswarm'],
-    package_data={
-        '': ['py.typed', '*.pyi'],
-    },
+    packages=find_packages(),
+    package_data={'helixswarm': ['*']},
     author='Petr Belskiy',
     author_email='petr.belskiy@gmail.com',
     keywords=['helix', 'swarm', 'swarm review', 'perforce helix swarm'],

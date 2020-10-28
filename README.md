@@ -22,7 +22,7 @@ want yo use in host url like: `http://server/api/v9`
 
 Get review info:
 ```python
-import helixswarm
+from helixswarm import SwarmClient
 
 client = SwarmClient('http://server/api/v9', 'login', 'password')
 review = client.reviews.get(12345)
@@ -32,7 +32,7 @@ print(review['review']['author'])
 Add comment to review (async):
 ```python
 import asyncio
-import helixswarm
+from helixswarm import SwarmAsyncClient
 
 client = SwarmAsyncClient('http://server/api/v5', 'login', 'password')
 
