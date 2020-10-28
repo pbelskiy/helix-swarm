@@ -8,7 +8,7 @@ setup_args = dict(
     name='helix-swarm',
     version='0.2.2',
     description='Python client for Perforce Helix Swarm (review board)',
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     long_description=README,
     classifiers=[
         'Programming Language :: Python',
