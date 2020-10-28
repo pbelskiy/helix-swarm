@@ -5,7 +5,7 @@ with open('README.md') as readme_file:
 
 setup_args = dict(
     name='helix-swarm',
-    version='0.1.0',
+    version='0.2.0',
     description='Python client for Perforce Helix Swarm (review board)',
     long_description_content_type='text/markdown',
     long_description=README,
@@ -31,7 +31,8 @@ setup_args = dict(
 )
 
 install_requires = [
-    'requests'
+    'aiohttp',
+    'requests',
 ]
 
 if __name__ == '__main__':
