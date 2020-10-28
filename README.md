@@ -12,6 +12,55 @@ Python client for Perforce Helix Swarm (review board)
 ```sh
 pip3 install helix-swarm
 ```
+## Usage
+
+There is same API interface for sync and async client versions, underhood it uses
+`requests` and `asyncio` respectively. Also you must select REST API version you
+want yo use in host url like: `http://server/api/v9`
+
+## Examples
+
+Get review info:
+```python
+import helixswarm
+
+client = SwarmClient('http://server/api/v9', 'login', 'password')
+review = client.reviews.get(12345)
+print(review['review']['author'])
+```
+
+Add comment to review (async):
+```python
+import asyncio
+import helixswarm
+
+client = SwarmAsyncClient('http://server/api/v5', 'login', 'password')
+
+async def example():
+    await client.comments.add('reviews/12345', 'my awesome comment')
+
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(example())
+finally:
+    loop.run_until_complete(client.close())
+    loop.close()
+```
+
+[__Please look at tests directory for more examples.__](https://github.com/pbelskiy/helix-swarm/tree/master/tests)
+
+## Testing
+
+Prerequisites: `tox`
+
+Then just run tox, all dependencies and checks will run automatically
+```sh
+tox
+```
+
+## Contributing
+
+Feel free to any contributions
 
 ## Official REST API documentation:
 
