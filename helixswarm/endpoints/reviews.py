@@ -160,5 +160,55 @@ class Reviews:
 
         return response
 
-    def create(self) -> None:
-        return self.swarm._request('POST', 'reviews')
+    def create(self,
+               change: int,
+               *,
+               description: Optional[str] = None,
+               reviewers: Optional[List[str]] = None,
+               required_reviewers: Optional[List[str]] = None,
+               reviewer_groups: Optional[List[str]] = None
+               ) -> dict:
+        """
+        Create a review.
+
+        * fields: ``int``
+          Change ID to create a review from.
+
+        * description: ``str`` (optional)
+          Description for the new review (defaults to change description).
+
+        * reviewers: ``List[str]`` (optional)
+          A list of reviewers for the new review.
+
+        * required_reviewers: ``List[str]`` (optional)
+          A list of required reviewers for the new review (**v1.1+**)
+
+        * reviewer_groups: ``List[str]`` (optional)
+          A list of required reviewers for the new review (**v7+**)
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict(change=change)  # type: Dict[str, Union[int, str, List[str]]]
+
+        if description:
+            data['description'] = description
+
+        if reviewers:
+            data['reviewers'] = reviewers
+
+        if required_reviewers:
+            data['requiredReviewers'] = required_reviewers
+            if self.swarm.api_version == 1:
+                raise SwarmCompatibleError(
+                    'required_reviewers field is supported from API version > 1'
+                )
+
+        if reviewer_groups:
+            data['reviewerGroups'] = reviewer_groups
+            if self.swarm.api_version < 7:
+                raise SwarmCompatibleError(
+                    'reviewer_groups field is supported from API version > 6'
+                )
+
+        return self.swarm._request('POST', 'reviews', data=data)

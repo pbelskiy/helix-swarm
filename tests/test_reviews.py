@@ -176,3 +176,68 @@ def test_get_review_info_error():
     client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmNotFoundError):
         client.reviews.get(12345)
+
+
+@responses.activate
+def test_create_review():
+    data = {
+        'review': {
+            'id': 12205,
+            'author': 'bruno',
+            'changes': [10667],
+            'commits': [10667],
+            'commitStatus': [],
+            'created': 1399325913,
+            'deployDetails': [],
+            'deployStatus': None,
+            'description': 'My awesome description',
+            'participants': {
+                'bruno': []
+            },
+            'reviewerGroups': {
+                'group1': [],
+                'group2': {
+                    'required': True
+                },
+                'group3': {
+                    'required': True,
+                    'quorum': '1'
+                }
+            },
+            'pending': False,
+            'projects': [],
+            'state': 'archived',
+            'stateLabel': 'Archived',
+            'testDetails': [],
+            'testStatus': None,
+            'type': 'default',
+            'updated': 1399325913
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.create(
+        10667,
+        description='My awesome description',
+        reviewers=['p.belskiy']
+    )
+
+    assert 'review' in response
+
+
+def test_create_review_exception():
+    client_v1 = SwarmClient('http://server/api/v1', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client_v1.reviews.create(111, required_reviewers=['p.belskiy'])
+
+    client_v6 = SwarmClient('http://server/api/v6', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client_v6.reviews.create(222, reviewer_groups=['master'])
