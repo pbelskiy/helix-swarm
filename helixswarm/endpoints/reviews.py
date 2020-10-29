@@ -137,6 +137,9 @@ class Reviews:
         """
         Retrieve information about a review.
 
+        * review_id: ``int`` (optional)
+          Review id getting information from.
+
         * fields: ``List[str]`` (optional)
           List of fields to show. Omitting this parameter or passing an empty
           value shows all fields.
