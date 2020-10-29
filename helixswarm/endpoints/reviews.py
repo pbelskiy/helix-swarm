@@ -1,4 +1,6 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
+
+from helixswarm.exceptions import SwarmCompatibleError
 
 
 class Reviews:
@@ -6,11 +8,130 @@ class Reviews:
     def __init__(self, swarm):
         self.swarm = swarm
 
-    def get_all(self) -> dict:
+    def get_all(self,
+                *,
+                after: Optional[int] = None,
+                limit: Optional[int] = None,
+                fields: Optional[List[str]] = None,
+                authors: Optional[List[str]] = None,
+                changes: Optional[List[int]] = None,
+                has_reviewers: Optional[bool] = None,
+                ids: Optional[List[int]] = None,
+                keywords: Optional[str] = None,
+                participants: Optional[List[str]] = None,
+                projects: Optional[List[str]] = None,
+                states: Optional[List[str]] = None,
+                passes_tests: Optional[bool] = None,
+                not_updated_since: Optional[str] = None,
+                has_voted: Optional[str] = None,
+                my_comments: Optional[bool] = None
+                ) -> dict:
         """
-        Get List of Reviews
+        Get list of available reviews.
+
+        * after: ``int`` (optional)
+          A review ID to seek to. Reviews up to and including the specified ``id``
+          are excluded from the results and do not count towards ``limit``. Useful
+          for pagination. Commonly set to the ``lastSeen`` property from a previous
+          query.
+
+        * limit: ``int`` (optional)
+          Maximum number of reviews to return. This does not guarantee that ``limit``
+          reviews are returned. It does guarantee that the number of reviews
+          returned won’t exceed ``limit``. Server-side filtering may exclude some
+          reviews for permissions reasons. Default: 1000
+
+        * fields: ``List[str]`` (optional)
+          Fields to show, Omitting this parameter or passing an empty value
+          shows all fields.
+
+        * author: ``List[str]`` (optional)
+          One or more authors to limit reviews by.
+          Reviews with any of the specified authors are returned. (**API v1.2+**)
+
+        * changes: ``List[str]`` (optional)
+          One or more change IDs to limit reviews by.
+          Reviews associated with any of the specified changes are returned.
+
+        * has_reviewers: ``bool`` (optional)
+          Limit reviews list to those with or without reviewers.
+
+        * ids: ``List[int]`` (optional)
+          One or more review IDs to fetch. Only the specified reviews are returned.
+          This filter cannot be combined with the ``limit`` parameter.
+
+        * keywords: ``str`` (optional)
+          Keywords to limit reviews by. Only reviews where the description,
+          participants list or project list contain the specified keywords are returned.
+
+        * participants: ``List[str]`` (optional)
+          One or more participants to limit reviews by.
+          Reviews with any of the specified participants are returned.
+
+        * projects: ``List[str]`` (optional)
+          One or more projects to limit reviews by. Reviews affecting any of the
+          specified projects are returned.
+
+        * states: ``List[str]`` (optional)
+          One or more states to limit reviews by. Reviews in any of the specified
+          states are returned.
+
+        * passes_tests: ``bool`` (optional)
+          Option to limit reviews by tests passing or failing.
+
+        * not_updated_since: ``str`` (optional)
+          Option to fetch unchanged reviews. Requires the date to be in the format
+          YYYY-mm-dd, for example 2017-01-01. Reviews to be returned are determined
+          by looking at the last updated date of the review.
+
+        * has_voted: ``str`` (optional)
+          Should have the value ``up`` or ``down`` to filter reviews that have been
+          voted up or down by the current authenticated user.
+
+        * my_comments: ``bool`` (optional)
+          Filtering reviews that include comments by the current authenticated user.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
         """
-        return self.swarm._request('GET', 'reviews')
+        params = dict()  # type: Dict[str, Union[int, str, bool, List[str], List[int]]]
+
+        if after:
+            params['after'] = after
+        if limit:
+            params['max'] = limit
+        if fields:
+            params['fields'] = ','.join(fields)
+        if authors:
+            params['author'] = authors
+            if self.swarm.api_version < 2:
+                raise SwarmCompatibleError(
+                    'author field is supported from API version >= 2'
+                )
+        if changes:
+            params['change'] = changes
+        if has_reviewers is not None:
+            params['hasReviewers'] = str(int(has_reviewers))
+        if ids:
+            params['ids'] = ids
+        if keywords:
+            params['keywords'] = keywords
+        if participants:
+            params['participants'] = participants
+        if projects:
+            params['project'] = projects
+        if states:
+            params['state'] = states
+        if passes_tests is not None:
+            params['passesTests'] = str(int(passes_tests))
+        if not_updated_since:
+            params['notUpdatedSince'] = not_updated_since
+        if has_voted:
+            params['hasVoted'] = has_voted
+        if my_comments is not None:
+            params['myComments'] = str(int(my_comments))
+
+        return self.swarm._request('GET', 'reviews', params=params)
 
     def get(self, review_id: int, *, fields: Optional[List[str]] = None) -> dict:
         """

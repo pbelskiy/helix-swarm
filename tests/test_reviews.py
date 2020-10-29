@@ -3,7 +3,7 @@ import re
 import pytest
 import responses
 
-from helixswarm import SwarmClient, SwarmNotFoundError
+from helixswarm import SwarmClient, SwarmCompatibleError, SwarmNotFoundError
 
 
 @responses.activate
@@ -40,7 +40,7 @@ def test_reviews_all():
 
     responses.add(
         responses.GET,
-        re.compile(r'.*\/reviews'),
+        re.compile(r'.*/api/v\d+/reviews'),
         json=data
     )
 
@@ -48,6 +48,51 @@ def test_reviews_all():
 
     reviews = client.reviews.get_all()
     assert len(reviews['reviews']) == 1
+
+
+@responses.activate
+def test_reviews_all_parameters():
+    data = {
+        'lastSeen': 120,
+        'reviews': [
+            {
+                'id': 123,
+                'author': 'bruno',
+                'description': 'Adding .jar that should have been included in r110\n',
+                'state': 'needsReview'
+            },
+            {
+                'id': 120,
+                'author': 'bruno',
+                'description': 'Fixing a typo.\n',
+                'state': 'needsReview'
+            }
+        ],
+        'totalCount': None
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    reviews = client.reviews.get_all(
+        limit=2,
+        fields=['id', 'description', 'author', 'state']
+    )
+
+    assert len(reviews['reviews']) == 2
+
+
+def test_reviews_all_exceptions():
+    client = SwarmClient('http://server/api/v1.2', 'login', 'password')
+
+    # >= 2 API versions needed
+    with pytest.raises(SwarmCompatibleError):
+        client.reviews.get_all(authors=['p.belskiy'])
 
 
 @responses.activate
