@@ -98,12 +98,20 @@ def test_get_review_info():
 
     responses.add(
         responses.GET,
-        re.compile(r'.*\/reviews'),
+        re.compile(r'.*/api/v\d+/reviews/12204.*'),
         json=data
     )
 
     client = SwarmClient('http://server/api/v1', 'login', 'password')
-    reviews = client.reviews.get(12204)
+
+    fields = [
+        'id', 'author', 'changes', 'commits', 'commitStatus', 'created',
+        'deployDetails', 'deployStatus', 'description', 'participants',
+        'reviewerGroups', 'pending', 'projects', 'state', 'stateLabel',
+        'testDetails', 'testStatus', 'type', 'updated'
+    ]
+
+    reviews = client.reviews.get(12204, fields=fields)
     assert reviews['review']['id'] == 12204
 
 
@@ -115,7 +123,7 @@ def test_get_review_info_error():
 
     responses.add(
         responses.GET,
-        re.compile(r'.*\/reviews/12345'),
+        re.compile(r'.*/api/v\d+/reviews/12345'),
         json=data,
         status=404
     )
