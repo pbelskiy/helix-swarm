@@ -5,6 +5,7 @@ from collections import namedtuple
 from http import HTTPStatus
 from typing import Any, Tuple
 
+from .endpoints.activities import Activities
 from .endpoints.comments import Comments
 from .endpoints.reviews import Reviews
 from .exceptions import SwarmError, SwarmNotFoundError
@@ -24,6 +25,7 @@ class Swarm:
 
         self.connector = self.connect(host, user, password, self._api_version)
 
+        self.activities = Activities(self)
         self.reviews = Reviews(self)
         self.comments = Comments(self)
 

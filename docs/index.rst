@@ -15,6 +15,13 @@ Exceptions
 .. automodule:: helixswarm.exceptions
    :members:
 
+Activities
+~~~~~~~~~~
+
+.. autoclass:: helixswarm.endpoints.activities.Activities
+   :members:
+
+
 Reviews
 ~~~~~~~
 
