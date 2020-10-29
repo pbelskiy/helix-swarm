@@ -57,8 +57,8 @@ class Swarm:
 
         return json.loads(response.body)
 
-    def _request(self, method, path, data=None):
-        return self.connector.request(self._callback, method, path, data=data)
+    def _request(self, method: str, path: str, **kwargs: Any):
+        return self.connector.request(self._callback, method, path, **kwargs)
 
     def get_version(self) -> dict:
         return self._request('GET', 'version')
