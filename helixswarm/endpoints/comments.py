@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from helixswarm.exceptions import SwarmCompatibleError
 
@@ -25,48 +25,57 @@ class Comments:
         """
         Add a comment to a topic.
 
-        Method will raise :class:`SwarmException` on failure.
+        * topic ``str``:
+          Examples: ``reviews/1234``, ``changes/1234`` or ``jobs/job001234``.
 
-        :param topic:
-            Examples: reviews/1234, changes/1234 or jobs/job001234.
-        :param body:
-            Content of the comment, markdown is supported.
-            https://www.perforce.com/manuals/swarm/Content/Swarm/basics.markdown.html
+        * body ``str``:
+          Content of the comment, markdown is supported.
+          https://www.perforce.com/manuals/swarm/Content/Swarm/basics.markdown.html
 
-            Please note that sometimes message can be rendered incorrectly when
-            markdown used then need to strip trailing spaces of message.
-        :param silence_notification: (optional)
-            If true no notifications will ever be sent for this created comment.
-        :param delay_notification: (optional)
-            If true notifications will be delayed.
-        :param task_state: (optional)
-            Task state of the comment, valid values when adding a comment are
-            `comment` and `open`. This creates a plain comment or opens a task,
-            respectively.
-        :param flags: (optional)
-            Typically set to `closed` to archive a comment.
-        :param context_file: (optional)
-            File to comment on. Valid only for changes and reviews topics.
-            Example: //depot/main/README.txt.
-        :param context_left_line: (optional)
-            Left-side diff line to attach the inline comment to. Valid only for
-            changes and reviews topics. If this is specified, context[file] must
-            also be specified.
-        :param context_right_line: (optional)
-            Right-side diff line to attach the inline comment to. Valid only for
-            changes and reviews topics. If this is specified, context[file] must
-            also be specified.
-        :param context_content: (optional)
-            Optionally provide content of the specified line and its four preceding
-            lines. This is used to specify a short excerpt of context in case the
-            lines being commented on change during the review. When not provided,
-            Swarm makes an effort to build the content on its own - as this involves
-            file operations, it could become slow.
-        :param context_version: (optional)
-            With a `reviews` topic, this field specifies which version to attach
-            the comment to.
+          Please note that sometimes message can be rendered incorrectly when
+          markdown used then need to strip trailing spaces of message.
+
+        * silence_notification: ``bool`` (optional)
+          If true no notifications will ever be sent for this created comment.
+
+        * delay_notification: ``bool`` (optional)
+          If true notifications will be delayed.
+
+        * task_state: ``str`` (optional)
+          Task state of the comment, valid values when adding a comment are
+          ``comment`` and ``open``. This creates a plain comment or opens a task,
+           respectively.
+
+        * flags: ``List[str]`` (optional)
+          Typically set to ``closed`` to archive a comment.
+
+        * context_file: ``str`` (optional)
+          File to comment on. Valid only for changes and reviews topics.
+          Example: ``//depot/main/README.txt``
+
+        * context_left_line: ``int`` (optional)
+          Left-side diff line to attach the inline comment to. Valid only for
+          changes and reviews topics. If this is specified, ``context[file]`` must
+          also be specified.
+
+        * context_right_line: ``int`` (optional)
+          Right-side diff line to attach the inline comment to. Valid only for
+          changes and reviews topics. If this is specified, ``context[file]`` must
+          also be specified.
+
+        * context_content: ``List[str]`` (optional)
+          Optionally provide content of the specified line and its four preceding
+          lines. This is used to specify a short excerpt of context in case the
+          lines being commented on change during the review. When not provided,
+          Swarm makes an effort to build the content on its own - as this involves
+          file operations, it could become slow.
+
+        * context_version: ``int`` (optional)
+          With a ``reviews`` topic, this field specifies which version to attach
+          the comment to.
 
         :returns: ``dict``
+        :raises: ``SwarmError``
         """
         if self.swarm.api_version < 3:
             raise SwarmCompatibleError('Comments supported from API version >= 3')
@@ -74,7 +83,7 @@ class Comments:
         data = dict(
             topic=topic,
             body=body,
-        )  # type: Dict[str, Any]
+        )  # type: Dict[str, Union[str, int, bool, List[str]]]
 
         if silence_notification:
             data['silenceNotification'] = 'true'
@@ -117,26 +126,32 @@ class Comments:
         """
         Edit a comment.
 
-        Method will raise :class:`SwarmException` on failure.
+        * comment_id:
+          ID of the comment to be edited.
 
-        :param comment_id:
-            ID of the comment to be edited.
-        :param body:
-            Content of the comment.
-        :param topic: (optional)
-            Topic to comment on. Examples: reviews/1234, changes/1234 or jobs/job001234
-        :param task_state: (optional)
-            Task state of the comment. Note that certain transitions (such as
-            moving from `open` to `verified`) are not possible without an intermediate
-            step (`addressed`, in this case).
-            Examples: `comment` (not a task), `open`, `addressed`, `verified`.
-        :param flags: (optional)
-            Flags on the comment. Typically set to `closed` to archive a comment.
-        :param silence_notification: (optional)
-            If set to 'true' no notifications will ever be sent for this edited comment.
-        :param delay_notification: (optional)
-            If set to 'true' notifications will be delayed
+        * body:
+          Content of the comment.
 
+        * topic: (optional)
+          Topic to comment on.
+          Examples: ``reviews/1234``, ``changes/1234``, ``jobs/job001234``
+
+        * task_state: ``str`` (optional)
+          Task state of the comment. Note that certain transitions (such as
+          moving from `open` to ``verified``) are not possible without an intermediate
+          step (``addressed``, in this case).
+          Examples: ``comment`` (not a task), ``open``, ``addressed``, ``verified``.
+
+        * flags: ``List[str]`` (optional)
+          Flags on the comment. Typically set to ``closed`` to archive a comment.
+
+        * silence_notification: ``bool`` (optional)
+          If set to '`true'` no notifications will ever be sent for this edited comment.
+
+        * delay_notification: ``bool`` (optional)
+          If set to '`true'` notifications will be delayed
+
+        :raises: ``SwarmError``
         :returns: ``dict``
         """
         if self.swarm.api_version < 3:
@@ -144,7 +159,7 @@ class Comments:
 
         data = dict(
             body=body,
-        )  # type: Dict[str, Any]
+        )  # type: Dict[str, Union[str, bool, List[str]]]
 
         if topic:
             data['topic'] = topic
