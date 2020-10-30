@@ -66,3 +66,78 @@ class Activities:
             params['fields'] = ','.join(fields)
 
         return self.swarm._request('GET', 'activity', params=params)
+
+    def create(self,
+               *,
+               category: str,
+               user: str,
+               action: str,
+               target: str,
+               topic: Optional[str] = None,
+               description: Optional[str] = None,
+               change: Optional[int] = None,
+               streams: Optional[List[str]] = None,
+               link: Optional[str] = None
+               ) -> dict:
+        """
+        Retrieve the activity list.
+
+        * category: ``str``
+          Type of activity, used for filtering activity streams.
+          Values can include ``change``, ``comment``, ``job``, ``review``).
+
+        * user: ``str``
+          User who performed the action.
+
+        * action: ``str``
+          Action that was performed - past-tense, for example, ``created``,
+          ``commented on``.
+
+        * target: ``str``
+          Target that the action was performed on, for example, ``issue 1234``.
+
+        * topic: ``str``
+          Topic for the activity entry. Topics are essentially comment thread IDs.
+          Examples: ``reviews/1234`` or ``jobs/job001234``.
+
+        * description: ``str``
+          Optional description of object or activity to provide context.
+
+        * change: ``int``
+          Optional changelist ID this activity is related to.
+          Used to filter activity related to restricted changes.
+
+        * streams: ``List[str]``
+          Optional array of streams to display on. This can include user-initiated
+          actions (``user-alice``), activity relating to a user’s followed
+          projects/users (``personal-alice``), review streams (``review-1234``)
+          and project streams (``project-exampleproject``).
+
+        * link: ``str``
+          Optional URL for ``target``.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict()  # type: Dict[str, Union[int, str, List[str]]]
+
+        if category:
+            data['type'] = category
+        if user:
+            data['user'] = user
+        if action:
+            data['action'] = action
+        if target:
+            data['target'] = target
+        if topic:
+            data['topic'] = topic
+        if description:
+            data['description'] = description
+        if change:
+            data['change'] = change
+        if streams:
+            data['streams'] = streams
+        if link:
+            data['link'] = link
+
+        return self.swarm._request('POST', 'activity', data=data)

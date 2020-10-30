@@ -54,3 +54,45 @@ def test_activity_get():
     )
 
     assert 'activity' in response
+
+
+@responses.activate
+def test_activity_create():
+    data = {
+        'activity': {
+            'id': 1375,
+            'action': 'punted',
+            'behalfOf': None,
+            'change': None,
+            'depotFile': None,
+            'description': '',
+            'details': [],
+            'followers': [],
+            'link': '',
+            'preposition': 'for',
+            'projects': [],
+            'streams': [],
+            'target': 'review 123',
+            'time': 1461607739,
+            'topic': '',
+            'type': 'job',
+            'user': 'jira'
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/activity'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.activities.create(
+        category='job',
+        user='jira',
+        action='punted',
+        target='review 123',
+    )
+
+    assert 'activity' in response
