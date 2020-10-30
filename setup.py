@@ -1,12 +1,26 @@
+import os
+import re
+
 from setuptools import setup, find_packages
 
 
-with open('README.md') as readme_file:
+init_file_path = os.path.join(
+    os.path.dirname(__file__),
+    'helixswarm/__init__.py'
+)
+
+with open(init_file_path) as f:
+    try:
+        version = re.findall(r"__version__ = '(.*)'", f.read())[0]
+    except IndexError:
+        raise RuntimeError('Unable to get package version')
+
+with open('README.rst') as readme_file:
     README = readme_file.read()
 
 setup_args = dict(
     name='helix-swarm',
-    version='0.2.2',
+    version=version,
     description='Python client for Perforce Helix Swarm (review board)',
     long_description_content_type='text/x-rst',
     long_description=README,
@@ -30,11 +44,12 @@ setup_args = dict(
 )
 
 install_requires = [
-    'aiohttp',
-    'requests',
+    'aiohttp<=3.6.2',
+    'requests<=2.24.0',
 ]
 
-if __name__ == '__main__':
-    setup(install_requires=install_requires,
-          python_requires='>=3.5',
-          **setup_args)
+setup(
+    install_requires=install_requires,
+    python_requires='>=3.5',
+    **setup_args
+)
