@@ -1,6 +1,17 @@
+from functools import wraps
 from typing import Dict, List, Optional, Union
 
 from helixswarm.exceptions import SwarmCompatibleError
+
+
+def check_compatibility(f):
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
+        if self.swarm.api_version >= 3:
+            return f(self, *args, **kwargs)
+        raise SwarmCompatibleError('Comments supported from API version > 2')
+
+    return wrapper
 
 
 class Comments:
@@ -8,6 +19,7 @@ class Comments:
     def __init__(self, swarm):
         self.swarm = swarm
 
+    @check_compatibility
     def get(self,
             *,
             after: Optional[int] = None,
@@ -95,6 +107,7 @@ class Comments:
 
         return self.swarm._request('GET', 'comments', params=params)
 
+    @check_compatibility
     def add(self,
             topic: str,
             body: str,
@@ -164,9 +177,6 @@ class Comments:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        if self.swarm.api_version < 3:
-            raise SwarmCompatibleError('Comments supported from API version >= 3')
-
         data = dict(
             topic=topic,
             body=body,
@@ -201,6 +211,7 @@ class Comments:
 
         return self.swarm._request('POST', 'comments', data=data)
 
+    @check_compatibility
     def edit(self,
              comment_id: int,
              body: str,
@@ -241,9 +252,6 @@ class Comments:
         :raises: ``SwarmError``
         :returns: ``dict``
         """
-        if self.swarm.api_version < 3:
-            raise SwarmCompatibleError('Comments supported from API version >= 3')
-
         data = dict(
             body=body,
         )  # type: Dict[str, Union[str, bool, List[str]]]
@@ -271,6 +279,7 @@ class Comments:
 
         return response
 
+    @check_compatibility
     def notify(self, topic: str) -> dict:
         """
         Sends notification for comments.
@@ -283,7 +292,4 @@ class Comments:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        if self.swarm.api_version < 3:
-            raise SwarmCompatibleError('Comments supported from API version >= 3')
-
         return self.swarm._request('POST', 'comments', params=dict(topic=topic))
