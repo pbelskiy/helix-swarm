@@ -8,24 +8,24 @@ class Reviews:
     def __init__(self, swarm):
         self.swarm = swarm
 
-    def get_all(self,
-                *,
-                after: Optional[int] = None,
-                limit: Optional[int] = None,
-                fields: Optional[List[str]] = None,
-                authors: Optional[List[str]] = None,
-                changes: Optional[List[int]] = None,
-                has_reviewers: Optional[bool] = None,
-                ids: Optional[List[int]] = None,
-                keywords: Optional[str] = None,
-                participants: Optional[List[str]] = None,
-                projects: Optional[List[str]] = None,
-                states: Optional[List[str]] = None,
-                passes_tests: Optional[bool] = None,
-                not_updated_since: Optional[str] = None,
-                has_voted: Optional[str] = None,
-                my_comments: Optional[bool] = None
-                ) -> dict:
+    def get(self,
+            *,
+            after: Optional[int] = None,
+            limit: Optional[int] = None,
+            fields: Optional[List[str]] = None,
+            authors: Optional[List[str]] = None,
+            changes: Optional[List[int]] = None,
+            has_reviewers: Optional[bool] = None,
+            ids: Optional[List[int]] = None,
+            keywords: Optional[str] = None,
+            participants: Optional[List[str]] = None,
+            projects: Optional[List[str]] = None,
+            states: Optional[List[str]] = None,
+            passes_tests: Optional[bool] = None,
+            not_updated_since: Optional[str] = None,
+            has_voted: Optional[str] = None,
+            my_comments: Optional[bool] = None
+            ) -> dict:
         """
         Get list of available reviews.
 
@@ -133,7 +133,11 @@ class Reviews:
 
         return self.swarm._request('GET', 'reviews', params=params)
 
-    def get(self, review_id: int, *, fields: Optional[List[str]] = None) -> dict:
+    def get_info(self,
+                 review_id: int,
+                 *,
+                 fields: Optional[List[str]] = None
+                 ) -> dict:
         """
         Retrieve information about a review.
 

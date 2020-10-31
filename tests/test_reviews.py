@@ -46,7 +46,7 @@ def test_reviews_all():
 
     client = SwarmClient('http://server/api/v1', 'login', 'password')
 
-    reviews = client.reviews.get_all()
+    reviews = client.reviews.get()
     assert len(reviews['reviews']) == 1
 
 
@@ -79,7 +79,7 @@ def test_reviews_all_parameters():
 
     client = SwarmClient('http://server/api/v9', 'login', 'password')
 
-    reviews = client.reviews.get_all(
+    reviews = client.reviews.get(
         limit=2,
         fields=['id', 'description', 'author', 'state']
     )
@@ -92,7 +92,7 @@ def test_reviews_all_exceptions():
 
     # >= 2 API versions needed
     with pytest.raises(SwarmCompatibleError):
-        client.reviews.get_all(authors=['p.belskiy'])
+        client.reviews.get(authors=['p.belskiy'])
 
 
 @responses.activate
@@ -156,7 +156,7 @@ def test_get_review_info():
         'testDetails', 'testStatus', 'type', 'updated'
     ]
 
-    reviews = client.reviews.get(12204, fields=fields)
+    reviews = client.reviews.get_info(12204, fields=fields)
     assert reviews['review']['id'] == 12204
 
 
@@ -175,7 +175,7 @@ def test_get_review_info_error():
 
     client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmNotFoundError):
-        client.reviews.get(12345)
+        client.reviews.get_info(12345)
 
 
 @responses.activate
