@@ -353,3 +353,31 @@ def test_archive_review():
             not_updated_since='2016-06-30',
             description='My awesome description'
         )
+
+
+@responses.activate
+def test_cleanup_review():
+    data = {
+        'complete': [
+            {
+                '1': ['2']
+            }
+        ],
+        'incomplete': []
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews/12345/cleanup'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.cleanup(12345, reopen=True)
+    assert 'complete' in response
+
+    client = SwarmClient('http://server/api/v5', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client.reviews.cleanup(12345)

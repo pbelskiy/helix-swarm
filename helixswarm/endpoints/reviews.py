@@ -279,3 +279,37 @@ class Reviews:
         )
 
         return self.swarm._request('POST', 'reviews/archive', data=data)
+
+    def cleanup(self,
+                review_id: int,
+                *,
+                reopen: Optional[bool] = None
+                ) -> dict:
+        """
+        Clean up a review for the given id (**v6+**).
+
+        * review_id: ``int``
+          Review id getting information from.
+
+        * reopen: ``bool`` (optional)
+          Expected to be a boolean (defaulting to false). If true then an attempt
+          will be made to reopen files into a default changelist
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if self.swarm.api_version < 6:
+            raise SwarmCompatibleError('cleanup is supported with API v6+')
+
+        data = dict()
+
+        if reopen:
+            data['reopen'] = reopen
+
+        response = self.swarm._request(
+            'POST',
+            'reviews/{}/cleanup'.format(review_id),
+            data=data
+        )
+
+        return response
