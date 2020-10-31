@@ -8,6 +8,93 @@ class Comments:
     def __init__(self, swarm):
         self.swarm = swarm
 
+    def get(self,
+            *,
+            after: Optional[int] = None,
+            limit: Optional[int] = None,
+            topic: Optional[str] = None,
+            context_version: Optional[int] = None,
+            ignore_archived: Optional[bool] = None,
+            tasks_only: Optional[bool] = None,
+            task_states: Optional[List[str]] = None,
+            fields: Optional[List[str]] = None
+            ) -> dict:
+        """
+        Get list of comments.
+
+        * after: ``int`` (optional)
+          A comment ID to seek to. Comments up to and including the specified ID
+          are excluded from the results and do not count towards ``limit``.
+          Useful for pagination. Commonly set to the ``lastSeen`` property from
+          a previous query.
+
+        * limit: ``int`` (optional)
+          Maximum number of comments to return. This does not guarantee that
+          ``limit`` comments are returned. It does guarantee that the number of
+          comments returned won’t exceed ``limit``. Default: 100.
+
+        * topic: ``str`` (optional)
+          Only comments for given topic are returned.
+          Examples: ``reviews/1234``, ``changes/1234``, ``jobs/job001234``.
+
+        * context_version: ``int`` (optional)
+          If a ``reviews/1234`` topic is provided, limit returned comments to a
+          specific version of the provided review.
+
+        * ignore_archived: ``bool`` (optional)
+          Prevents archived comments from being returned. (**v5+**)
+
+        * task_only: ``bool`` (optional)
+          Returns only comments that have been flagged as tasks. (**v5+**)
+
+        * task_states: ``List[str]`` (optional)
+          Limit the returned comments to ones that match the provided task state
+          Examples: ``open``, ``closed``, ``verified``, or ``comment``. (**v5+**)
+
+        * fields: ``List[str]`` (optional)
+          List of fields to show for each comment. Omitting this parameter or
+          passing an empty value shows all fields.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        params = dict()  # type: Dict[str, Union[str, int, bool, List[str]]]
+
+        if after:
+            params['after'] = after
+        if limit:
+            params['max'] = limit
+        if topic:
+            params['topic'] = topic
+        if context_version:
+            params['context[version]'] = context_version
+
+        if ignore_archived:
+            params['ignoreArchived'] = ignore_archived
+            if self.swarm.api_version < 5:
+                raise SwarmCompatibleError(
+                    'ignore_archived field is supported from API version >= 5'
+                )
+
+        if tasks_only:
+            params['tasksOnly'] = tasks_only
+            if self.swarm.api_version < 5:
+                raise SwarmCompatibleError(
+                    'tasks_only field is supported from API version >= 5'
+                )
+
+        if task_states:
+            params['taskStates'] = task_states
+            if self.swarm.api_version < 5:
+                raise SwarmCompatibleError(
+                    'task_states field is supported from API version >= 5'
+                )
+
+        if fields:
+            params['fields'] = ','.join(fields)
+
+        return self.swarm._request('GET', 'comments', params=params)
+
     def add(self,
             topic: str,
             body: str,

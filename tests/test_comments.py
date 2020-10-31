@@ -7,6 +7,52 @@ from helixswarm import SwarmClient, SwarmCompatibleError
 
 
 @responses.activate
+def test_comments_get():
+    data = {
+        'topic': 'reviews/911',
+        'comments': {
+            '35': {
+                'id': 35,
+                'body': 'Excitation thunder cats intelligent man braid organic bitters.',
+                'time': 1461164347,
+                'user': 'bruno'
+            },
+            '39': {
+                'id': 39,
+                'body': 'Chamber tote bag butcher, shirk truffle mode shabby chic single-origin coffee.',
+                'time': 1461164347,
+                'user': 'swarm_user'
+            }
+        },
+        'lastSeen': 39
+    }
+
+    responses.add(responses.GET, re.compile(r'.*/comments'), json=data)
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    response = client.comments.get(
+        topic='reviews/911',
+        limit=2,
+        fields=['id', 'body', 'time', 'user']
+    )
+
+    assert response['topic'] == 'reviews/911'
+
+
+def test_comments_get_exception():
+    client = SwarmClient('http://server/api/v4', 'login', 'password')
+
+    with pytest.raises(SwarmCompatibleError):
+        client.comments.get(ignore_archived=True)
+
+    with pytest.raises(SwarmCompatibleError):
+        client.comments.get(tasks_only=True)
+
+    with pytest.raises(SwarmCompatibleError):
+        client.comments.get(task_states=['open'])
+
+
+@responses.activate
 def test_comments_add():
     data = {
         'comment': {
