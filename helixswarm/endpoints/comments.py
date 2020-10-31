@@ -1,17 +1,7 @@
-from functools import wraps
 from typing import Dict, List, Optional, Union
 
 from helixswarm.exceptions import SwarmCompatibleError
-
-
-def check_compatibility(f):
-    @wraps(f)
-    def wrapper(self, *args, **kwargs):
-        if self.swarm.api_version >= 3:
-            return f(self, *args, **kwargs)
-        raise SwarmCompatibleError('Comments supported from API version > 2')
-
-    return wrapper
+from helixswarm.helpers import minimal_version
 
 
 class Comments:
@@ -19,7 +9,7 @@ class Comments:
     def __init__(self, swarm):
         self.swarm = swarm
 
-    @check_compatibility
+    @minimal_version(3)
     def get(self,
             *,
             after: Optional[int] = None,
@@ -107,7 +97,7 @@ class Comments:
 
         return self.swarm._request('GET', 'comments', params=params)
 
-    @check_compatibility
+    @minimal_version(3)
     def add(self,
             topic: str,
             body: str,
@@ -211,7 +201,7 @@ class Comments:
 
         return self.swarm._request('POST', 'comments', data=data)
 
-    @check_compatibility
+    @minimal_version(3)
     def edit(self,
              comment_id: int,
              body: str,
@@ -279,7 +269,7 @@ class Comments:
 
         return response
 
-    @check_compatibility
+    @minimal_version(3)
     def notify(self, topic: str) -> dict:
         """
         Sends notification for comments.

@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, Union
 
 from helixswarm.exceptions import SwarmCompatibleError
+from helixswarm.helpers import minimal_version
 
 
 class Reviews:
@@ -164,6 +165,7 @@ class Reviews:
 
         return response
 
+    @minimal_version(9)
     def get_transitions(self,
                         review_id: int,
                         *,
@@ -184,9 +186,6 @@ class Reviews:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        if self.swarm.api_version < 9:
-            raise SwarmCompatibleError('get_transitions is supported with API v9+')
-
         params = dict()
 
         if up_voters:
@@ -253,6 +252,7 @@ class Reviews:
 
         return self.swarm._request('POST', 'reviews', data=data)
 
+    @minimal_version(6)
     def archive(self,
                 *,
                 not_updated_since: str,
@@ -270,9 +270,6 @@ class Reviews:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        if self.swarm.api_version < 6:
-            raise SwarmCompatibleError('archive is supported with API v6+')
-
         data = dict(
             notUpdatedSince=not_updated_since,
             description=description
@@ -280,6 +277,7 @@ class Reviews:
 
         return self.swarm._request('POST', 'reviews/archive', data=data)
 
+    @minimal_version(6)
     def cleanup(self,
                 review_id: int,
                 *,
@@ -298,9 +296,6 @@ class Reviews:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        if self.swarm.api_version < 6:
-            raise SwarmCompatibleError('cleanup is supported with API v6+')
-
         data = dict()
 
         if reopen:
