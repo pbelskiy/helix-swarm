@@ -212,3 +212,30 @@ class Reviews:
                 )
 
         return self.swarm._request('POST', 'reviews', data=data)
+
+    def archive(self,
+                *,
+                not_updated_since: str,
+                description: str) -> dict:
+        """
+        Archiving the inactive reviews (v6+).
+
+        * not_updated_since: ``str``
+          Updated since date. Requires the date to be in the format YYYY-mm-dd
+          Example ``2017-01-01``
+
+        * description: ``str``
+          A description that is posted as a comment for archiving.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if self.swarm.api_version < 6:
+            raise SwarmCompatibleError('archive is supported with API v6+')
+
+        data = dict(
+            notUpdatedSince=not_updated_since,
+            description=description
+        )
+
+        return self.swarm._request('POST', 'reviews/archive', data=data)

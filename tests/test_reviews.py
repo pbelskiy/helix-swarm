@@ -241,3 +241,83 @@ def test_create_review_exception():
     client_v6 = SwarmClient('http://server/api/v6', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client_v6.reviews.create(222, reviewer_groups=['master'])
+
+
+@responses.activate
+def test_archive_review():
+    data = {
+        'archivedReviews': [
+            {
+                'id': 911,
+                'author': 'swarm',
+                'changes': [601],
+                'commits': [],
+                'commitStatus': [],
+                'created': 1461164344,
+                'deployDetails': [],
+                'deployStatus': None,
+                'description': 'Touch up references on html pages.\n',
+                'groups': [],
+                'participants': {
+                    'swarm': []
+                },
+                'pending': False,
+                'projects': [],
+                'state': 'archived',
+                'stateLabel': 'Archived',
+                'testDetails': [],
+                'testStatus': None,
+                'type': 'default',
+                'updated': 1478191605
+            },
+            {
+                'id': 908,
+                'author': 'earl',
+                'changes': [605],
+                'commits': [],
+                'commitStatus': [],
+                'created': 1461947794,
+                'deployDetails': [],
+                'deployStatus': None,
+                'description': 'Remove (attempted) installation of now deleted man pages.\n',
+                'groups': [],
+                'participants': {
+                    'swarm': []
+                },
+                'pending': False,
+                'projects': [],
+                'state': 'archived',
+                'stateLabel': 'Archived',
+                'testDetails': [],
+                'testStatus': None,
+                'type': 'default',
+                'updated': 1478191605
+            }
+        ],
+        'failedReviews': [
+            {}
+        ]
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews/archive'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.archive(
+        not_updated_since='2016-06-30',
+        description='My awesome description'
+    )
+
+    assert 'archivedReviews' in response
+
+    client = SwarmClient('http://server/api/v5', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client.reviews.archive(
+            not_updated_since='2016-06-30',
+            description='My awesome description'
+        )
