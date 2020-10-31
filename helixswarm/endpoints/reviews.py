@@ -164,6 +164,42 @@ class Reviews:
 
         return response
 
+    def get_transitions(self,
+                        review_id: int,
+                        *,
+                        up_voters: Optional[str] = None
+                        ) -> dict:
+        """
+        Get transitions for a review (**v9+**)
+
+        * review_id: ``int``
+          Review id getting information from.
+
+        * up_voters: ``str`` (optional)
+          A list of users whose vote up will be assumed when determining the
+          transitions. For example if a user has not yet voted but would be the
+          last required vote and asked for possible transitions we would want to
+          include 'approve'
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if self.swarm.api_version < 9:
+            raise SwarmCompatibleError('get_transitions is supported with API v9+')
+
+        params = dict()
+
+        if up_voters:
+            params['upVoters'] = up_voters
+
+        response = self.swarm._request(
+            'GET',
+            'reviews/{}/transitions'.format(review_id),
+            params=params
+        )
+
+        return response
+
     def create(self,
                change: int,
                *,
@@ -222,7 +258,7 @@ class Reviews:
                 not_updated_since: str,
                 description: str) -> dict:
         """
-        Archiving the inactive reviews (v6+).
+        Archiving the inactive reviews (**v6+**).
 
         * not_updated_since: ``str``
           Updated since date. Requires the date to be in the format YYYY-mm-dd

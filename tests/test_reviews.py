@@ -179,6 +179,38 @@ def test_get_review_info_error():
 
 
 @responses.activate
+def test_get_review_transitions():
+    data = {
+        'isValid': 'true',
+        'transitions': {
+            'needsRevision': 'Needs Revision',
+            'approved': 'Approve',
+            'approved:commit': 'Approve and Commit',
+            'rejected': 'Reject',
+            'archived': 'Archive'
+        }
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/12345/transitions'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    response = client.reviews.get_transitions(
+        12345,
+        up_voters='bruno'
+    )
+    assert 'transitions' in response
+
+    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client.reviews.get_transitions(12345)
+
+
+@responses.activate
 def test_create_review():
     data = {
         'review': {
