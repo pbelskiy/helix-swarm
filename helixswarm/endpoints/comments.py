@@ -270,3 +270,20 @@ class Comments:
         )
 
         return response
+
+    def notify(self, topic: str) -> dict:
+        """
+        Sends notification for comments.
+
+        * topic ``str``:
+          This is going to send a single notification for any comments that were
+          not notified immediately for the user authenticated for a given topic
+          they are posting for. Examples: ``reviews/1234``
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if self.swarm.api_version < 3:
+            raise SwarmCompatibleError('Comments supported from API version >= 3')
+
+        return self.swarm._request('POST', 'comments', params=dict(topic=topic))

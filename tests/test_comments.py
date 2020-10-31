@@ -115,3 +115,18 @@ def test_comments_edit_old_api():
     client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.edit(123, 'Edited comment')
+
+
+@responses.activate
+def test_comments_notify():
+    data = {
+        'isValid': True,
+        'message': 'No comment notifications to send',
+        'code': 200
+    }
+
+    responses.add(responses.POST, re.compile(r'.*\/comments'), json=data)
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    response = client.comments.notify('reviews/911')
+    assert response['isValid'] is True
