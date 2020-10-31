@@ -308,3 +308,25 @@ class Reviews:
         )
 
         return response
+
+    @minimal_version(9)
+    def obliterate(self,
+                   review_id: int,
+                   *,
+                   reopen: Optional[bool] = None
+                   ) -> dict:
+        """
+        Obliterate a review for the given id (**v9+**).
+
+        * review_id: ``int``
+          Review id getting information from.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        response = self.swarm._request(
+            'POST',
+            'reviews/{}/obliterate'.format(review_id)
+        )
+
+        return response

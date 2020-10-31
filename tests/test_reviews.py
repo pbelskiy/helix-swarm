@@ -381,3 +381,28 @@ def test_cleanup_review():
     client = SwarmClient('http://server/api/v5', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.reviews.cleanup(12345)
+
+
+@responses.activate
+def test_obliterate_review():
+    data = {
+        'isValid': True,
+        'message': 'review 1 has been Obliterated',
+        'code': 200
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews/12345/obliterate'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.obliterate(12345)
+    assert 'message' in response
+
+    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client.reviews.obliterate(12345)
