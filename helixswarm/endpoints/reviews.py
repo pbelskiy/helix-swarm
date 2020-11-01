@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from helixswarm.exceptions import SwarmCompatibleError
+from helixswarm.exceptions import SwarmCompatibleError, SwarmError
 from helixswarm.helpers import minimal_version
 
 
@@ -256,7 +256,8 @@ class Reviews:
     def archive(self,
                 *,
                 not_updated_since: str,
-                description: str) -> dict:
+                description: str
+                ) -> dict:
         """
         Archiving the inactive reviews (**v6+**).
 
@@ -276,6 +277,45 @@ class Reviews:
         )
 
         return self.swarm._request('POST', 'reviews/archive', data=data)
+
+    def update(self,
+               review_id: int,
+               *,
+               author: Optional[str] = None,
+               description: Optional[str] = None
+               ) -> dict:
+        """
+        Archiving the inactive reviews (**v6+**).
+
+        * review_id: ``int``
+          Review ID.
+
+        * author: ``str`` (optional)
+          The new author for the specified review.
+
+        * description: ``str`` (optional)
+          The new description for the specified review.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if author is description is None:
+            raise SwarmError('At least one of description or author are required')
+
+        data = dict()  # type: Dict[str, str]
+
+        if author:
+            data['author'] = author
+        if description:
+            data['description'] = description
+
+        response = self.swarm._request(
+            'PATCH',
+            'reviews/{}'.format(review_id),
+            data=data
+        )
+
+        return response
 
     @minimal_version(6)
     def cleanup(self,

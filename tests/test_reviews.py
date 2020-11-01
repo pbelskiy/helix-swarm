@@ -3,7 +3,12 @@ import re
 import pytest
 import responses
 
-from helixswarm import SwarmClient, SwarmCompatibleError, SwarmNotFoundError
+from helixswarm import (
+    SwarmClient,
+    SwarmCompatibleError,
+    SwarmError,
+    SwarmNotFoundError,
+)
 
 
 @responses.activate
@@ -263,6 +268,62 @@ def test_create_review():
     )
 
     assert 'review' in response
+
+
+@responses.activate
+def test_update_review():
+    data = {
+        'review': {
+            'id': 12306,
+            'author': 'swarm',
+            'changes': [12205],
+            'comments': 0,
+            'commits': [],
+            'commitStatus': [],
+            'created': 1402507043,
+            'deployDetails': [],
+            'deployStatus': None,
+            'description': 'Updated Review Description\n',
+            'participants': {
+                'swarm': []
+            },
+            'pending': True,
+            'projects': [],
+            'state': 'needsReview',
+            'stateLabel': 'Needs Review',
+            'testDetails': [],
+            'testStatus': None,
+            'type': 'default',
+            'updated': 1402518492
+        },
+        'transitions': {
+            'needsRevision': 'Needs Revision',
+            'approved': 'Approve',
+            'rejected': 'Reject',
+            'archived': 'Archive'
+        },
+        'canEditAuthor': True
+    }
+
+    responses.add(
+        responses.PATCH,
+        re.compile(r'.*/api/v\d+/reviews/12306'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.update(
+        12306,
+        author='new_author',
+        description='new_description'
+    )
+
+    assert 'review' in response
+
+    with pytest.raises(SwarmError):
+        client.reviews.update(12306)
 
 
 def test_create_review_exception():
