@@ -252,6 +252,44 @@ class Reviews:
 
         return self.swarm._request('POST', 'reviews', data=data)
 
+    def vote(self,
+             review_id: int,
+             vote: str,
+             *,
+             version: Optional[str] = None
+             ) -> dict:
+        """
+        Set the vote for the authenticated user to be up, down or cleared.
+
+        * review_id: ``int``
+          Review ID.
+
+        * vote: ``str``
+          Valid votes are 'up', 'down' and 'clear.
+
+        * version: ``str`` (optional)
+          Expected to be a valid review revision to vote on if supplied, ignored
+          if the revision does not exist and the vote will apply to the latest
+          revision.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict()  # type: Dict[str, str]
+
+        if vote:
+            data['vote'] = vote
+        if version:
+            data['version'] = version
+
+        response = self.swarm._request(
+            'POST',
+            'reviews/{}/vote'.format(review_id),
+            data=data
+        )
+
+        return response
+
     @minimal_version(6)
     def archive(self,
                 *,

@@ -270,6 +270,16 @@ def test_create_review():
     assert 'review' in response
 
 
+def test_create_review_exception():
+    client_v1 = SwarmClient('http://server/api/v1', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client_v1.reviews.create(111, required_reviewers=['p.belskiy'])
+
+    client_v6 = SwarmClient('http://server/api/v6', 'login', 'password')
+    with pytest.raises(SwarmCompatibleError):
+        client_v6.reviews.create(222, reviewer_groups=['master'])
+
+
 @responses.activate
 def test_update_review():
     data = {
@@ -326,14 +336,29 @@ def test_update_review():
         client.reviews.update(12306)
 
 
-def test_create_review_exception():
-    client_v1 = SwarmClient('http://server/api/v1', 'login', 'password')
-    with pytest.raises(SwarmCompatibleError):
-        client_v1.reviews.create(111, required_reviewers=['p.belskiy'])
+@responses.activate
+def test_review_vote():
+    data = {
+        'isValid': 'true',
+        'messages': ['User username set vote to up on review 1']
+    }
 
-    client_v6 = SwarmClient('http://server/api/v6', 'login', 'password')
-    with pytest.raises(SwarmCompatibleError):
-        client_v6.reviews.create(222, reviewer_groups=['master'])
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews/12345/vote'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.vote(
+        12345,
+        vote='up',
+        version='1'
+    )
+
+    assert 'messages' in response
 
 
 @responses.activate
