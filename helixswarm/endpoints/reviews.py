@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from helixswarm.exceptions import SwarmCompatibleError, SwarmError
 from helixswarm.helpers import minimal_version
@@ -198,6 +198,36 @@ class Reviews:
         )
 
         return response
+
+    def get_latest_revision_and_change(self, review_id: int) -> Tuple[int, int]:
+        """
+        Get latest revision and change (changelist) for a review.
+
+        * review_id: ``int``
+          Review id getting information from.
+
+        :returns: ``Tuple[int, int]`` revision and change respectively.
+        :raises: ``SwarmError``
+        """
+        response = self.get_info(review_id, fields=['versions']).get('review')
+
+        if response is None or 'versions' not in response:
+            raise SwarmError('can`t find `versions` field in review data')
+
+        latest_revision = len(response['versions'])
+        if latest_revision == 0:
+            raise SwarmError('can`t get review revision, `versions` is empty')
+
+        latest_version = response['versions'][-1]
+        if 'change' not in latest_version:
+            raise SwarmError('no `change` field in latest versions block')
+
+        if 'archiveChange' in latest_version:
+            latest_change = int(latest_version['archiveChange'])
+        else:
+            latest_change = int(latest_version['change'])
+
+        return latest_revision, latest_change
 
     def create(self,
                change: int,

@@ -216,6 +216,67 @@ def test_get_review_transitions():
 
 
 @responses.activate
+def test_get_latest_revision_and_change():
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/12345'),
+        json={'review': {
+            'versions': [
+                {'change': 1},
+                {'change': 2, 'archiveChange': 3}
+            ]
+        }},
+        status=200
+    )
+
+    revision, change = client.reviews.get_latest_revision_and_change(12345)
+    assert revision == 2
+    assert change == 3
+
+
+@responses.activate
+def test_get_latest_revision_and_change_exception():
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/12345'),
+        json={'review': {}},
+        status=200
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/12345'),
+        json={'review': {'versions': []}},
+        status=200
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/12345'),
+        json={'review': {
+            'versions': [
+                {'change': 1},
+                {'archiveChange': 3}
+            ]
+        }},
+        status=200
+    )
+
+    with pytest.raises(SwarmError):
+        client.reviews.get_latest_revision_and_change(12345)
+
+    with pytest.raises(SwarmError):
+        client.reviews.get_latest_revision_and_change(12345)
+
+    with pytest.raises(SwarmError):
+        client.reviews.get_latest_revision_and_change(12345)
+
+
+@responses.activate
 def test_create_review():
     data = {
         'review': {
