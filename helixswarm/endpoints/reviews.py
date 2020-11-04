@@ -105,7 +105,7 @@ class Reviews:
             params['fields'] = ','.join(fields)
         if authors:
             params['author'] = authors
-            if self.swarm.api_version < 2:
+            if float(self.swarm.version) < 2:
                 raise SwarmCompatibleError(
                     'author field is supported from API version >= 2'
                 )
@@ -268,14 +268,14 @@ class Reviews:
 
         if required_reviewers:
             data['requiredReviewers'] = required_reviewers
-            if self.swarm.api_version == 1:
+            if float(self.swarm.version) == 1:
                 raise SwarmCompatibleError(
                     'required_reviewers field is supported from API version > 1'
                 )
 
         if reviewer_groups:
             data['reviewerGroups'] = reviewer_groups
-            if self.swarm.api_version < 7:
+            if float(self.swarm.version) < 7:
                 raise SwarmCompatibleError(
                     'reviewer_groups field is supported from API version > 6'
                 )

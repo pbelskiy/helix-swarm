@@ -73,21 +73,21 @@ class Comments:
 
         if ignore_archived:
             params['ignoreArchived'] = ignore_archived
-            if self.swarm.api_version < 5:
+            if float(self.swarm.version) < 5:
                 raise SwarmCompatibleError(
                     'ignore_archived field is supported from API version >= 5'
                 )
 
         if tasks_only:
             params['tasksOnly'] = tasks_only
-            if self.swarm.api_version < 5:
+            if float(self.swarm.version) < 5:
                 raise SwarmCompatibleError(
                     'tasks_only field is supported from API version >= 5'
                 )
 
         if task_states:
             params['taskStates'] = task_states
-            if self.swarm.api_version < 5:
+            if float(self.swarm.version) < 5:
                 raise SwarmCompatibleError(
                     'task_states field is supported from API version >= 5'
                 )
@@ -134,7 +134,7 @@ class Comments:
         * task_state: ``str`` (optional)
           Task state of the comment, valid values when adding a comment are
           ``comment`` and ``open``. This creates a plain comment or opens a task,
-           respectively.
+          respectively.
 
         * flags: ``List[str]`` (optional)
           Typically set to ``closed`` to archive a comment.

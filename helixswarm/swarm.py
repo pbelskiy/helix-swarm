@@ -1,9 +1,10 @@
 import json
 import re
 
+from abc import ABC, abstractmethod
 from collections import namedtuple
 from http import HTTPStatus
-from typing import Any, Tuple
+from typing import Any, Callable, Tuple
 
 from .endpoints.activities import Activities
 from .endpoints.comments import Comments
@@ -13,27 +14,12 @@ from .exceptions import SwarmError, SwarmNotFoundError
 Response = namedtuple('Response', ['status', 'body'])
 
 
-class Swarm:
-    """
-    Core library class
+class Swarm(ABC):
 
-    If API version isn`t specified in host URL then it will be detected
-    automatically (latest available on server).
-    """
-    def __init__(self, url: str, user: str, password: str):
-        host, self._api_version = self._get_host_and_api_version(url)
-
-        self.connector = self.connect(host, user, password, self._api_version)
-
+    def __init__(self):
         self.activities = Activities(self)
         self.reviews = Reviews(self)
         self.comments = Comments(self)
-
-    def connect(self, host: str, user: str, password: str, version: str) -> Any:
-        raise NotImplementedError
-
-    def close(self) -> None:
-        return self.connector.close()
 
     @staticmethod
     def _get_host_and_api_version(url: str) -> Tuple[str, str]:
@@ -45,22 +31,44 @@ class Swarm:
         version = match.group(2)
         return host, version
 
-    @property
-    def api_version(self) -> float:
-        return float(self._api_version)
-
     @staticmethod
     def _callback(response: Response) -> dict:
+        try:
+            decoded_body = json.loads(response.body)
+        except json.decoder.JSONDecodeError as e:
+            raise SwarmError from e
+
         if response.status == HTTPStatus.NOT_FOUND:
-            raise SwarmNotFoundError(json.loads(response.body))
+            raise SwarmNotFoundError(decoded_body)
 
         if response.status != HTTPStatus.OK:
             raise SwarmError(response.body)
 
-        return json.loads(response.body)
+        return decoded_body
 
-    def _request(self, method: str, path: str, **kwargs: Any):
-        return self.connector.request(self._callback, method, path, **kwargs)
+    @abstractmethod
+    def close(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def request(self,
+                callback: Callable[[Response], dict],
+                method: str,
+                path: str,
+                **kwargs: Any
+                ) -> dict:
+        raise NotImplementedError
+
+    def _request(self, method: str, path: str, **kwargs: Any) -> dict:
+        return self.request(self._callback, method, path, **kwargs)
 
     def get_version(self) -> dict:
+        """
+        Show server version information. This can be used to determine the
+        currently-installed Swarm version, and also to check that Swarm’s API
+        is responding as expected.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
         return self._request('GET', 'version')

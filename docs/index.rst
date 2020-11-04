@@ -6,30 +6,36 @@ API endpoints
 Core
 ~~~~
 
+.. autoclass:: helixswarm.SwarmClient
+    :members:
+
+.. autoclass:: helixswarm.SwarmAsyncClient
+    :members:
+
 .. autoclass:: helixswarm.swarm.Swarm
-   :members:
+
+    .. automethod:: get_version
 
 Exceptions
 ~~~~~~~~~~
 
 .. automodule:: helixswarm.exceptions
-   :members:
+    :members:
 
 Activities
 ~~~~~~~~~~
 
 .. autoclass:: helixswarm.endpoints.activities.Activities
-   :members:
-
+    :members:
 
 Reviews
 ~~~~~~~
 
 .. autoclass:: helixswarm.endpoints.reviews.Reviews
-   :members:
+    :members:
 
 Comments
 ~~~~~~~~
 
 .. autoclass:: helixswarm.endpoints.comments.Comments
-   :members:
+    :members:
