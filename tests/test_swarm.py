@@ -50,6 +50,25 @@ def test_sync_client():
         client.close()
 
 
+@responses.activate
+def test_sync_client_retry():
+    # responses library does`t support Retry mock
+    # https://github.com/getsentry/responses/issues/135
+    # so, just cover code of retry constructor
+    client = SwarmClient(
+        'http://server/api/v9',
+        'login',
+        'password',
+        retry=dict(
+            total=10,
+            factor=1,
+            statuses=[400, 500],
+        )
+    )
+
+    assert client.session.adapters['http://'].max_retries.status_forcelist == [400, 500]
+
+
 @pytest.mark.asyncio
 async def test_async_client():
     try:

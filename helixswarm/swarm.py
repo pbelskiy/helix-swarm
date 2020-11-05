@@ -6,10 +6,10 @@ from collections import namedtuple
 from http import HTTPStatus
 from typing import Any, Callable, Tuple
 
-from .endpoints.activities import Activities
-from .endpoints.comments import Comments
-from .endpoints.reviews import Reviews
-from .exceptions import SwarmError, SwarmNotFoundError
+from helixswarm.endpoints.activities import Activities
+from helixswarm.endpoints.comments import Comments
+from helixswarm.endpoints.reviews import Reviews
+from helixswarm.exceptions import SwarmError, SwarmNotFoundError
 
 Response = namedtuple('Response', ['status', 'body'])
 

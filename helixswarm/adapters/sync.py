@@ -1,6 +1,8 @@
 from typing import Any, Callable, Optional
 
 from requests import Session
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from helixswarm.swarm import Response, Swarm
 
@@ -13,7 +15,8 @@ class SwarmClient(Swarm):
                  password: str,
                  *,
                  verify: bool = True,
-                 timeout: Optional[float] = None
+                 timeout: Optional[float] = None,
+                 retry: Optional[dict] = None
                  ):
         """
         Swarm client class.
@@ -33,6 +36,25 @@ class SwarmClient(Swarm):
         * timeout: ``float`` (optional)
           HTTP request timeout.
 
+        * retry: ``dict`` (optional)
+          Retry options to prevent failures if server restarting or temporary
+          network problem.
+
+          - total: ``int`` Total retries count. (default 0)
+          - factor: ``int`` Sleep between retries (default 0)
+            {factor} * (2 ** ({number of total retries} - 1))
+          - statuses: ``List[int]`` HTTP statues retries on. (default [])
+
+          Example:
+
+          .. code-block:: python
+
+            retry = dict(
+                attempts=10,
+                factor=1,
+                statuses=[500]
+            )
+
         :returns: ``SwarmClient instance``
         :raises: ``SwarmError``
         """
@@ -40,14 +62,23 @@ class SwarmClient(Swarm):
 
         self.host, self.version = self._get_host_and_api_version(url)
 
-        auth = (user, password)
-
-        session = Session()
-        session.auth = auth
-
-        self.session = session
+        self.session = Session()
+        self.session.auth = (user, password)
         self.timeout = timeout
         self.verify = verify
+
+        if not retry:
+            return
+
+        adapter = HTTPAdapter(max_retries=Retry(
+            total=retry.get('total', 0),
+            backoff_factor=retry.get('factor', 0),
+            status_forcelist=retry.get('statuses', []),
+            method_whitelist=['GET', 'POST', 'PATCH'],
+        ))
+
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
 
     def close(self) -> None:
         self.session.close()
