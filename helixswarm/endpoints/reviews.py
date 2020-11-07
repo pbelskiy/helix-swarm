@@ -320,6 +320,43 @@ class Reviews:
 
         return response
 
+    def add_change(self,
+                   review_id: int,
+                   change: int,
+                   *,
+                   mode: Optional[str] = None
+                   ) -> dict:
+        """
+        Add change to a review, links the given change to the review and
+        schedules an update.
+
+        * review_id: ``int``
+          Review ID.
+
+        * change: ``int``
+          Change ID.
+
+        * mode: ``str``
+          The mode of operation, currently ``replace`` or `'append``.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict(
+            change=change,
+        )  # type: Dict[str, Union[str, int]]
+
+        if mode:
+            data['mode'] = mode
+
+        response = self.swarm._request(
+            'POST',
+            'reviews/{}/changes/'.format(review_id),
+            data=data
+        )
+
+        return response
+
     @minimal_version(6)
     def archive(self,
                 *,

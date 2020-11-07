@@ -341,6 +341,64 @@ def test_create_review_exception():
         client_v6.reviews.create(222, reviewer_groups=['master'])
 
 
+
+@responses.activate
+def test_review_add_change():
+    data = {
+        'review': {
+            'id': 123,
+            'author': 'bruno',
+            'changes': [122, 124],
+            'commits': [],
+            'commitStatus': [],
+            'created': 1399325913,
+            'deployDetails': [],
+            'deployStatus': None,
+            'description': 'Adding .jar that should have been included in r110\n',
+            'groups': [],
+            'participants': {
+                'bruno': []
+            },
+            'pending': True,
+            'projects': [],
+            'state': 'needsReview',
+            'stateLabel': 'Needs Review',
+            'testDetails': [],
+            'testStatus': None,
+            'type': 'default',
+            'updated': 1399325913,
+            'versions': [
+                {
+                    'difference': 1,
+                    'stream': None,
+                    'change': 124,
+                    'user': 'bruno',
+                    'time': 1399330003,
+                    'pending': True,
+                    'archiveChange': 124
+                }
+            ]
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/reviews/12345/changes'),
+        json=data,
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.reviews.add_change(
+        12345,
+        change=124,
+        mode='append'
+    )
+
+    assert 'review' in response
+
+
 @responses.activate
 def test_update_review():
     data = {
