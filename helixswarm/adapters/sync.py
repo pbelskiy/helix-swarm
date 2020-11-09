@@ -55,6 +55,33 @@ class SwarmClient(Swarm):
                 statuses=[500]
             )
 
+          With factor = 1
+
+          ============  =============
+          Retry number  Sleep
+          ============  =============
+          1              0.5 seconds
+          2              1.0 seconds
+          3              2.0 seconds
+          4              4.0 seconds
+          5              8.0 seconds
+          6             16.0 seconds
+          7             32.0 seconds
+          8              1.1 minutes
+          9              2.1 minutes
+          10             4.3 minutes
+          11             8.5 minutes
+          12            17.1 minutes
+          13            34.1 minutes
+          14             1.1 hours
+          15             2.3 hours
+          16             4.6 hours
+          17             9.1 hours
+          18            18.2 hours
+          19            36.4 hours
+          20            72.8 hours
+          ============  =============
+
         :returns: ``SwarmClient instance``
         :raises: ``SwarmError``
         """
