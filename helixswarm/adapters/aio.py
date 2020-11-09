@@ -1,13 +1,50 @@
 import asyncio
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
-from aiohttp import BasicAuth, ClientSession, ClientTimeout
+from aiohttp import (
+    BasicAuth,
+    ClientError,
+    ClientResponse,
+    ClientSession,
+    ClientTimeout,
+)
 
-from helixswarm.swarm import Response, Swarm
+from helixswarm.swarm import Response, Swarm, SwarmError
+
+
+class RetryClientSession:
+
+    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict):
+        self.total = options.get('total') or 1
+        self.factor = options.get('factor', 0)
+        self.statuses = options.get('statuses', [])
+
+        self.session = ClientSession(loop=loop)
+
+    async def request(self, *args: Any, **kwargs: Any) -> ClientResponse:
+        for total in range(self.total):
+            try:
+                response = await self.session.request(*args, **kwargs)
+            except ClientError as e:
+                if total + 1 == self.total:
+                    raise SwarmError from e
+            else:
+                if response.status not in self.statuses:
+                    break
+
+            await asyncio.sleep(self.factor * (2 ** (total - 1)))
+
+        return response
+
+    async def close(self) -> None:
+        await self.session.close()
 
 
 class SwarmAsyncClient(Swarm):
+
+    session = None  # type: Union[ClientSession, RetryClientSession]
+    timeout = None
 
     def __init__(self,
                  url: str,
@@ -16,7 +53,8 @@ class SwarmAsyncClient(Swarm):
                  *,
                  loop: Optional[asyncio.AbstractEventLoop] = None,
                  verify: bool = True,
-                 timeout: Optional[int] = None
+                 timeout: Optional[int] = None,
+                 retry: Optional[dict] = None
                  ):
         """
         Swarm async client class.
@@ -39,6 +77,25 @@ class SwarmAsyncClient(Swarm):
         * timeout: ``int``, (optional)
           HTTP request timeout.
 
+        * retry: ``dict`` (optional)
+          Retry options to prevent failures if server restarting or temporary
+          network problem.
+
+          - total: ``int`` Total retries count. (default 0)
+          - factor: ``int`` Sleep between retries (default 0)
+            {factor} * (2 ** ({number of total retries} - 1))
+          - statuses: ``List[int]`` HTTP statues retries on. (default [])
+
+          Example:
+
+          .. code-block:: python
+
+            retry = dict(
+                attempts=10,
+                factor=1,
+                statuses=[500]
+            )
+
         :returns: ``SwarmClient instance``
         :raises: ``SwarmError``
         """
@@ -48,10 +105,14 @@ class SwarmAsyncClient(Swarm):
         self.host, self.version = self._get_host_and_api_version(url)
 
         self.auth = BasicAuth(user, password)
-        self.session = ClientSession(loop=self.loop)
+
+        if retry:
+            self.session = RetryClientSession(loop, retry)
+        else:
+            self.session = ClientSession(loop=self.loop)
 
         self.verify = verify
-        self.timeout = None  # Optional[ClientTimeout]
+
         if timeout:
             self.timeout = ClientTimeout(total=timeout)
 

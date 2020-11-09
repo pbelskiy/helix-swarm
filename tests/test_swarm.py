@@ -1,5 +1,6 @@
 import re
 
+import aiohttp
 import pytest
 import responses
 
@@ -12,6 +13,12 @@ GET_VERSION_DATA = {
     'version': 'SWARM/2018.2/1705499 (2018/09/25)',
     'year': '2018'
 }
+
+
+@pytest.fixture
+def aiohttp_mock():
+    with aioresponses() as mock:
+        yield mock
 
 
 def test_get_host_and_api_version():
@@ -70,17 +77,73 @@ def test_sync_client_retry():
 
 
 @pytest.mark.asyncio
-async def test_async_client():
+async def test_async_client(aiohttp_mock):
     try:
         client = SwarmAsyncClient('http://server/api/v9', 'login', 'password')
-        with aioresponses() as mock:
-            mock.get(
-                'http://server/api/v9/version',
-                payload=GET_VERSION_DATA,
-                status=200
-            )
-            version = await client.get_version()
 
+        aiohttp_mock.get(
+            'http://server/api/v9/version',
+            payload=GET_VERSION_DATA,
+            status=200
+        )
+
+        version = await client.get_version()
         assert version['year'] == '2018'
     finally:
         await client.close()
+
+
+@pytest.mark.asyncio
+async def test_async_client_retry(aiohttp_mock):
+    client = SwarmAsyncClient(
+        'http://server/api/v9',
+        'login',
+        'password',
+        retry=dict(
+            total=10,
+            statuses=[500],
+        )
+    )
+
+    aiohttp_mock.get(
+        'http://server/api/v9/version',
+        payload={'error': 'Server error'},
+        status=500,
+    )
+
+    aiohttp_mock.get(
+        'http://server/api/v9/version',
+        payload=GET_VERSION_DATA,
+        status=200,
+    )
+
+    version = await client.get_version()
+    assert version['year'] == '2018'
+    await client.close()
+
+
+@pytest.mark.asyncio
+async def test_async_client_retry_exception(aiohttp_mock):
+    client = SwarmAsyncClient(
+        'http://server/api/v9',
+        'login',
+        'password',
+        retry=dict(
+            total=2,
+            statuses=[500],
+        )
+    )
+
+    aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
+    aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
+
+    aiohttp_mock.get(
+        'http://server/api/v9/version',
+        payload={'error': 'Server error'},
+        status=500,
+    )
+
+    with pytest.raises(SwarmError):
+        await client.get_version()
+
+    await client.close()
