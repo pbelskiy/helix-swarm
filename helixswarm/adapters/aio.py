@@ -26,7 +26,7 @@ class RetryClientSession:
         for total in range(self.total):
             try:
                 response = await self.session.request(*args, **kwargs)
-            except ClientError as e:
+            except (ClientError, asyncio.TimeoutError) as e:
                 if total + 1 == self.total:
                     raise SwarmError from e
             else:
@@ -53,7 +53,7 @@ class SwarmAsyncClient(Swarm):
                  *,
                  loop: Optional[asyncio.AbstractEventLoop] = None,
                  verify: bool = True,
-                 timeout: Optional[int] = None,
+                 timeout: Optional[float] = None,
                  retry: Optional[dict] = None
                  ):
         """

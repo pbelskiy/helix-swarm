@@ -50,7 +50,13 @@ def test_sync_client():
     )
 
     try:
-        client = SwarmClient('http://server/api/v9', 'login', 'password')
+        client = SwarmClient(
+            'http://server/api/v9',
+            'login',
+            'password',
+            timeout=10,
+        )
+
         version = client.get_version()
         assert version['year'] == '2018'
     finally:
@@ -79,12 +85,17 @@ def test_sync_client_retry():
 @pytest.mark.asyncio
 async def test_async_client(aiohttp_mock):
     try:
-        client = SwarmAsyncClient('http://server/api/v9', 'login', 'password')
+        client = SwarmAsyncClient(
+            'http://server/api/v9',
+            'login',
+            'password',
+            timeout=10,
+        )
 
         aiohttp_mock.get(
             'http://server/api/v9/version',
             payload=GET_VERSION_DATA,
-            status=200
+            status=200,
         )
 
         version = await client.get_version()
@@ -136,12 +147,6 @@ async def test_async_client_retry_exception(aiohttp_mock):
 
     aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
     aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
-
-    aiohttp_mock.get(
-        'http://server/api/v9/version',
-        payload={'error': 'Server error'},
-        status=500,
-    )
 
     with pytest.raises(SwarmError):
         await client.get_version()
