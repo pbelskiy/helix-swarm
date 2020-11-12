@@ -41,6 +41,36 @@ def test_get_host_and_api_version():
 
 
 @responses.activate
+def test_response_invalid_json():
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/version'),
+        body='invalid json',
+        status=200
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    with pytest.raises(SwarmError):
+        client.get_version()
+
+
+@responses.activate
+def test_response_non_ok():
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/version'),
+        json={'error': 'server error'},
+        status=500
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    with pytest.raises(SwarmError):
+        client.get_version()
+
+
+@responses.activate
 def test_sync_client():
     responses.add(
         responses.GET,
