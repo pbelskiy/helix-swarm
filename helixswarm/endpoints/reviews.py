@@ -134,6 +134,16 @@ class Reviews:
 
         return self.swarm._request('GET', 'reviews', params=params)
 
+    @minimal_version(6)
+    def get_for_dashboard(self) -> dict:
+        """
+        Gets reviews for the action dashboard for the authenticated user
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self.swarm._request('GET', 'dashboards/action')
+
     def get_info(self,
                  review_id: int,
                  *,

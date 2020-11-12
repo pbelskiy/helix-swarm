@@ -101,6 +101,51 @@ def test_reviews_all_exceptions():
 
 
 @responses.activate
+def test_get_dashboards_review():
+    data = {
+        'lastSeen': 120,
+        'reviews': [
+            {
+                'id': 7,
+                'author': 'swarm_admin',
+                'changes': [6],
+                'comments': [0, 0],
+                'commits': [6],
+                'commitStatus': [],
+                'created': 1485793976,
+                'deployDetails': [],
+                'deployStatus': None,
+                'description': 'test\n',
+                'groups': ['swarm-project-test'],
+                'participants': {'swarm_admin': []},
+                'pending': False,
+                'projects': {'test': ['test']},
+                'roles': ['moderator|reviewer|required_reviewer|author'],
+                'state': 'needsReview',
+                'stateLabel': 'Needs Review',
+                'testDetails': [],
+                'testStatus': None,
+                'type': 'default',
+                'updated': 1485958875,
+                'updateDate': '2017-02-01T06:21:15-08:00'
+            }
+        ],
+        'totalCount': None
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/dashboards/action'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v6', 'login', 'password')
+
+    response = client.reviews.get_for_dashboard()
+    assert 'reviews' in response
+
+
+@responses.activate
 def test_get_review_info():
     data = {
         'review': {
