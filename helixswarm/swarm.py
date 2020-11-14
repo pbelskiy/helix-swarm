@@ -7,6 +7,7 @@ from http import HTTPStatus
 from typing import Any, Callable, Tuple
 
 from helixswarm.endpoints.activities import Activities
+from helixswarm.endpoints.changes import Changes
 from helixswarm.endpoints.comments import Comments
 from helixswarm.endpoints.reviews import Reviews
 from helixswarm.exceptions import SwarmError, SwarmNotFoundError
@@ -18,8 +19,9 @@ class Swarm(ABC):
 
     def __init__(self):
         self.activities = Activities(self)
-        self.reviews = Reviews(self)
+        self.changes = Changes(self)
         self.comments = Comments(self)
+        self.reviews = Reviews(self)
 
     @staticmethod
     def _get_host_and_api_version(url: str) -> Tuple[str, str]:
