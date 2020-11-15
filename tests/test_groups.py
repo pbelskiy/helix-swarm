@@ -55,3 +55,34 @@ def test_groups_get():
     )
 
     assert 'groups' in response
+
+
+@responses.activate
+def test_groups_get_info():
+    data = {
+        'group': {
+            'Group': 'test-group',
+            'Owners': [],
+            'Users': ['bruno'],
+            'config': {
+                'description': 'Our testing group',
+                'emailFlags': [],
+                'name': 'Test Group'
+            }
+        }
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/groups/my-group'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
+
+    response = client.groups.get_info(
+        'my-group',
+        fields=['Group', 'Owners', 'Users', 'config']
+    )
+
+    assert 'group' in response

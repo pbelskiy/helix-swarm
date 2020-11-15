@@ -56,3 +56,35 @@ class Groups:
             params['keywords'] = keywords
 
         return self.swarm._request('GET', 'groups', params=params)
+
+    @minimal_version(2)
+    def get_info(self,
+                 identifier: str,
+                 *,
+                 fields: Optional[List[str]]
+                 ) -> dict:
+        """
+        Retrieve information about a group.
+
+        * identifier: ``str``
+          Group identifier.
+
+        * fields:  ``List[str]`` (optional)
+          List of fields to show for each group.
+          Omitting this parameter or passing an empty value shows all fields.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        params = dict()  # type: Dict[str, str]
+
+        if fields:
+            params['fields'] = ','.join(fields)
+
+        response = self.swarm._request(
+            'GET',
+            'groups/{}'.format(identifier),
+            params=params
+        )
+
+        return response
