@@ -9,6 +9,7 @@ from typing import Any, Callable, Tuple
 from helixswarm.endpoints.activities import Activities
 from helixswarm.endpoints.changes import Changes
 from helixswarm.endpoints.comments import Comments
+from helixswarm.endpoints.groups import Groups
 from helixswarm.endpoints.reviews import Reviews
 from helixswarm.exceptions import SwarmError, SwarmNotFoundError
 
@@ -21,6 +22,7 @@ class Swarm(ABC):
         self.activities = Activities(self)
         self.changes = Changes(self)
         self.comments = Comments(self)
+        self.groups = Groups(self)
         self.reviews = Reviews(self)
 
     @staticmethod
