@@ -112,7 +112,7 @@ class Reviews:
         if changes:
             params['change'] = changes
         if has_reviewers is not None:
-            params['hasReviewers'] = str(int(has_reviewers))
+            params['hasReviewers'] = has_reviewers
         if ids:
             params['ids'] = ids
         if keywords:
@@ -124,13 +124,13 @@ class Reviews:
         if states:
             params['state'] = states
         if passes_tests is not None:
-            params['passesTests'] = str(int(passes_tests))
+            params['passesTests'] = passes_tests
         if not_updated_since:
             params['notUpdatedSince'] = not_updated_since
         if has_voted:
             params['hasVoted'] = has_voted
         if my_comments is not None:
-            params['myComments'] = str(int(my_comments))
+            params['myComments'] = my_comments
 
         return self.swarm._request('GET', 'reviews', params=params)
 
