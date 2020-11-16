@@ -12,7 +12,7 @@ from helixswarm import (
 
 
 @responses.activate
-def test_reviews_all():
+def test_get():
     data = {
         'lastSeen': 12209,
         'reviews': [
@@ -51,12 +51,12 @@ def test_reviews_all():
 
     client = SwarmClient('http://server/api/v1', 'login', 'password')
 
-    reviews = client.reviews.get()
+    reviews = client.reviews.get(ids=[12206])
     assert len(reviews['reviews']) == 1
 
 
 @responses.activate
-def test_reviews_all_parameters():
+def test_get_parameters():
     data = {
         'lastSeen': 120,
         'reviews': [
@@ -85,14 +85,25 @@ def test_reviews_all_parameters():
     client = SwarmClient('http://server/api/v9', 'login', 'password')
 
     reviews = client.reviews.get(
+        after=60,
         limit=2,
-        fields=['id', 'description', 'author', 'state']
+        fields=['id', 'description', 'author', 'state'],
+        changes=[123, 456],
+        has_reviewers=True,
+        keywords='bruno',
+        participants=['bruno'],
+        projects=['test'],
+        states=['needsReview'],
+        passes_tests=True,
+        not_updated_since='2017-02-15',
+        has_voted=True,
+        my_comments=True,
     )
 
     assert len(reviews['reviews']) == 2
 
 
-def test_reviews_all_exceptions():
+def test_get_exceptions():
     client = SwarmClient('http://server/api/v1.2', 'login', 'password')
 
     # >= 2 API versions needed
@@ -101,52 +112,7 @@ def test_reviews_all_exceptions():
 
 
 @responses.activate
-def test_get_dashboards_review():
-    data = {
-        'lastSeen': 120,
-        'reviews': [
-            {
-                'id': 7,
-                'author': 'swarm_admin',
-                'changes': [6],
-                'comments': [0, 0],
-                'commits': [6],
-                'commitStatus': [],
-                'created': 1485793976,
-                'deployDetails': [],
-                'deployStatus': None,
-                'description': 'test\n',
-                'groups': ['swarm-project-test'],
-                'participants': {'swarm_admin': []},
-                'pending': False,
-                'projects': {'test': ['test']},
-                'roles': ['moderator|reviewer|required_reviewer|author'],
-                'state': 'needsReview',
-                'stateLabel': 'Needs Review',
-                'testDetails': [],
-                'testStatus': None,
-                'type': 'default',
-                'updated': 1485958875,
-                'updateDate': '2017-02-01T06:21:15-08:00'
-            }
-        ],
-        'totalCount': None
-    }
-
-    responses.add(
-        responses.GET,
-        re.compile(r'.*/api/v\d+/dashboards/action'),
-        json=data
-    )
-
-    client = SwarmClient('http://server/api/v6', 'login', 'password')
-
-    response = client.reviews.get_for_dashboard()
-    assert 'reviews' in response
-
-
-@responses.activate
-def test_get_review_info():
+def test_get_info():
     data = {
         'review': {
             'id': 12204,
@@ -211,7 +177,7 @@ def test_get_review_info():
 
 
 @responses.activate
-def test_get_review_info_error():
+def test_get_info_error():
     data = {
         'error': 'Not Found'
     }
@@ -229,7 +195,52 @@ def test_get_review_info_error():
 
 
 @responses.activate
-def test_get_review_transitions():
+def test_get_dashboards():
+    data = {
+        'lastSeen': 120,
+        'reviews': [
+            {
+                'id': 7,
+                'author': 'swarm_admin',
+                'changes': [6],
+                'comments': [0, 0],
+                'commits': [6],
+                'commitStatus': [],
+                'created': 1485793976,
+                'deployDetails': [],
+                'deployStatus': None,
+                'description': 'test\n',
+                'groups': ['swarm-project-test'],
+                'participants': {'swarm_admin': []},
+                'pending': False,
+                'projects': {'test': ['test']},
+                'roles': ['moderator|reviewer|required_reviewer|author'],
+                'state': 'needsReview',
+                'stateLabel': 'Needs Review',
+                'testDetails': [],
+                'testStatus': None,
+                'type': 'default',
+                'updated': 1485958875,
+                'updateDate': '2017-02-01T06:21:15-08:00'
+            }
+        ],
+        'totalCount': None
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/dashboards/action'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v6', 'login', 'password')
+
+    response = client.reviews.get_for_dashboard()
+    assert 'reviews' in response
+
+
+@responses.activate
+def test_get_transitions():
     data = {
         'isValid': 'true',
         'transitions': {
@@ -337,7 +348,7 @@ def test_get_latest_revision_and_change_exception():
 
 
 @responses.activate
-def test_create_review():
+def test_create():
     data = {
         'review': {
             'id': 12205,
@@ -391,7 +402,7 @@ def test_create_review():
     assert 'review' in response
 
 
-def test_create_review_exception():
+def test_create_exception():
     client_v1 = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client_v1.reviews.create(111, required_reviewers=['p.belskiy'])
@@ -401,9 +412,8 @@ def test_create_review_exception():
         client_v6.reviews.create(222, reviewer_groups=['master'])
 
 
-
 @responses.activate
-def test_review_add_change():
+def test_add_change():
     data = {
         'review': {
             'id': 123,
@@ -460,7 +470,7 @@ def test_review_add_change():
 
 
 @responses.activate
-def test_update_review():
+def test_update():
     data = {
         'review': {
             'id': 12306,
@@ -516,7 +526,7 @@ def test_update_review():
 
 
 @responses.activate
-def test_review_vote():
+def test_vote():
     data = {
         'isValid': 'true',
         'messages': ['User username set vote to up on review 1']
@@ -541,7 +551,7 @@ def test_review_vote():
 
 
 @responses.activate
-def test_archive_review():
+def test_archive():
     data = {
         'archivedReviews': [
             {
@@ -621,7 +631,7 @@ def test_archive_review():
 
 
 @responses.activate
-def test_cleanup_review():
+def test_cleanup():
     data = {
         'complete': [
             {
@@ -649,7 +659,7 @@ def test_cleanup_review():
 
 
 @responses.activate
-def test_obliterate_review():
+def test_obliterate():
     data = {
         'isValid': True,
         'message': 'review 1 has been Obliterated',
