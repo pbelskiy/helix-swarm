@@ -49,6 +49,7 @@ def test_groups_get():
     client = SwarmClient('http://server/api/v2', 'login', 'password')
 
     response = client.groups.get(
+        after='some-group',
         keywords='test-group',
         fields=['Group', 'Owners', 'Users', 'config'],
         limit=2
