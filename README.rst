@@ -40,7 +40,7 @@ Get review info:
     from helixswarm import SwarmClient
 
     client = SwarmClient('http://server/api/v9', 'login', 'password')
-    review = client.reviews.get(12345)
+    review = client.reviews.get_info(12345)
     print(review['review']['author'])
 
 Add comment to review (async):
