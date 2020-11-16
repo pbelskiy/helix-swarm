@@ -7,7 +7,7 @@ from helixswarm import SwarmClient, SwarmCompatibleError
 
 
 @responses.activate
-def test_comments_get():
+def test_get():
     data = {
         'topic': 'reviews/911',
         'comments': {
@@ -31,7 +31,9 @@ def test_comments_get():
 
     client = SwarmClient('http://server/api/v9', 'login', 'password')
     response = client.comments.get(
+        after=30,
         topic='reviews/911',
+        context_version=2,
         limit=2,
         fields=['id', 'body', 'time', 'user']
     )
@@ -39,7 +41,7 @@ def test_comments_get():
     assert response['topic'] == 'reviews/911'
 
 
-def test_comments_get_exception():
+def test_get_exception():
     client = SwarmClient('http://server/api/v4', 'login', 'password')
 
     with pytest.raises(SwarmCompatibleError):
@@ -53,15 +55,19 @@ def test_comments_get_exception():
 
 
 @responses.activate
-def test_comments_add():
+def test_add():
     data = {
         'comment': {
             'id': 42,
             'attachments': [],
             'body': 'Best. Comment. EVER!',
-            'context': [],
+            'context': {
+                'file': 'test.txt',
+                'review': 123,
+                'version': 2
+            },
             'edited': None,
-            'flags': [],
+            'flags': ['closed'],
             'likes': [],
             'taskState': 'comment',
             'time': 123456789,
@@ -74,18 +80,31 @@ def test_comments_add():
     responses.add(responses.POST, re.compile(r'.*\/comments'), json=data)
 
     client = SwarmClient('http://server/api/v9', 'login', 'password')
-    response = client.comments.add('reviews/123', 'Best. Comment. EVER!')
+    response = client.comments.add(
+        'reviews/123',
+        'Best. Comment. EVER!',
+        silence_notification=True,
+        delay_notification=True,
+        task_state='comment',
+        flags=['closed'],
+        context_file='test.txt',
+        context_left_line=5,
+        context_right_line=5,
+        context_content='line',
+        context_version=2,
+    )
+
     assert response['comment']['body'] == 'Best. Comment. EVER!'
 
 
-def test_comments_add_old_api():
+def test_add_old_api():
     client = SwarmClient('http://server/api/v2', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.add('reviews/123', 'Best. Comment. EVER!')
 
 
 @responses.activate
-def test_comments_edit():
+def test_edit():
     data = {
         'comment': {
             'id': 1,
@@ -106,19 +125,29 @@ def test_comments_edit():
     responses.add(responses.PATCH, re.compile(r'.*\/comments/123'), json=data)
 
     client = SwarmClient('http://server/api/v8', 'login', 'password')
-    response = client.comments.edit(123, 'Edited comment', flags=['closed'])
+
+    response = client.comments.edit(
+        123,
+        'Edited comment',
+        topic='review/42',
+        task_state='comment',
+        flags=['closed'],
+        silence_notification=True,
+        delay_notification=True,
+    )
+
     assert response['comment']['body'] == 'Edited comment'
     assert 'closed' in response['comment']['flags']
 
 
-def test_comments_edit_old_api():
+def test_edit_old_api():
     client = SwarmClient('http://server/api/v1', 'login', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.edit(123, 'Edited comment')
 
 
 @responses.activate
-def test_comments_notify():
+def test_notify():
     data = {
         'isValid': True,
         'message': 'No comment notifications to send',
