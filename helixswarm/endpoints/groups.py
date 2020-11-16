@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Union
 
+from helixswarm.exceptions import SwarmError
 from helixswarm.helpers import minimal_version
 
 
@@ -88,3 +89,86 @@ class Groups:
         )
 
         return response
+
+    @minimal_version(2)
+    def create(self,
+               identifier: str,
+               *,
+               users: Optional[List[str]] = None,
+               owners: Optional[List[str]] = None,
+               subgroups: Optional[List[str]] = None,
+               name: Optional[str] = None,
+               description: Optional[str] = None,
+               email_address: Optional[str] = None,
+               notify_reviews: Optional[bool] = None,
+               notify_commits: Optional[bool] = None,
+               use_mailing_list: Optional[bool] = None
+               ) -> dict:
+        """
+        Create a new group.
+
+        * identifier: ``str``
+          Group identifier.
+
+        * users: ``List[str]`` (optional)
+          An optional array of group users.
+          **At least one of Users, Owners, or Subgroups is required.**
+
+        * owners: ``List[str]`` (optional)
+          An optional array of group owners.
+          **At least one of Users, Owners, or Subgroups is required.**
+
+        * subgroups: ``List[str]`` (optional)
+          An optional array of group subgroups.
+          **At least one of Users, Owners, or Subgroups is required.**
+
+        * name: ``str`` (optional)
+          An optional full name for the group.
+
+        * description: ``str`` (optional)
+          An optional group description.
+
+        * email_address: ``str`` (optional)
+          The email address for this group.
+
+        * notify_reviews: ``bool`` (optional)
+          Email members when a new review is requested.
+
+        * notify_commits: ``bool`` (optional)
+          Email members when a change is committed.
+
+        * use_mailing_list: ``bool`` (optional)
+          Whether to use the configured email address or expand individual
+          members addresses.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict()  # type: Dict[str, Union[str, bool, List[str]]]
+
+        data['Group'] = identifier
+
+        if not (users and owners and subgroups):
+            raise SwarmError('At least one of users, owners, or subgroups is required')
+
+        if users:
+            data['Users'] = users
+        if owners:
+            data['Owners'] = owners
+        if subgroups:
+            data['Subgroups'] = subgroups
+
+        if name:
+            data['config[name]'] = name
+        if description:
+            data['config[description]'] = description
+        if email_address:
+            data['config[emailAddress]'] = email_address
+        if notify_reviews:
+            data['config[emailFlags][reviews]'] = notify_reviews
+        if notify_commits:
+            data['config[emailFlags][commits]'] = notify_commits
+        if use_mailing_list:
+            data['config[useMailingList]'] = use_mailing_list
+
+        return self.swarm._request('POST', 'groups', data=data)

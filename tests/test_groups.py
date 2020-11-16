@@ -1,8 +1,9 @@
 import re
 
+import pytest
 import responses
 
-from helixswarm import SwarmClient
+from helixswarm import SwarmClient, SwarmError
 
 
 @responses.activate
@@ -84,6 +85,58 @@ def test_groups_get_info():
     response = client.groups.get_info(
         'my-group',
         fields=['Group', 'Owners', 'Users', 'config']
+    )
+
+    assert 'group' in response
+
+
+@responses.activate
+def test_group_create():
+    data = {
+        'group': {
+            'Group': 'my-group',
+            'MaxLockTime': None,
+            'MaxResults': None,
+            'MaxScanRows': None,
+            'Owners': ['username'],
+            'PasswordTimeout': None,
+            'Subgroups': [],
+            'Timeout': None,
+            'Users': [],
+            'config': {
+                'description': 'This group is special to me.',
+                'emailFlags': {
+                    'reviews': '1',
+                    'commits': '0'
+                },
+                'name': 'My Group',
+                'useMailingList': True
+            }
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/groups'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
+
+    with pytest.raises(SwarmError):
+        client.groups.create('my-group')
+
+    response = client.groups.create(
+        'my-group',
+        owners=['alice', 'bob'],
+        users=['bruno', 'user2'],
+        subgroups=['subgroup_1'],
+        name='My Group',
+        description='This group is special to me.',
+        notify_reviews=True,
+        notify_commits=True,
+        email_address='my-group@host.domain',
+        use_mailing_list=True,
     )
 
     assert 'group' in response
