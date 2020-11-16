@@ -63,18 +63,18 @@ def test_activity_create():
             'id': 1375,
             'action': 'punted',
             'behalfOf': None,
-            'change': None,
+            'change': 555,
             'depotFile': None,
-            'description': '',
+            'description': 'some description',
             'details': [],
             'followers': [],
-            'link': '',
+            'link': 'some link',
             'preposition': 'for',
             'projects': [],
-            'streams': [],
+            'streams': ['user-alice'],
             'target': 'review 123',
             'time': 1461607739,
-            'topic': '',
+            'topic': 'reviews/1234',
             'type': 'job',
             'user': 'jira'
         }
@@ -93,6 +93,11 @@ def test_activity_create():
         user='jira',
         action='punted',
         target='review 123',
+        topic='reviews/1234',
+        description='some description',
+        change=555,
+        streams=['user-alice'],
+        link='some link'
     )
 
     assert 'activity' in response
