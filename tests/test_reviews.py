@@ -276,9 +276,24 @@ def test_get_latest_revision_and_change():
         status=200
     )
 
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/reviews/555'),
+        json={'review': {
+            'versions': [
+                {'change': 7}
+            ]
+        }},
+        status=200
+    )
+
     revision, change = client.reviews.get_latest_revision_and_change(12345)
     assert revision == 2
     assert change == 3
+
+    revision, change = client.reviews.get_latest_revision_and_change(555)
+    assert revision == 1
+    assert change == 7
 
 
 @responses.activate
