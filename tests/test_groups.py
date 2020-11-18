@@ -140,3 +140,48 @@ def test_group_create():
     )
 
     assert 'group' in response
+
+
+@responses.activate
+def test_edit():
+    data = {
+        'group': {
+            'Group': 'my-group',
+            'Users': ['root'],
+            'Owners': ['Pedro', 'Pablo'],
+            'Subgroups': ['subgroup_2'],
+            'config': {
+                'description': 'This group is special to me.',
+                'emailAddress': 'test-group@host.domain',
+                'emailFlags': {
+                    'reviews': '1',
+                    'commits': '1'
+                },
+                'name': 'My Group',
+                'useMailingList': True
+            }
+        }
+    }
+
+    responses.add(
+        responses.PATCH,
+        re.compile(r'.*/api/v\d+/groups/my-group'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
+
+    response = client.groups.edit(
+        'my-group',
+        owners=['root'],
+        users=['Pedro', 'Pablo'],
+        subgroups=['subgroup_2'],
+        name='My Group',
+        description='This group is special to me.',
+        notify_reviews=True,
+        notify_commits=True,
+        email_address='test-group@host.domain',
+        use_mailing_list=True,
+    )
+
+    assert 'group' in response
