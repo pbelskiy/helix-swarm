@@ -256,3 +256,16 @@ class Groups:
         )
 
         return response
+
+    @minimal_version(2)
+    def delete(self, identifier: str) -> dict:
+        """
+        Delete a group, only super users and group owners can perform this action.
+
+        * identifier: ``str``
+          Group identifier.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self.swarm._request('DELETE', 'groups/{}'.format(identifier))

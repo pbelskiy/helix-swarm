@@ -185,3 +185,21 @@ def test_edit():
     )
 
     assert 'group' in response
+
+
+@responses.activate
+def test_delete():
+    data = {
+        'id': 'my-group'
+    }
+
+    responses.add(
+        responses.DELETE,
+        re.compile(r'.*/api/v\d+/groups/my-group'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
+
+    response = client.groups.delete('my-group')
+    assert 'id' in response
