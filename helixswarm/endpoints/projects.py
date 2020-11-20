@@ -12,7 +12,8 @@ class Projects:
             workflow: Optional[str] = None
             ) -> dict:
         """
-        Returns the complete list of groups in Swarm.
+        Returns a list of projects in Swarm that are visible to the current user.
+        Administrators will see all projects, including private ones.
 
         * fields:  ``List[str]`` (optional)
           List of fields to show for each group.
@@ -33,3 +34,34 @@ class Projects:
             params['workflow'] = workflow
 
         return self.swarm._request('GET', 'projects', params=params)
+
+    def get_info(self,
+                 identifier: str,
+                 *,
+                 fields: Optional[List[str]] = None
+                 ) -> dict:
+        """
+        Retrieve information about a project.
+
+        * identifier: ``str``
+          Project identifier.
+
+        * fields:  ``List[str]`` (optional)
+          List of fields to show for each project.
+          Omitting this parameter or passing an empty value shows all fields.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        params = dict()  # type: Dict[str, str]
+
+        if fields:
+            params['fields'] = ','.join(fields)
+
+        response = self.swarm._request(
+            'GET',
+            'projects/{}'.format(identifier),
+            params=params
+        )
+
+        return response
