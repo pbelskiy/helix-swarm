@@ -171,3 +171,21 @@ def test_edit():
     )
 
     assert 'project' in response
+
+
+@responses.activate
+def test_delete():
+    data = {
+        'id': 'testproject4'
+    }
+
+    responses.add(
+        responses.DELETE,
+        re.compile(r'.*/api/v\d+/projects/testproject4'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v2', 'login', 'password')
+
+    response = client.projects.delete('testproject4')
+    assert 'id' in response

@@ -342,3 +342,22 @@ class Projects:
         )
 
         return response
+
+    def delete(self, identifier: str) -> dict:
+        """
+        Delete a project, mark a Swarm project as deleted. The project ID and
+        name cannot be reused. If a project has owners set, only the owners can
+        perform this action.
+
+        * identifier: ``str``
+          Project ID
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        response = self.swarm._request(
+            'DELETE',
+            'projects/{}'.format(identifier)
+        )
+
+        return response
