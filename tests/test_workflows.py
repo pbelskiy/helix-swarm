@@ -77,3 +77,51 @@ def test_get():
     )
 
     assert 'workflows' in response
+
+
+@responses.activate
+def test_get_info():
+    data = {
+        'workflow': {
+            'id': '1',
+            'name': 'myWorkflow',
+            'description': 'A description',
+            'on_submit': {
+                'with_review': {
+                    'rule': 'no_checking'
+                },
+                'without_review': {
+                    'rule': 'no_checking'
+                }
+            },
+            'auto_approve': {
+                'rule': 'never'
+            },
+            'counted_votes': {
+                'rule': 'anyone'
+            },
+            'shared': 'true',
+            'owners': [
+                'user1',
+                'user2'
+            ]
+        }
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/workflows/1'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.workflows.get_info(
+        1,
+        fields=[
+            'id', 'name', 'description', 'on_submit', 'auto_approve',
+            'counted_votes', 'shared', 'owners'
+        ]
+    )
+
+    assert 'workflow' in response
