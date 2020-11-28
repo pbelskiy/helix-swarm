@@ -70,3 +70,81 @@ class Workflows:
         )
 
         return response
+
+    @minimal_version(9)
+    def create(self,
+               name: str,
+               *,
+               description: Optional[str] = None,
+               shared: Optional[bool] = None,
+               owners: Optional[List[str]] = None,
+               on_submit: Optional[List[str]] = None,
+               end_rules: Optional[List[str]] = None,
+               auto_approve: Optional[List[str]] = None,
+               counted_votes: Optional[str] = None
+               ) -> dict:
+        """
+        Create a new workflow.
+
+        * name: ``str``
+          The workflow name. Will be compared against other workflows and
+          rejected if not unique.
+
+        * description: ``str`` (optional)
+          Description for the new workflow.
+
+        * shared: ``bool`` (optional)
+          Whether this workflow is shared for other users that do not own it.
+          Defaults to not shared.
+
+        * owners: ``List[str]`` (optional)
+          A list owners for the workflow. Can be users or group names (prefixed
+          with swarm-group-). Users and group names must exist or the workflow
+          will be rejected
+
+        * on_submit: ``List[str]`` (optional)
+          Data for rules when changes are submitted. Valid values for with_review
+          are no_checking, approved, strict. Valid values for without review are:
+          ``no_checking``, ``auto_create``, ``reject``
+
+        * end_rules: ``List[str]`` (optional)
+          Data for rules when changes are submitted. Valid values are:
+          ``no_checking``, ``no_revision``.
+
+        * auto_approve: ``List[str]`` (optional)
+          Data for rules when changes are submitted. Valid values are: ``votes``,
+          ``never``.
+
+        * counted_votes: ``str`` (optional)
+          Data for rules when counting votes up. Valid values are: ``anyone``,
+          ``members``.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        data = dict(
+            name=name,
+        )  # type: Dict[str, Union[str, bool, List[str]]]
+
+        if description:
+            data['description'] = description
+
+        if shared:
+            data['shared'] = shared
+
+        if owners:
+            data['owners'] = owners
+
+        if on_submit:
+            data['on_submit'] = on_submit
+
+        if end_rules:
+            data['end_rules'] = end_rules
+
+        if auto_approve:
+            data['auto_approve'] = auto_approve
+
+        if counted_votes:
+            data['counted_votes'] = counted_votes
+
+        return self.swarm._request('POST', 'workflows', data=data)
