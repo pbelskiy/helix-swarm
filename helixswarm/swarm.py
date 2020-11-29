@@ -47,6 +47,11 @@ class Swarm(ABC):
             raise SwarmError from e
 
         if response.status == HTTPStatus.NOT_FOUND:
+            # temporary workaround, need to check Swarm source code
+            # coments.add() may return SwarmError (404) with valid json and comment #2
+            if 'error' not in decoded_body:
+                return decoded_body
+
             raise SwarmNotFoundError(decoded_body)
 
         if response.status != HTTPStatus.OK:
