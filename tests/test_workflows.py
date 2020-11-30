@@ -234,3 +234,24 @@ def test_edit():
     )
 
     assert 'workflow' in response
+
+
+@responses.activate
+def test_delete():
+    data = {
+        'isValid': True,
+        'messages': [
+            'Workflow [1] was deleted'
+        ]
+    }
+
+    responses.add(
+        responses.DELETE,
+        re.compile(r'.*/api/v\d+/workflows/1'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.workflows.delete(1)
+    assert 'messages' in response

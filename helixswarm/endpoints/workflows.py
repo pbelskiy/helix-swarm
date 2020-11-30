@@ -239,3 +239,18 @@ class Workflows:
         )
 
         return response
+
+    @minimal_version(9)
+    def delete(self, identifier: str) -> dict:
+        """
+        Delete a workflow. This call must be authenticated and the user must
+        have permission to edit the workflow. If the workflow is in use it cannot
+        be deleted and an error message will be returned
+
+        * identifier: ``str``
+          The id of the workflow being deleted.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self.swarm._request('DELETE', 'workflows/{}'.format(identifier))
