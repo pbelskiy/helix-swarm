@@ -292,6 +292,7 @@ class Reviews:
 
         return self.swarm._request('POST', 'reviews', data=data)
 
+    @minimal_version(9)
     def vote(self,
              review_id: int,
              vote: str,
@@ -318,9 +319,9 @@ class Reviews:
         data = dict()  # type: Dict[str, str]
 
         if vote:
-            data['vote'] = vote
+            data['vote[value]'] = vote
         if version:
-            data['version'] = version
+            data['vote[version]'] = version
 
         response = self.swarm._request(
             'POST',
