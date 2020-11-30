@@ -179,3 +179,58 @@ def test_create():
     )
 
     assert 'workflow' in response
+
+
+@responses.activate
+def test_edit():
+    data = {
+        'workflow': {
+            'id': '1',
+            'name': 'myWorkflow',
+            'description': 'A description',
+            'on_submit': {
+                'with_review': {
+                    'rule': 'no_checking'
+                },
+                'without_review': {
+                    'rule': 'no_checking'
+                }
+            },
+            'auto_approve': {
+                'rule': 'never'
+            },
+            'counted_votes': {
+                'rule': 'anyone'
+            },
+            'shared': 'true',
+            'owners': [
+                'user1',
+                'user2'
+            ]
+        }
+    }
+
+    responses.add(
+        responses.PATCH,
+        re.compile(r'.*/api/v\d+/workflows/1'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.workflows.edit(
+        1,
+        name='myWorkflow',
+        owners=['user1', 'user2'],
+        description='A description',
+        shared=True,
+        end_rules=['no_revision'],
+        on_submit={
+           'with_review': {'rule': 'no_checking'},
+           'without_review': {'rule': 'no_checking'}
+        },
+        auto_approve='never',
+        counted_votes='members',
+    )
+
+    assert 'workflow' in response
