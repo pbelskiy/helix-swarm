@@ -28,14 +28,38 @@ Activities
 .. autoclass:: helixswarm.endpoints.activities.Activities
     :members:
 
-Reviews
+Changes
 ~~~~~~~
 
-.. autoclass:: helixswarm.endpoints.reviews.Reviews
+.. autoclass:: helixswarm.endpoints.changes.Changes
     :members:
 
 Comments
 ~~~~~~~~
 
 .. autoclass:: helixswarm.endpoints.comments.Comments
+    :members:
+
+Groups
+~~~~~~
+
+.. autoclass:: helixswarm.endpoints.groups.Groups
+    :members:
+
+Projects
+~~~~~~~~
+
+.. autoclass:: helixswarm.endpoints.projects.Projects
+    :members:
+
+Reviews
+~~~~~~~
+
+.. autoclass:: helixswarm.endpoints.reviews.Reviews
+    :members:
+
+Workflows
+~~~~~~~~~
+
+.. autoclass:: helixswarm.endpoints.workflows.Workflows
     :members:
