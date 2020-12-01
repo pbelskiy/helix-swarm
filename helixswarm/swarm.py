@@ -12,6 +12,7 @@ from helixswarm.endpoints.comments import Comments
 from helixswarm.endpoints.groups import Groups
 from helixswarm.endpoints.projects import Projects
 from helixswarm.endpoints.reviews import Reviews
+from helixswarm.endpoints.users import Users
 from helixswarm.endpoints.workflows import Workflows
 from helixswarm.exceptions import SwarmError, SwarmNotFoundError
 
@@ -27,6 +28,7 @@ class Swarm(ABC):
         self.groups = Groups(self)
         self.projects = Projects(self)
         self.reviews = Reviews(self)
+        self.users = Users(self)
         self.workflows = Workflows(self)
 
     @staticmethod

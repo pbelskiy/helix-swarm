@@ -58,6 +58,12 @@ Reviews
 .. autoclass:: helixswarm.endpoints.reviews.Reviews
     :members:
 
+Users
+~~~~~
+
+.. autoclass:: helixswarm.endpoints.users.Users
+    :members:
+
 Workflows
 ~~~~~~~~~
 
