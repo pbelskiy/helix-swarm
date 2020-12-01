@@ -5,12 +5,15 @@ Status
 ------
 
 |Build status|
+|Docs status|
 |Coverage status|
 |Version status|
 |Downloads status|
 
-.. |Build Status|
+.. |Build status|
    image:: https://github.com/pbelskiy/helix-swarm/workflows/Tests/badge.svg
+.. |Docs status|
+   image:: https://readthedocs.org/projects/helix-swarm/badge/?version=latest
 .. |Coverage status|
    image:: https://img.shields.io/coveralls/github/pbelskiy/helix-swarm?label=Coverage
 .. |Version status|
