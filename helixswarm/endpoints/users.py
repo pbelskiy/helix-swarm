@@ -46,3 +46,18 @@ class Users:
             params['group'] = group
 
         return self.swarm._request('GET', 'users', params=params)
+
+    @minimal_version(9)
+    def unfollow_all(self, name: str) -> dict:
+        """
+        Unfollow all users and projects, admin and super users are permitted to
+        execute unfollow all against any target user. Other users are only
+        permitted to execute the call if they themselves are the target user
+
+        * name: ``str``
+          User name.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self.swarm._request('GET', 'users/{}/unfollowall'.format(name))

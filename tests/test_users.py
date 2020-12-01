@@ -49,3 +49,23 @@ def test_get():
     )
 
     assert response['isValid'] is False
+
+
+@responses.activate
+def test_unfollow_all():
+    data = {
+        'isValid': True,
+        'messages': 'User p.belskiy is no longer following any Projects or Users.'
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/users/p.belskiy/unfollowall'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.users.unfollow_all('p.belskiy')
+
+    assert 'messages' in response
