@@ -255,3 +255,58 @@ def test_delete():
 
     response = client.workflows.delete(1)
     assert 'messages' in response
+
+
+@responses.activate
+def test_update():
+    data = {
+        'workflow': {
+            'id': '1',
+            'name': 'myWorkflow',
+            'description': 'A description',
+            'on_submit': {
+                'with_review': {
+                    'rule': 'no_checking'
+                },
+                'without_review': {
+                    'rule': 'no_checking'
+                }
+            },
+            'auto_approve': {
+                'rule': 'votes'
+            },
+            'counted_votes': {
+                'rule': 'anyone'
+            },
+            'shared': 'true',
+            'owners': [
+                'user1',
+                'user2'
+            ]
+        }
+    }
+
+    responses.add(
+        responses.PUT,
+        re.compile(r'.*/api/v\d+/workflows/1'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.workflows.update(
+        1,
+        name='myWorkflow',
+        description='A description',
+        shared=True,
+        owners=['user1', 'user2'],
+        on_submit={
+           'with_review': {'rule': 'no_checking'},
+           'without_review': {'rule': 'no_checking'}
+        },
+        end_rules=['no_revision'],
+        auto_approve='never',
+        counted_votes='members',
+    )
+
+    assert 'workflow' in response
