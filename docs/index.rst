@@ -58,6 +58,12 @@ Reviews
 .. autoclass:: helixswarm.endpoints.reviews.Reviews
     :members:
 
+Servers
+~~~~~~~
+
+.. autoclass:: helixswarm.endpoints.servers.Servers
+    :members:
+
 Users
 ~~~~~
 
