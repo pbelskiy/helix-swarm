@@ -7,12 +7,17 @@ def minimal_version(version):
     def wrapper(f):
         @wraps(f)
         def _check_version(self, *args, **kwargs):
-            if float(self.swarm.version) >= float(version):
+            if hasattr(self, 'swarm'):
+                current_version = self.swarm.version
+            else:
+                current_version = self.version
+
+            if float(current_version) >= float(version):
                 return f(self, *args, **kwargs)
 
             raise SwarmCompatibleError(
                 'Unsupported with API v{} (needed v{}+)'.format(
-                    self.swarm.version,
+                    current_version,
                     version
                 )
             )

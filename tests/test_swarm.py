@@ -182,3 +182,115 @@ async def test_async_client_retry_exception(aiohttp_mock):
         await client.get_version()
 
     await client.close()
+
+
+@responses.activate
+def test_check_auth():
+    data = {
+        'results': {
+            'trigger': 'GAuth says yes!',
+            'successMsg': 'Second factor authentication approved.'
+        },
+        'code': 200
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/checkauth'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.check_auth()
+    assert 'results' in response
+
+
+@responses.activate
+def test_check_auth_token():
+    data = {
+        'results': {
+            'trigger': 'GAuth says yes!',
+            'successMsg': 'Second factor authentication approved.'
+        },
+        'code': 200
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/checkauth'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.check_auth('TOKEN')
+    assert 'results' in response
+
+
+@responses.activate
+def test_get_auth_methods():
+    data = {
+        'results': {
+            'methods': {
+                '1': {
+                    'methodName': 'Method Name will be here',
+                    'methodDesc': 'Method Description will be here'
+                },
+                '2': {
+                    'methodName': 'Method Name will be here',
+                    'methodDesc': 'Method Description will be here'
+                },
+                '3': {
+                    'methodName': 'Method Name will be here',
+                    'methodDesc': 'Method Description will be here'
+                },
+                '4': {
+                    'methodName': 'Method Name will be here',
+                    'methodDesc': 'Method Description will be here'
+                }
+            }
+        },
+        'option': {
+            'persist': 'option',
+            'nextState': 'init-auth'
+        },
+        'code': 200
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/listmethods'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.get_auth_methods()
+    assert 'results' in response
+
+
+@responses.activate
+def test_init_auth():
+    data = {
+        'results': {
+            'trigger': 'TriggerName',
+            'successMsg': 'Message from Authentication method'
+        },
+        'option': {
+            'prompt': True,
+            'nextState': 'check-auth'
+        },
+        'code': 200
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/initauth'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.init_auth('METHOD')
+    assert 'results' in response

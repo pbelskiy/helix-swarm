@@ -4,7 +4,7 @@ import re
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from http import HTTPStatus
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Optional, Tuple
 
 from helixswarm.endpoints.activities import Activities
 from helixswarm.endpoints.changes import Changes
@@ -16,6 +16,7 @@ from helixswarm.endpoints.servers import Servers
 from helixswarm.endpoints.users import Users
 from helixswarm.endpoints.workflows import Workflows
 from helixswarm.exceptions import SwarmError, SwarmNotFoundError
+from helixswarm.helpers import minimal_version
 
 Response = namedtuple('Response', ['status', 'body'])
 
@@ -89,3 +90,39 @@ class Swarm(ABC):
         :raises: ``SwarmError``
         """
         return self._request('GET', 'version')
+
+    @minimal_version(9)
+    def check_auth(self, token: Optional[str] = None) -> dict:
+        """
+        Checking the 2FA authentication.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if token:
+            return self._request('POST', 'checkauth', data=dict(token=token))
+
+        return self._request('GET', 'checkauth')
+
+    @minimal_version(9)
+    def get_auth_methods(self) -> dict:
+        """
+        Returns the complete list of methods of 2FA.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('GET', 'listmethods')
+
+    @minimal_version(9)
+    def init_auth(self, method: str) -> dict:
+        """
+        Initiating the 2FA authentication.
+
+        * method
+          The Method in which you want to use.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('POST', 'initauth', data=dict(method=method))
