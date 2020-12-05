@@ -126,3 +126,33 @@ class Swarm(ABC):
         :raises: ``SwarmError``
         """
         return self._request('POST', 'initauth', data=dict(method=method))
+
+    @minimal_version(9)
+    def check_session(self) -> dict:
+        """
+        Get the current effective user details.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('GET', 'session')
+
+    @minimal_version(9)
+    def init_session(self) -> dict:
+        """
+        Create a new Swarm session using the given credentials.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('POST', 'session')
+
+    @minimal_version(9)
+    def destroy_session(self) -> dict:
+        """
+        Destroy the current session, for instance logout.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('DELETE', 'session')

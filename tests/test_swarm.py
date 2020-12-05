@@ -294,3 +294,74 @@ def test_init_auth():
 
     response = client.init_auth('METHOD')
     assert 'results' in response
+
+
+@responses.activate
+def test_check_session():
+    data = {
+        'isValid': True,
+        'messages': [],
+        'user': {
+            'User': 'reviewer',
+            'FullName': 'Code Reviewer',
+            'Email': 'reviewer@swarm.local',
+            'Type': 'standard',
+            'Password': 'enabled'
+        }
+    }
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/session'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.check_session()
+    assert 'user' in response
+
+
+@responses.activate
+def test_init_session():
+    data = {
+        'isValid': True,
+        'messages': [],
+        'user': {
+            'User': 'reviewer',
+            'FullName': 'Code Reviewer',
+            'Email': 'reviewer@swarm.local',
+            'Type': 'standard',
+            'Password': 'enabled'
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/session'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.init_session()
+    assert 'user' in response
+
+
+@responses.activate
+def test_destroy_session():
+    data = {
+        'isValid': True,
+        'messages': []
+    }
+
+    responses.add(
+        responses.DELETE,
+        re.compile(r'.*/api/v\d+/session'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.destroy_session()
+    assert 'messages' in response
