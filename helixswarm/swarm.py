@@ -156,3 +156,26 @@ class Swarm(ABC):
         :raises: ``SwarmError``
         """
         return self._request('DELETE', 'session')
+
+    @minimal_version(9)
+    def login(self, saml: Optional[bool] = None) -> dict:
+        """
+        Login to Swarm.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        if saml is not None:
+            return self._request('POST', 'login/saml')
+
+        return self._request('POST', 'login')
+
+    @minimal_version(9)
+    def logout(self, saml: Optional[bool] = None) -> dict:
+        """
+        Logout of Swarm.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._request('POST', 'logout')

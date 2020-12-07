@@ -365,3 +365,69 @@ def test_destroy_session():
 
     response = client.destroy_session()
     assert 'messages' in response
+
+
+@responses.activate
+def test_login():
+    data = {
+        'isValid': True,
+        'messages': [],
+        'user': {
+            'User': 'swarm.user',
+            'FullName': 'Swarm User',
+            'Email': 'swarm.user@mydomain.com',
+            'Type': 'standard',
+            'Password': 'enabled',
+            'isAdmin': False,
+            'isSuper': False
+        }
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/login'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.login()
+    assert 'user' in response
+
+
+@responses.activate
+def test_login_saml():
+    data = {
+        'isValid': 'true',
+        'url': '&lt;url to redirect to&gt;'
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/login/saml'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.login(saml=True)
+    assert 'isValid' in response
+
+
+@responses.activate
+def test_logout():
+    data = {
+        'isValid': True,
+        'messages': []
+    }
+
+    responses.add(
+        responses.POST,
+        re.compile(r'.*/api/v\d+/logout'),
+        json=data
+    )
+
+    client = SwarmClient('http://server/api/v9', 'login', 'password')
+
+    response = client.logout()
+    assert 'messages' in response
