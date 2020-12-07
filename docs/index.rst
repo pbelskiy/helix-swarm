@@ -12,9 +12,8 @@ Core
 .. autoclass:: helixswarm.SwarmAsyncClient
     :members:
 
-.. autoclass:: helixswarm.swarm.Swarm
-
-    .. automethod:: get_version
+.. automodule:: helixswarm.swarm
+    :members:
 
 Exceptions
 ~~~~~~~~~~
