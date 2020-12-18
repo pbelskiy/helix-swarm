@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
 from helixswarm.exceptions import SwarmCompatibleError, SwarmError
 from helixswarm.helpers import minimal_version
@@ -144,20 +144,23 @@ class Reviews:
         """
         return self.swarm._request('GET', 'dashboards/action')
 
-    def get_info(self,
-                 review_id: int,
-                 *,
-                 fields: Optional[List[str]] = None
-                 ) -> dict:
+    def _get_info(self,
+                  review_id: int,
+                  fields: Optional[List[str]] = None,
+                  callback: Optional[Callable] = None
+                  ) -> dict:
         """
         Retrieve information about a review.
 
-        * review_id: ``int`` (optional)
+        * review_id: ``int``
           Review id getting information from.
 
         * fields: ``List[str]`` (optional)
           List of fields to show. Omitting this parameter or passing an empty
           value shows all fields.
+
+        * callback: ``Callable`` (optional)
+          Function callback for support both sync and async syntax.
 
         :returns: ``dict``
         :raises: ``SwarmError``
@@ -170,10 +173,31 @@ class Reviews:
         response = self.swarm._request(
             'GET',
             'reviews/{}'.format(review_id),
+            fcb=callback,
             params=params
         )
 
         return response
+
+    def get_info(self,
+                 review_id: int,
+                 *,
+                 fields: Optional[List[str]] = None
+                 ) -> dict:
+        """
+        Retrieve information about a review.
+
+        * review_id: ``int``
+          Review id getting information from.
+
+        * fields: ``List[str]`` (optional)
+          List of fields to show. Omitting this parameter or passing an empty
+          value shows all fields.
+
+        :returns: ``dict``
+        :raises: ``SwarmError``
+        """
+        return self._get_info(review_id, fields)
 
     @minimal_version(9)
     def get_transitions(self,
@@ -219,25 +243,34 @@ class Reviews:
         :returns: ``Tuple[int, int]`` revision and change respectively.
         :raises: ``SwarmError``
         """
-        response = self.get_info(review_id, fields=['versions']).get('review')
+        def callback(response: dict) -> Tuple[int, int]:
+            review = response.get('review')
 
-        if response is None or 'versions' not in response:
-            raise SwarmError('can`t find `versions` field in review data')
+            if review is None or 'versions' not in review:
+                raise SwarmError('can`t find `versions` field in review data')
 
-        latest_revision = len(response['versions'])
-        if latest_revision == 0:
-            raise SwarmError('can`t get review revision, `versions` is empty')
+            latest_revision = len(review['versions'])
+            if latest_revision == 0:
+                raise SwarmError('can`t get review revision, `versions` is empty')
 
-        latest_version = response['versions'][-1]
-        if 'change' not in latest_version:
-            raise SwarmError('no `change` field in latest versions block')
+            latest_version = review['versions'][-1]
+            if 'change' not in latest_version:
+                raise SwarmError('no `change` field in latest versions block')
 
-        if 'archiveChange' in latest_version:
-            latest_change = int(latest_version['archiveChange'])
-        else:
-            latest_change = int(latest_version['change'])
+            if 'archiveChange' in latest_version:
+                latest_change = int(latest_version['archiveChange'])
+            else:
+                latest_change = int(latest_version['change'])
 
-        return latest_revision, latest_change
+            return latest_revision, latest_change
+
+        response = self._get_info(
+            review_id,
+            fields=['versions'],
+            callback=callback
+        )
+
+        return response  # type: ignore
 
     def create(self,
                change: int,

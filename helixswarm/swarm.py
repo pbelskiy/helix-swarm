@@ -45,7 +45,10 @@ class Swarm(ABC):
         return host, version
 
     @staticmethod
-    def _callback(response: Response) -> dict:
+    def _callback(response: Response, fcb: Callable) -> dict:
+        # function callback used to support both sync and async syntax
+        fcb = fcb or (lambda response: response)
+
         try:
             decoded_body = json.loads(response.body)
         except json.decoder.JSONDecodeError as e:
@@ -55,14 +58,14 @@ class Swarm(ABC):
             # temporary workaround, need to check Swarm source code
             # coments.add() may return SwarmError (404) with valid json and comment #2
             if 'error' not in decoded_body:
-                return decoded_body
+                return fcb(decoded_body)
 
             raise SwarmNotFoundError(decoded_body)
 
         if response.status != HTTPStatus.OK:
             raise SwarmError(response.body)
 
-        return decoded_body
+        return fcb(decoded_body)
 
     @abstractmethod
     def close(self) -> None:
@@ -70,15 +73,21 @@ class Swarm(ABC):
 
     @abstractmethod
     def request(self,
-                callback: Callable[[Response], dict],
+                callback: Callable,
                 method: str,
                 path: str,
+                fcb: Optional[Callable] = None,
                 **kwargs: Any
                 ) -> dict:
         raise NotImplementedError
 
-    def _request(self, method: str, path: str, **kwargs: Any) -> dict:
-        return self.request(self._callback, method, path, **kwargs)
+    def _request(self,
+                 method: str,
+                 path: str,
+                 fcb: Optional[Callable] = None,
+                 **kwargs: Any
+                 ) -> dict:
+        return self.request(self._callback, method, path, fcb, **kwargs)
 
     def get_version(self) -> dict:
         """

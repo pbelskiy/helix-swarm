@@ -120,9 +120,10 @@ class SwarmAsyncClient(Swarm):
         await self.session.close()
 
     async def request(self,  # type: ignore
-                      callback: Callable[[Response], dict],
+                      callback: Callable,
                       method: str,
                       path: str,
+                      fcb: Optional[Callable] = None,
                       **kwargs: Any
                       ) -> dict:
 
@@ -142,4 +143,4 @@ class SwarmAsyncClient(Swarm):
         )
 
         body = await response.text()
-        return callback(Response(response.status, body))
+        return callback(Response(response.status, body), fcb)

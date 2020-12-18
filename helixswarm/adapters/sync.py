@@ -111,9 +111,10 @@ class SwarmClient(Swarm):
         self.session.close()
 
     def request(self,
-                callback: Callable[[Response], dict],
+                callback: Callable,
                 method: str,
                 path: str,
+                fcb: Optional[Callable] = None,
                 **kwargs: Any
                 ) -> dict:
 
@@ -131,4 +132,4 @@ class SwarmClient(Swarm):
             **kwargs
         )
 
-        return callback(Response(response.status_code, response.text))
+        return callback(Response(response.status_code, response.text), fcb)

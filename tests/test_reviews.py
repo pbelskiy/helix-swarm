@@ -3,12 +3,21 @@ import re
 import pytest
 import responses
 
+from aioresponses import aioresponses
+
 from helixswarm import (
+    SwarmAsyncClient,
     SwarmClient,
     SwarmCompatibleError,
     SwarmError,
     SwarmNotFoundError,
 )
+
+
+@pytest.fixture
+def aiohttp_mock():
+    with aioresponses() as mock:
+        yield mock
 
 
 @responses.activate
@@ -305,6 +314,29 @@ def test_get_latest_revision_and_change():
     revision, change = client.reviews.get_latest_revision_and_change(555)
     assert revision == 1
     assert change == 7
+
+
+@pytest.mark.asyncio
+async def test_get_latest_revision_and_change_async(aiohttp_mock):
+    client = SwarmAsyncClient('http://server/api/v9', 'login', 'password')
+
+    aiohttp_mock.get(
+        re.compile(r'.*/api/v\d+/reviews/12345'),
+        payload={
+            'review': {
+                'versions': [
+                    {'change': 1},
+                    {'change': 2, 'archiveChange': 3}
+                ]
+            }
+        },
+    )
+
+    revision, change = await client.reviews.get_latest_revision_and_change(12345)
+    assert revision == 2
+    assert change == 3
+
+    await client.close()
 
 
 @responses.activate
