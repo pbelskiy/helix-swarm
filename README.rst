@@ -31,7 +31,7 @@ Installation
 
 ::
 
-    pip3 install helix-swarm
+    pip3 install -U helix-swarm
 
 Examples
 --------
