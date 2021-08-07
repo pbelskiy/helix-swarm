@@ -45,6 +45,15 @@ class Swarm(ABC):
         return host, version
 
     @staticmethod
+    def _validate_retry_argument(retry: dict) -> None:
+        for key in retry:
+            if key not in ('total', 'factor', 'statuses'):
+                raise SwarmError('Unknown key in retry argument: ' + key)
+
+        if retry.get('total', 0) <= 0:
+            raise SwarmError('Invalid `total` in retry argument must be > 0')
+
+    @staticmethod
     def _callback(response: Response, fcb: Callable) -> dict:
         # function callback used to support both sync and async syntax
         fcb = fcb or (lambda response: response)

@@ -2,6 +2,7 @@ import re
 
 import aiohttp
 import pytest
+from requests.packages.urllib3.util import retry
 import responses
 
 from aioresponses import aioresponses
@@ -38,6 +39,24 @@ def test_get_host_and_api_version():
     host, version = SwarmClient._get_host_and_api_version('swarm-server.com/api/v1.2')
     assert host == 'swarm-server.com'
     assert version == '1.2'
+
+
+def test_retry_argument_validation():
+    with pytest.raises(SwarmError):
+        SwarmClient(
+            'http://server/api/v9',
+            'login',
+            'password',
+            retry=dict(total=1, strange_argument=1)
+        )
+
+    with pytest.raises(SwarmError):
+        SwarmAsyncClient(
+            'http://server/api/v9',
+            'login',
+            'password',
+            retry=dict(total=0)
+        )
 
 
 @responses.activate
