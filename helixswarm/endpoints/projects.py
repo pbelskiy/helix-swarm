@@ -120,12 +120,15 @@ class Projects:
           Branch definitions for this project.
 
           Example:
-            [
-              {
-                'name': 'Branch One',
-                'paths': '//depot/main/TestProject/...'
-              }
-            ]
+
+        .. code-block:: python
+
+          [
+            {
+              'name': 'Branch One',
+              'paths': '//depot/main/TestProject/...'
+            }
+          ]
 
         * jobview: ``str`` (optional)
           Jobview for associating certain jobs with this project.
@@ -256,6 +259,9 @@ class Projects:
           Branch definitions for this project.
 
           Example:
+
+          .. code-block:: python
+
             [
               {
                 'name': 'Branch One',
