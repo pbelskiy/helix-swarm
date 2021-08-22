@@ -147,7 +147,7 @@ class Workflows:
         if counted_votes:
             data['counted_votes'] = counted_votes
 
-        return self.swarm._request('POST', 'workflows', data=data)
+        return self.swarm._request('POST', 'workflows', json=data)
 
     @minimal_version(9)
     def edit(self,
@@ -235,7 +235,7 @@ class Workflows:
         response = self.swarm._request(
             'PATCH',
             'workflows/{}'.format(identifier),
-            data=data
+            json=data
         )
 
         return response
@@ -340,7 +340,7 @@ class Workflows:
         response = self.swarm._request(
             'PUT',
             'workflows/{}'.format(identifier),
-            data=data
+            json=data
         )
 
         return response

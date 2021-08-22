@@ -17,7 +17,10 @@ class Changes:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        return self.swarm._request('GET', 'changes/{}/affectsprojects'.format(change))
+        return self.swarm._request(
+            'GET',
+            'changes/{}/affectsprojects'.format(change)
+        )
 
     @minimal_version(8)
     def get_default_reviewers(self, change: int) -> dict:
@@ -30,7 +33,10 @@ class Changes:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        return self.swarm._request('GET', 'changes/{}/defaultreviewers'.format(change))
+        return self.swarm._request(
+            'GET',
+            'changes/{}/defaultreviewers'.format(change)
+        )
 
     @minimal_version(9)
     def get_check_status(self, change: int, category: str) -> dict:
@@ -46,10 +52,8 @@ class Changes:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
-        response = self.swarm._request(
+        return self.swarm._request(
             'GET',
             'changes/{}/check'.format(change),
             params=dict(type=category)
         )
-
-        return response

@@ -140,4 +140,4 @@ class Activities:
         if link:
             data['link'] = link
 
-        return self.swarm._request('POST', 'activity', data=data)
+        return self.swarm._request('POST', 'activity', json=data)

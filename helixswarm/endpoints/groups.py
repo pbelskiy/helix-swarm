@@ -171,7 +171,7 @@ class Groups:
         if use_mailing_list:
             data['config[useMailingList]'] = use_mailing_list
 
-        return self.swarm._request('POST', 'groups', data=data)
+        return self.swarm._request('POST', 'groups', json=data)
 
     @minimal_version(2)
     def edit(self,
@@ -252,7 +252,7 @@ class Groups:
         response = self.swarm._request(
             'PATCH',
             'groups/{}'.format(identifier),
-            data=data
+            json=data
         )
 
         return response

@@ -323,7 +323,7 @@ class Reviews:
                     'reviewer_groups field is supported from API version > 6'
                 )
 
-        return self.swarm._request('POST', 'reviews', data=data)
+        return self.swarm._request('POST', 'reviews', json=data)
 
     @minimal_version(9)
     def vote(self,
@@ -359,7 +359,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/vote'.format(review_id),
-            data=data
+            json=data
         )
 
         return response
@@ -396,7 +396,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/changes/'.format(review_id),
-            data=data
+            json=data
         )
 
         return response
@@ -425,7 +425,7 @@ class Reviews:
             description=description
         )
 
-        return self.swarm._request('POST', 'reviews/archive', data=data)
+        return self.swarm._request('POST', 'reviews/archive', json=data)
 
     def update(self,
                review_id: int,
@@ -461,7 +461,7 @@ class Reviews:
         response = self.swarm._request(
             'PATCH',
             'reviews/{}'.format(review_id),
-            data=data
+            json=data
         )
 
         return response
@@ -493,7 +493,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/cleanup'.format(review_id),
-            data=data
+            json=data
         )
 
         return response
