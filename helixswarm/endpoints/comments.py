@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from helixswarm.exceptions import SwarmCompatibleError
+from helixswarm.exceptions import SwarmCompatibleError, SwarmError
 from helixswarm.helpers import minimal_version
 
 

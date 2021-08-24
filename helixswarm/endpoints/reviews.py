@@ -359,7 +359,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/vote'.format(review_id),
-            json=data
+            data=data
         )
 
         return response
@@ -396,7 +396,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/changes/'.format(review_id),
-            json=data
+            data=data
         )
 
         return response
@@ -461,7 +461,7 @@ class Reviews:
         response = self.swarm._request(
             'PATCH',
             'reviews/{}'.format(review_id),
-            json=data
+            data=data
         )
 
         return response
@@ -493,7 +493,7 @@ class Reviews:
         response = self.swarm._request(
             'POST',
             'reviews/{}/cleanup'.format(review_id),
-            json=data
+            data=data
         )
 
         return response
