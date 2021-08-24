@@ -499,11 +499,7 @@ class Reviews:
         return response
 
     @minimal_version(9)
-    def obliterate(self,
-                   review_id: int,
-                   *,
-                   reopen: Optional[bool] = None
-                   ) -> dict:
+    def obliterate(self, review_id: int) -> dict:
         """
         Obliterate a review for the given id (**v9+**).
 

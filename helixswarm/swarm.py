@@ -189,7 +189,7 @@ class Swarm(ABC):
         return self._request('POST', 'login')
 
     @minimal_version(9)
-    def logout(self, saml: Optional[bool] = None) -> dict:
+    def logout(self) -> dict:
         """
         Logout of Swarm.
 
