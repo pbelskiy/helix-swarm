@@ -3,7 +3,7 @@ import re
 import pytest
 import responses
 
-from helixswarm import SwarmClient, SwarmCompatibleError
+from helixswarm import SwarmClient, SwarmCompatibleError, SwarmError
 
 
 @responses.activate
@@ -95,6 +95,9 @@ def test_add():
     )
 
     assert response['comment']['body'] == 'Best. Comment. EVER!'
+
+    with pytest.raises(SwarmError):
+        client.comments.add('invalid', 'test')
 
 
 def test_add_old_api():

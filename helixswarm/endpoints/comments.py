@@ -167,6 +167,13 @@ class Comments:
         :returns: ``dict``
         :raises: ``SwarmError``
         """
+        try:
+            _type, _ = topic.split('/')
+            if _type not in ('reviews', 'changes', 'jobs'):
+                raise SwarmError('Invalid topic value: ' + topic)
+        except ValueError as e:
+            raise SwarmError from e
+
         data = dict(
             topic=topic,
             body=body,
