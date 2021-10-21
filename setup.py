@@ -38,7 +38,6 @@ setup_args = dict(
     packages=find_packages(),
     package_data={'helixswarm': ['*']},
     author='Petr Belskiy',
-    author_email='petr.belskiy@gmail.com',
     keywords=['helix', 'swarm', 'swarm review', 'perforce helix swarm'],
     url='https://github.com/pbelskiy/helix-swarm',
     download_url='https://pypi.org/project/helix-swarm'
