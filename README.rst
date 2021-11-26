@@ -8,7 +8,8 @@ Status
 |Docs status|
 |Coverage status|
 |Version status|
-|Downloads status|
+|Downloads status 1|
+|Downloads status 2|
 
 .. |Build status|
    image:: https://github.com/pbelskiy/helix-swarm/workflows/Tests/badge.svg
@@ -18,8 +19,10 @@ Status
    image:: https://img.shields.io/coveralls/github/pbelskiy/helix-swarm?label=Coverage
 .. |Version status|
    image:: https://img.shields.io/pypi/pyversions/helix-swarm?label=Python
-.. |Downloads status|
+.. |Downloads status 1|
    image:: https://img.shields.io/pypi/dm/helix-swarm?color=1&label=Downloads
+.. |Downloads status 2|
+   image:: https://img.shields.io/pypi/dm/helixswarm?color=1&label=Downloads
 
 Documentation
 -------------
@@ -28,6 +31,8 @@ Documentation
 
 Installation
 ------------
+
+There are two identical packages: `helix-swarm` and alias `helixswarm`.
 
 ::
 
