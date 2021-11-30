@@ -27,6 +27,8 @@ jobs:
         pip install tox coveralls
 
     - name: Testing with tox
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
       run: |
         tox
         COVERALLS_REPO_TOKEN=${{ secrets.coveralls }} COVERALLS_PARALLEL=true coveralls
