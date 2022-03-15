@@ -5,6 +5,13 @@ class SwarmError(Exception):
     ...
 
 
+class SwarmUnauthorizedError(SwarmError):
+    """
+    Raises when request return HTTP code 401 (unauthorized)
+    """
+    ...
+
+
 class SwarmNotFoundError(SwarmError):
     """
     Raises when request return HTTP code 404 (not found)
