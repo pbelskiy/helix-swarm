@@ -9,7 +9,7 @@ from helixswarm.swarm import Response, Swarm
 
 class SwarmClient(Swarm):
 
-    auth_update_cb = None
+    auth_update_callback = None
 
     def __init__(self,
                  url: str,
@@ -19,7 +19,7 @@ class SwarmClient(Swarm):
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None,
-                 auth_update_cb: Optional[Callable[[], Tuple[str, str]]] = None
+                 auth_update_callback: Optional[Callable[[], Tuple[str, str]]] = None
                  ):
         """
         Swarm client class.
@@ -85,7 +85,7 @@ class SwarmClient(Swarm):
           20            72.8 hours
           ============  =============
 
-        * auth_update_cb: ``Callable[[], Tuple[str, str]]`` (optional)
+        * auth_update_callback: ``Callable[[], Tuple[str, str]]`` (optional)
           Callback function which will be called on SwarmUnauthorizedError
           to update login and password and retry request again.
 
@@ -101,7 +101,7 @@ class SwarmClient(Swarm):
         self.timeout = timeout
         self.verify = verify
 
-        self.auth_update_cb = auth_update_cb
+        self.auth_update_callback = auth_update_callback
 
         if not retry:
             return
@@ -146,8 +146,8 @@ class SwarmClient(Swarm):
         return callback(Response(response.status_code, response.text), fcb)
 
     def _update_auth(self) -> None:
-        if self.auth_update_cb is None:
+        if self.auth_update_callback is None:
             return
 
-        user, password = self.auth_update_cb()
+        user, password = self.auth_update_callback()
         self.session.auth = (user, password)

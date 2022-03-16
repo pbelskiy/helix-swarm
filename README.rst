@@ -85,7 +85,7 @@ Update credentials handler:
         'http://server/api/v9',
         'login',
         'password',
-        auth_update_cb=get_credentials
+        auth_update_callback=get_credentials
     )
 
     # let's suppose credentials are valid now

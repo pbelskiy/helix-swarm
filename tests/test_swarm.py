@@ -236,7 +236,7 @@ def test_update_auth():
         'http://server/api/v9',
         'login_old',
         'password_old',
-        auth_update_cb=callback
+        auth_update_callback=callback
     )
 
     version = client.get_version()

@@ -27,7 +27,7 @@ Response = namedtuple('Response', ['status', 'body'])
 
 class Swarm(ABC):
 
-    auth_update_cb = None
+    auth_update_callback = None
 
     def __init__(self):
         self.activities = Activities(self)
@@ -112,7 +112,7 @@ class Swarm(ABC):
         try:
             return self.request(self._callback, method, path, fcb, **kwargs)
         except SwarmUnauthorizedError:
-            if self.auth_update_cb is None:
+            if self.auth_update_callback is None:
                 raise
             self._update_auth()
             return self.request(self._callback, method, path, fcb, **kwargs)
