@@ -70,6 +70,35 @@ Add comment to review (async):
         loop.run_until_complete(client.close())
         loop.close()
 
+Update credentials handler:
+
+.. code:: python
+
+    import requests
+    from helixswarm import SwarmClient
+
+    def get_credentials():
+        response = requests.get(...).json()
+        return response['user'], response['password']
+
+    client = SwarmClient(
+        'http://server/api/v9',
+        'login',
+        'password',
+        auth_update_callback=get_credentials
+    )
+
+    # let's suppose credentials are valid now
+    review = client.reviews.get_info(12345)
+    print(review['review']['author'])
+
+    # now, after some time, password of user somehow changed, so our callback
+    # will be called, new credentials will be using for retry and future
+    # here we get also correct review data instead of SwarmUnauthorizedError
+    # exception
+    review = client.reviews.get_info(12345)
+    print(review['review']['author'])
+
 Testing
 -------
 

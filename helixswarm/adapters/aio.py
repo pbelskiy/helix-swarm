@@ -1,6 +1,6 @@
 import asyncio
 
-from typing import Any, Callable, Optional, Union
+from typing import Any, Awaitable, Callable, Optional, Tuple, Union
 
 from aiohttp import (
     BasicAuth,
@@ -45,6 +45,7 @@ class SwarmAsyncClient(Swarm):
 
     session = None  # type: Union[ClientSession, RetryClientSession]
     timeout = None
+    auth_update_callback = None
 
     def __init__(self,
                  url: str,
@@ -54,7 +55,8 @@ class SwarmAsyncClient(Swarm):
                  loop: Optional[asyncio.AbstractEventLoop] = None,
                  verify: bool = True,
                  timeout: Optional[float] = None,
-                 retry: Optional[dict] = None
+                 retry: Optional[dict] = None,
+                 auth_update_callback: Optional[Callable[[], Awaitable[Tuple[str, str]]]] = None
                  ):
         """
         Swarm async client class.
@@ -96,6 +98,10 @@ class SwarmAsyncClient(Swarm):
                 statuses=[500]
             )
 
+        * auth_update_callback: ``Callable[[], Tuple[str, str]]`` (optional)
+          Callback function which will be called on SwarmUnauthorizedError
+          to update login and password and retry request again.
+
         :returns: ``SwarmClient instance``
         :raises: ``SwarmError``
         """
@@ -105,6 +111,7 @@ class SwarmAsyncClient(Swarm):
         self.host, self.version = self._get_host_and_api_version(url)
 
         self.auth = BasicAuth(user, password)
+        self.auth_update_callback = auth_update_callback
 
         if retry:
             self._validate_retry_argument(retry)
@@ -145,3 +152,10 @@ class SwarmAsyncClient(Swarm):
 
         body = await response.text()
         return callback(Response(response.status, body), fcb)
+
+    async def _update_auth(self) -> Any:
+        if self.auth_update_callback is None:
+            return
+
+        user, password = await self.auth_update_callback()
+        self.auth = BasicAuth(user, password)

@@ -4,7 +4,7 @@ import re
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from http import HTTPStatus
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, Coroutine, Optional, Tuple, Union
 
 from helixswarm.endpoints.activities import Activities
 from helixswarm.endpoints.changes import Changes
@@ -15,13 +15,19 @@ from helixswarm.endpoints.reviews import Reviews
 from helixswarm.endpoints.servers import Servers
 from helixswarm.endpoints.users import Users
 from helixswarm.endpoints.workflows import Workflows
-from helixswarm.exceptions import SwarmError, SwarmNotFoundError
+from helixswarm.exceptions import (
+    SwarmError,
+    SwarmNotFoundError,
+    SwarmUnauthorizedError,
+)
 from helixswarm.helpers import minimal_version
 
 Response = namedtuple('Response', ['status', 'body'])
 
 
 class Swarm(ABC):
+
+    auth_update_callback = None
 
     def __init__(self):
         self.activities = Activities(self)
@@ -55,13 +61,16 @@ class Swarm(ABC):
 
     @staticmethod
     def _callback(response: Response, fcb: Callable) -> dict:
-        # function callback used to support both sync and async syntax
-        fcb = fcb or (lambda response: response)
+        if response.status == HTTPStatus.UNAUTHORIZED:
+            raise SwarmUnauthorizedError
 
         try:
             decoded_body = json.loads(response.body)
         except json.decoder.JSONDecodeError as e:
             raise SwarmError from e
+
+        # function callback used to support both sync and async syntax
+        fcb = fcb or (lambda response: response)
 
         if response.status == HTTPStatus.NOT_FOUND:
             # temporary workaround, need to check Swarm source code
@@ -90,13 +99,23 @@ class Swarm(ABC):
                 ) -> dict:
         raise NotImplementedError
 
+    @abstractmethod
+    def _update_auth(self) -> Union[None, Coroutine]:
+        raise NotImplementedError
+
     def _request(self,
                  method: str,
                  path: str,
                  fcb: Optional[Callable] = None,
                  **kwargs: Any
                  ) -> dict:
-        return self.request(self._callback, method, path, fcb, **kwargs)
+        try:
+            return self.request(self._callback, method, path, fcb, **kwargs)
+        except SwarmUnauthorizedError:
+            if self.auth_update_callback is None:
+                raise
+            self._update_auth()
+            return self.request(self._callback, method, path, fcb, **kwargs)
 
     def get_version(self) -> dict:
         """

@@ -1,5 +1,7 @@
 import re
 
+from http import HTTPStatus
+
 import aiohttp
 import pytest
 import responses
@@ -201,6 +203,56 @@ async def test_async_client_retry_exception(aiohttp_mock):
         await client.get_version()
 
     await client.close()
+
+
+@responses.activate
+def test_update_auth():
+
+    def callback():
+        return 'login_new', 'password_new'
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/version'),
+        json=GET_VERSION_DATA,
+        status=HTTPStatus.OK
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/version'),
+        json=GET_VERSION_DATA,
+        status=HTTPStatus.UNAUTHORIZED
+    )
+
+    responses.add(
+        responses.GET,
+        re.compile(r'.*/api/v\d+/version'),
+        json=GET_VERSION_DATA,
+        status=HTTPStatus.OK
+    )
+
+    client = SwarmClient(
+        'http://server/api/v9',
+        'login_old',
+        'password_old',
+        auth_update_callback=callback
+    )
+
+    version = client.get_version()
+    assert version['year'] == '2018'
+    assert client.session.auth == ('login_old', 'password_old')
+
+    version = client.get_version()
+    assert version['year'] == '2018'
+    assert client.session.auth == ('login_new', 'password_new')
+
+    client.close()
+
+
+###############################################################################
+# ################################ ENDPOINTS ################################ #
+###############################################################################
 
 
 @responses.activate
