@@ -19,7 +19,7 @@ class SwarmClient(Swarm):
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None,
-                 auth_update_cb: Optional[Callable[[], Tuple[str, str]]] = None,
+                 auth_update_cb: Optional[Callable[[], Tuple[str, str]]] = None
                  ):
         """
         Swarm client class.

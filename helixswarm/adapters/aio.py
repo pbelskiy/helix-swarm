@@ -56,7 +56,7 @@ class SwarmAsyncClient(Swarm):
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None,
-                 auth_update_cb: Optional[Callable[[], Awaitable[Tuple[str, str]]]] = None,
+                 auth_update_cb: Optional[Callable[[], Awaitable[Tuple[str, str]]]] = None
                  ):
         """
         Swarm async client class.
