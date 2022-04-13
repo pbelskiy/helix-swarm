@@ -206,7 +206,7 @@ class Comments:
         if context_version:
             data['context[version]'] = context_version
 
-        return self.swarm._request('POST', 'comments', json=data)
+        return self.swarm._request('POST', 'comments', data=data)
 
     @minimal_version(3)
     def edit(self,
@@ -271,7 +271,7 @@ class Comments:
         response = self.swarm._request(
             'PATCH',
             'comments/{}'.format(comment_id),
-            json=data,
+            data=data,
         )
 
         return response

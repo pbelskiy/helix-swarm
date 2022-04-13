@@ -425,7 +425,7 @@ class Reviews:
             description=description
         )
 
-        return self.swarm._request('POST', 'reviews/archive', json=data)
+        return self.swarm._request('POST', 'reviews/archive', data=data)
 
     def update(self,
                review_id: int,

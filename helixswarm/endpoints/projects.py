@@ -199,7 +199,7 @@ class Projects:
         if minimum_up_votes:
             data['minimumUpVotes'] = minimum_up_votes
 
-        return self.swarm._request('POST', 'projects', json=data)
+        return self.swarm._request('POST', 'projects', data=data)
 
     def edit(self,
              identifier: str,
@@ -344,7 +344,7 @@ class Projects:
         response = self.swarm._request(
             'PATCH',
             'projects/{}'.format(identifier),
-            json=data
+            data=data
         )
 
         return response
