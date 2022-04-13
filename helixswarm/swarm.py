@@ -120,11 +120,11 @@ class Swarm(ABC):
     def get_version(self) -> dict:
         """
         Show server version information. This can be used to determine the
-        currently-installed Swarm version, and also to check that Swarm’s API
+        currently-installed Swarm version, and also to check that Swarm's API
         is responding as expected.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: server version.
         """
         return self._request('GET', 'version')
 
@@ -133,8 +133,8 @@ class Swarm(ABC):
         """
         Checking the 2FA authentication.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: check result.
         """
         if token:
             return self._request('POST', 'checkauth', data=dict(token=token))
@@ -146,8 +146,8 @@ class Swarm(ABC):
         """
         Returns the complete list of methods of 2FA.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: auth methods.
         """
         return self._request('GET', 'listmethods')
 
@@ -156,11 +156,11 @@ class Swarm(ABC):
         """
         Initiating the 2FA authentication.
 
-        * method
-          The Method in which you want to use.
+        Args:
+            method (str): the Method in which you want to use.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         return self._request('POST', 'initauth', data=dict(method=method))
 
@@ -169,8 +169,8 @@ class Swarm(ABC):
         """
         Get the current effective user details.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         return self._request('GET', 'session')
 
@@ -179,8 +179,8 @@ class Swarm(ABC):
         """
         Create a new Swarm session using the given credentials.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         return self._request('POST', 'session')
 
@@ -189,8 +189,8 @@ class Swarm(ABC):
         """
         Destroy the current session, for instance logout.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         return self._request('DELETE', 'session')
 
@@ -199,8 +199,8 @@ class Swarm(ABC):
         """
         Login to Swarm.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         if saml is not None:
             return self._request('POST', 'login/saml')
@@ -212,7 +212,7 @@ class Swarm(ABC):
         """
         Logout of Swarm.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: result response.
         """
         return self._request('POST', 'logout')
