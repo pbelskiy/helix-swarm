@@ -108,7 +108,14 @@ Then just run tox, all dependencies and checks will run automatically
 Contributing
 ------------
 
-Feel free to any contributions
+Feel free to any contributions.
+
+Mirror repositories of review board source code:
+  - `2022.1 <https://github.com/dfrees/swarm>`_
+  - `2016.1 <https://github.com/stewartlord/swarm>`_
+
+Latest version of code can be download from official page:
+https://www.perforce.com/downloads/helix-swarm
 
 `Official REST API documentation <https://www.perforce.com/manuals/swarm/Content/Swarm/swarm-apidoc.html>`_
 -----------------------------------------------------------------------------------------------------------
