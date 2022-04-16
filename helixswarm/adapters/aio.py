@@ -61,49 +61,51 @@ class SwarmAsyncClient(Swarm):
         """
         Swarm async client class.
 
-        * url: ``str``
-          Url of Swarm server, must include API version.
+        Args:
+            url (str):
+                URL of Swarm server, must include API version.
 
-        * user: ``str``
-          User name, login.
+            user (str):
+                User name, login.
 
-        * password: ``str``
-          Password for user.
+            password (str):
+                Password for user.
 
-        * loop: ``AbstractEventLoop`` (optional)
-          Asyncio current event loop.
+            loop (Optional[AbstractEventLoop]):
+                Asyncio current event loop.
 
-        * verify: ``bool`` (optional)
-          Verify SSL (default: true).
+            verify (Optional[bool]):
+                Verify SSL (default: true).
 
-        * timeout: ``int``, (optional)
-          HTTP request timeout.
+            timeout (Optional[int])
+                HTTP request timeout.
 
-        * retry: ``dict`` (optional)
-          Retry options to prevent failures if server restarting or temporary
-          network problem. Disabled by default use total > 0 to enable.
+            retry (Optional[dict]):
+                Retry options to prevent failures if server restarting or
+                temporary network problem. Disabled by default use total > 0 to
+                enable.
 
-          - total: ``int`` Total retries count.
-          - factor: ``int`` Sleep factor between retries (default 1)
-            {factor} * (2 ** ({number of total retries} - 1))
-          - statuses: ``List[int]`` HTTP statues retries on. (default [])
+                - total: ``int`` Total retries count.
+                - factor: ``int`` Sleep factor between retries (default 1)
+                    {factor} * (2 ** ({number of total retries} - 1))
+                - statuses: ``List[int]`` HTTP statues retries on. (default [])
 
-          Example:
+                Example:
 
-          .. code-block:: python
+                .. code-block:: python
 
-            retry = dict(
-                total=10,
-                factor=1,
-                statuses=[500]
-            )
+                    retry = dict(
+                        total=10,
+                        factor=1,
+                        statuses=[500]
+                    )
 
-        * auth_update_callback: ``Callable[[], Tuple[str, str]]`` (optional)
-          Callback function which will be called on SwarmUnauthorizedError
-          to update login and password and retry request again.
+            auth_update_callback (Optional[Callable[[], Tuple[str, str]]):
+                Callback function which will be called on SwarmUnauthorizedError
+                to update login and password and retry request again.
 
-        :returns: ``SwarmClient instance``
-        :raises: ``SwarmError``
+        Returns:
+            SwarmAsyncClient: instance
         """
         super().__init__()
 
