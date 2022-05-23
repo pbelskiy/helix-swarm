@@ -18,37 +18,39 @@ class Activities:
         """
         Retrieve the activity list.
 
-        * change: ``int`` (optional)
-          Filter activity entries by associated changelist id. This only includes
-          records for which there is an activity entry in Swarm.
+        Args:
+            change (Optional[int]):
+                Filter activity entries by associated changelist id. This only
+                includes records for which there is an activity entry in Swarm.
 
-        * stream: ``str`` (optional)
-          Filter activity stream to query for entries. This can include
-          user-initiated actions (``user-alice``), activity relating to a user’s
-          followed projects/users (``personal-alice``), review streams
-          (``review-1234``), and project streams (``project-exampleproject``).
+            stream (Optional[str]):
+                Filter activity stream to query for entries. This can include
+                user-initiated actions (`user-alice`), activity relating to a
+                user's followed projects/users (`personal-alice`), review streams
+                (`review-1234`), and project streams (`project-exampleproject`).
 
-        * category: ``str`` (optional)
-          Type of activity, examples: ``change``, ``comment``, ``job``, ``review``.
+            category (Optional[str]):
+                Type of activity, examples: `change`, `comment`, `job`, `review`.
 
-        * after: ``int`` (optional)
-          An activity ID to seek to. Activity entries up to and including the
-          specified ID are excluded from the results and do not count towards ``limit``.
-          Useful for pagination. Commonly set to the ``lastSeen`` property from a
-          previous query.
+            after (Optional[int]):
+                An activity ID to seek to. Activity entries up to and including
+                the specified ID are excluded from the results and do not count
+                towards `limit`. Useful for pagination. Commonly set to the
+                `lastSeen` property from a previous query.
 
-        * limit: ``int`` (optional)
-          Maximum number of activity entries to return. This does not guarantee
-          that ``limit`` entries are returned. It does guarantee that the number
-          of entries returned won’t exceed ``limit``. Server-side filtering may
-          exclude some activity entries for permissions reasons. Default: 100
+            limit (Optional[int]):
+                Maximum number of activity entries to return. This does not
+                guarantee that `limit` entries are returned. It does guarantee
+                that the number of entries returned won't exceed `limit`.
+                Server-side filtering may exclude some activity entries for
+                permissions reasons. Default: 100.
 
-        * fields: ``List[str]`` (optional)
-          List of fields to show. Omitting this parameter or passing an empty
-          value shows all fields.
+            fields (Optional[List[str]]):
+                List of fields to show. Omitting this parameter or passing an
+                empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: activities.
         """
         params = dict()  # type: Dict[str, Union[int, str]]
 
@@ -82,42 +84,43 @@ class Activities:
         """
         Retrieve the activity list.
 
-        * category: ``str``
-          Type of activity, used for filtering activity streams.
-          Values can include ``change``, ``comment``, ``job``, ``review``).
+        Args:
+            category (str):
+                Type of activity, used for filtering activity streams. Values
+                can include `change`, `comment`, `job`, `review`.
 
-        * user: ``str``
-          User who performed the action.
+            user (str):
+                User who performed the action.
 
-        * action: ``str``
-          Action that was performed - past-tense, for example, ``created``,
-          ``commented on``.
+            action (str):
+                Action that was performed - past-tense, for example, `created`,
+                `commented on`.
 
-        * target: ``str``
-          Target that the action was performed on, for example, ``issue 1234``.
+            target (str):
+                Target that the action was performed on, for example, `issue 1234`.
 
-        * topic: ``str``
-          Topic for the activity entry. Topics are essentially comment thread IDs.
-          Examples: ``reviews/1234`` or ``jobs/job001234``.
+            topic (Optional[str]):
+                Topic for the activity entry. Topics are essentially comment
+                thread IDs. Examples: `reviews/1234` or `jobs/job001234`.
 
-        * description: ``str``
-          Optional description of object or activity to provide context.
+            description (Optional[str]):
+                Optional description of object or activity to provide context.
 
-        * change: ``int``
-          Optional changelist ID this activity is related to.
-          Used to filter activity related to restricted changes.
+            change (Optional[int]):
+                Optional changelist ID this activity is related to. Used to
+                filter activity related to restricted changes.
 
-        * streams: ``List[str]``
-          Optional array of streams to display on. This can include user-initiated
-          actions (``user-alice``), activity relating to a user’s followed
-          projects/users (``personal-alice``), review streams (``review-1234``)
-          and project streams (``project-exampleproject``).
+            streams (Optional[List[str]]):
+                Optional array of streams to display on. This can include
+                user-initiated actions (`user-alice`), activity relating to a
+                user's followed projects/users (`personal-alice`), review streams
+                (`review-1234`) and project streams (`project-exampleproject`).
 
-        * link: ``str``
-          Optional URL for ``target``.
+            link (Optional[str]):
+                URL for `target`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: request result.
         """
         data = dict()  # type: Dict[str, Union[int, str, List[str]]]
 
