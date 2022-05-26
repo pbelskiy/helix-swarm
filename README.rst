@@ -1,9 +1,6 @@
 Python client for `Helix Swarm <https://www.perforce.com/manuals/swarm/>`_
 ==========================================================================
 
-Status
-------
-
 |Build status|
 |Docs status|
 |Coverage status|
