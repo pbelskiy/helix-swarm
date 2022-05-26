@@ -17,17 +17,18 @@ class Workflows:
         """
         Gets workflows.
 
-        * fields: ``List[str]`` (optional)
-          An optional list of fields to show for each workflow. Omitting this
-          parameter or passing an empty value shows all fields.
+        Args:
+            fields (Optional[List[str]]):
+                An optional list of fields to show for each workflow. Omitting
+                this parameter or passing an empty value shows all fields.
 
-        * noCache: ``bool`` (optional)
-          If provided and has a value of 'true' a query will always be performed
-          and the cache of workflows is ignored. Otherwise the cache will be used
-          if it exists.
+            noCache (Optional[bool]):
+                If provided and has a value of 'true' a query will always be
+                performed and the cache of workflows is ignored. Otherwise the
+                cache will be used if it exists.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[str, bool]]
 
@@ -48,15 +49,16 @@ class Workflows:
         """
         Gets a workflow by identifier.
 
-        * identifier: ``int``
-          Workflow id.
+        Args:
+            identifier (int):
+                Workflow id.
 
-        * fields: ``List[str]`` (optional)
-          An optional list of fields to show for each workflow. Omitting this
-          parameter or passing an empty value shows all fields.
+            fields (Optional[List[str]):
+                An optional list of fields to show for each workflow. Omitting
+                this parameter or passing an empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, str]
 
@@ -86,41 +88,42 @@ class Workflows:
         """
         Create a new workflow.
 
-        * name: ``str``
-          The workflow name. Will be compared against other workflows and
-          rejected if not unique.
+        Args:
+            name (str):
+                The workflow name. Will be compared against other workflows and
+                rejected if not unique.
 
-        * description: ``str`` (optional)
-          Description for the new workflow.
+            description (Optional[str]):
+                Description for the new workflow.
 
-        * shared: ``bool`` (optional)
-          Whether this workflow is shared for other users that do not own it.
-          Defaults to not shared.
+            shared (Optional[bool]):
+                Whether this workflow is shared for other users that do not own
+                it. Defaults to not shared.
 
-        * owners: ``List[str]`` (optional)
-          A list owners for the workflow. Can be users or group names (prefixed
-          with swarm-group-). Users and group names must exist or the workflow
-          will be rejected.
+            owners (Optional[List[str]):
+                A list owners for the workflow. Can be users or group names,
+                prefixed with `swarm-group-`. Users and group names must exist
+                or the workflow will be rejected.
 
-        * on_submit: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values for with_review
-          are no_checking, approved, strict. Valid values for without review are:
-          ``no_checking``, ``auto_create``, ``reject``.
+            on_submit (Optional[List[str]]):
+                Data for rules when changes are submitted. Valid values for
+                with_review are no_checking, approved, strict. Valid values for
+                without review are: `no_checking`, `auto_create`, `reject`.
 
-        * end_rules: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are:
-          ``no_checking``, ``no_revision``.
+            end_rules (Optional[List[str]):
+                Data for rules when changes are submitted. Valid values are:
+                `no_checking`, `no_revision`.
 
-        * auto_approve: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are: ``votes``,
-          ``never``.
+            auto_approve (Optional[List[str]):
+                Data for rules when changes are submitted. Valid values are:
+                `votes`, ``never``.
 
-        * counted_votes: ``str`` (optional)
-          Data for rules when counting votes up. Valid values are: ``anyone``,
-          ``members``.
+            counted_votes (Optional[str]):
+                Data for rules when counting votes up. Valid values are: `anyone`,
+                `members`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(
             name=name,
@@ -165,44 +168,45 @@ class Workflows:
         """
         Edit a workflow.
 
-        * identifier: ``str``
-          The id of the workflow being edited.
+        Args:
+            identifier (str):
+                The id of the workflow being edited.
 
-        * name: ``str`` (optional)
-          The workflow name. Will be compared against other workflows and
-          rejected if not unique.
+            name (Optional[str]):
+                The workflow name. Will be compared against other workflows and
+                rejected if not unique.
 
-        * description: ``str`` (optional)
-          Description for the new workflow.
+            description (Optional[str]):
+                Description for the new workflow.
 
-        * shared: ``bool`` (optional)
-          Whether this workflow is shared for other users that do not own it.
-          Defaults to not shared.
+            shared (Optional[bool]):
+                Whether this workflow is shared for other users that do not own
+                it. Defaults to not shared.
 
-        * owners: ``List[str]`` (optional)
-          A list owners for the workflow. Can be users or group names (prefixed
-          with swarm-group-). Users and group names must exist or the workflow
-          will be rejected.
+            owners (Optional[List[str]):
+                A list owners for the workflow. Can be users or group names,
+                prefixed with `swarm-group-`. Users and group names must exist
+                or the workflow will be rejected.
 
-        * on_submit: ``dict`` (optional)
-          Data for rules when changes are submitted. Valid values for with_review
-          are no_checking, approved, strict. Valid values for without review are:
-          ``no_checking``, ``auto_create``, ``reject``.
+            on_submit (Optional[dict]):
+                Data for rules when changes are submitted. Valid values for
+                with_review are no_checking, approved, strict. Valid values for
+                without review are: `no_checking`, `auto_create`, `reject`.
 
-        * end_rules: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are:
-          ``no_checking``, ``no_revision``.
+            end_rules (Optional[List[str]]):
+                Data for rules when changes are submitted. Valid values are:
+                `no_checking`, `no_revision`.
 
-        * auto_approve: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are: ``votes``,
-          ``never``.
+            auto_approve (Optional[List[str]`` (optional)
+                Data for rules when changes are submitted. Valid values are:
+                `votes`, `never`.
 
-        * counted_votes: ``str`` (optional)
-          Data for rules when counting votes up. Valid values are: ``anyone``,
-          ``members``.
+            counted_votes (Optional[str]):
+                Data for rules when counting votes up. Valid values are:
+                `anyone`, `members`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(
             id=identifier,
@@ -244,14 +248,15 @@ class Workflows:
     def delete(self, identifier: str) -> dict:
         """
         Delete a workflow. This call must be authenticated and the user must
-        have permission to edit the workflow. If the workflow is in use it cannot
-        be deleted and an error message will be returned
+        have permission to edit the workflow. If the workflow is in use it
+        cannot be deleted and an error message will be returned
 
-        * identifier: ``str``
-          The id of the workflow being deleted.
+        Args:
+            identifier (str):
+                The id of the workflow being deleted.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('DELETE', 'workflows/{}'.format(identifier))
 
@@ -272,44 +277,45 @@ class Workflows:
         Update a workflow. All values should be provided in the request.
         If not provided any missing values are reverted to default.
 
-        * identifier: ``str``
-          The id of the workflow being edited.
+        Args:
+            identifier (str):
+                The id of the workflow being edited.
 
-        * name: ``str``
-          The workflow name. Will be compared against other workflows and
-          rejected if not unique.
+            name (Optional[str]):
+                The workflow name. Will be compared against other workflows and
+                rejected if not unique.
 
-        * description: ``str`` (optional)
-          Description for the new workflow.
+            description (Optional[str]):
+                Description for the new workflow.
 
-        * shared: ``bool`` (optional)
-          Whether this workflow is shared for other users that do not own it.
-          Defaults to not shared.
+            shared (Optional[bool]):
+                Whether this workflow is shared for other users that do not own
+                it. Defaults to not shared.
 
-        * owners: ``List[str]`` (optional)
-          A list owners for the workflow. Can be users or group names (prefixed
-          with swarm-group-). Users and group names must exist or the workflow
-          will be rejected.
+            owners (Optional[List[str]):
+                A list owners for the workflow. Can be users or group names,
+                prefixed with `swarm-group-`. Users and group names must exist
+                or the workflow will be rejected.
 
-        * on_submit: ``dict`` (optional)
-          Data for rules when changes are submitted. Valid values for with_review
-          are no_checking, approved, strict. Valid values for without review are:
-          ``no_checking``, ``auto_create``, ``reject``.
+            on_submit (Optional[dict]):
+                Data for rules when changes are submitted. Valid values for
+                with_review are no_checking, approved, strict. Valid values for
+                without review are: `no_checking`, `auto_create`, `reject`.
 
-        * end_rules: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are:
-          ``no_checking``, ``no_revision``.
+            end_rules (Optional[List[str]]):
+                Data for rules when changes are submitted. Valid values are:
+                `no_checking`, `no_revision`.
 
-        * auto_approve: ``List[str]`` (optional)
-          Data for rules when changes are submitted. Valid values are: ``votes``,
-          ``never``.
+            auto_approve (Optional[List[str]]):
+                Data for rules when changes are submitted. Valid values are:
+                `votes`, `never`.
 
-        * counted_votes: ``str`` (optional)
-          Data for rules when counting votes up. Valid values are: ``anyone``,
-          ``members``.
+            counted_votes (Optional[str]):
+                Data for rules when counting votes up. Valid values are:
+                `anyone`, `members`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(
             id=identifier,

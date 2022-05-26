@@ -11,7 +11,7 @@ class Servers:
         """
         Gets a list of servers.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('GET', 'servers')

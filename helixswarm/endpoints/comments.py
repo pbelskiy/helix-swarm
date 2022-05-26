@@ -24,50 +24,59 @@ class Comments:
         """
         Get list of comments.
 
-        * after: ``int`` (optional)
-          A comment ID to seek to. Comments up to and including the specified ID
-          are excluded from the results and do not count towards ``limit``.
-          Useful for pagination. Commonly set to the ``lastSeen`` property from
-          a previous query.
+        Args:
+            after (Optional[int]):
+                A comment ID to seek to. Comments up to and including the specified
+                ID are excluded from the results and do not count towards `limit`.
+                Useful for pagination. Commonly set to the `lastSeen` property
+                from a previous query.
 
-        * limit: ``int`` (optional)
-          Maximum number of comments to return. This does not guarantee that
-          ``limit`` comments are returned. It does guarantee that the number of
-          comments returned won’t exceed ``limit``. Default: 100.
+            limit (Optional[int]):
+                Maximum number of comments to return. This does not guarantee that
+                `limit` comments are returned. It does guarantee that the number
+                of comments returned won't exceed `limit`.
 
-        * topic: ``str`` (optional)
-          Only comments for given topic are returned.
-          Examples: ``reviews/1234``, ``changes/1234``, ``jobs/job001234``.
+                Default: 100.
 
-        * context_version: ``int`` (optional)
-          If a ``reviews/1234`` topic is provided, limit returned comments to a
-          specific version of the provided review.
+            topic (Optional[str]):
+                Only comments for given topic are returned.
 
-        * ignore_archived: ``bool`` (optional)
-          Prevents archived comments from being returned. (**v5+**)
+                Examples: `reviews/1234`, `changes/1234`, `jobs/job001234`.
 
-        * task_only: ``bool`` (optional)
-          Returns only comments that have been flagged as tasks. (**v5+**)
+            context_version (Optional[int]):
+                If a `reviews/1234` topic is provided, limit returned comments
+                to a specific version of the provided review.
 
-        * task_states: ``List[str]`` (optional)
-          Limit the returned comments to ones that match the provided task state
-          Examples: ``open``, ``closed``, ``verified``, or ``comment``. (**v5+**)
+            ignore_archived (Optional[bool]):
+                Prevents archived comments from being returned. (**v5+**)
 
-        * fields: ``List[str]`` (optional)
-          List of fields to show for each comment. Omitting this parameter or
-          passing an empty value shows all fields.
+            task_only (Optional[bool]):
+                Returns only comments that have been flagged as tasks. (**v5+**)
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            task_states (Optional[List[str]]):
+                Limit the returned comments to ones that match the provided task
+                state.
+
+                Examples: `open`, `closed`, `verified`, or `comment`. (**v5+**)
+
+            fields (Optional[List[str]])
+                List of fields to show for each comment. Omitting this parameter
+                or passing an empty value shows all fields.
+
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[str, int, bool, List[str]]]
 
         if after:
             params['after'] = after
+
         if limit:
             params['max'] = limit
+
         if topic:
             params['topic'] = topic
+
         if context_version:
             params['context[version]'] = context_version
 
@@ -115,57 +124,60 @@ class Comments:
         """
         Add a comment to a topic.
 
-        * topic ``str``:
-          Examples: ``reviews/1234``, ``changes/1234`` or ``jobs/job001234``.
+        Args:
+            topic (str):
+                Examples: `reviews/1234`, `changes/1234` or `jobs/job001234`.
 
-        * body ``str``:
-          Content of the comment, markdown is supported.
-          https://www.perforce.com/manuals/swarm/Content/Swarm/basics.markdown.html
+            body (str):
+                Content of the comment, markdown is supported.
+                https://www.perforce.com/manuals/swarm/Content/Swarm/basics.markdown.html
 
-          Please note that sometimes message can be rendered incorrectly when
-          markdown used then need to strip trailing spaces of message.
+                Please note that sometimes message can be rendered incorrectly
+                when markdown used then need to strip trailing spaces of message.
 
-        * silence_notification: ``bool`` (optional)
-          If true no notifications will ever be sent for this created comment.
+            silence_notification (Optional[bool]):
+                If true no notifications will ever be sent for this created
+                comment.
 
-        * delay_notification: ``bool`` (optional)
-          If true notifications will be delayed.
+            delay_notification (Optional[bool]):
+                If true notifications will be delayed.
 
-        * task_state: ``str`` (optional)
-          Task state of the comment, valid values when adding a comment are
-          ``comment`` and ``open``. This creates a plain comment or opens a task,
-          respectively.
+            task_state (Optional[str]):
+                Task state of the comment, valid values when adding a comment
+                are `comment` and `open`. This creates a plain comment or opens
+                a task, respectively.
 
-        * flags: ``List[str]`` (optional)
-          Typically set to ``closed`` to archive a comment.
+            flags (Optional[List[str]]):
+                Typically set to `closed` to archive a comment.
 
-        * context_file: ``str`` (optional)
-          File to comment on. Valid only for changes and reviews topics.
-          Example: ``//depot/main/README.txt``
+            context_file (Optional[str]):
+                File to comment on. Valid only for changes and reviews topics.
 
-        * context_left_line: ``int`` (optional)
-          Left-side diff line to attach the inline comment to. Valid only for
-          changes and reviews topics. If this is specified, ``context[file]`` must
-          also be specified.
+                Example: `//depot/main/README.txt`
 
-        * context_right_line: ``int`` (optional)
-          Right-side diff line to attach the inline comment to. Valid only for
-          changes and reviews topics. If this is specified, ``context[file]`` must
-          also be specified.
+            context_left_line (Optional[int]):
+                Left-side diff line to attach the inline comment to. Valid only
+                for changes and reviews topics. If this is specified, `context[file]`
+                must also be specified.
 
-        * context_content: ``List[str]`` (optional)
-          Optionally provide content of the specified line and its four preceding
-          lines. This is used to specify a short excerpt of context in case the
-          lines being commented on change during the review. When not provided,
-          Swarm makes an effort to build the content on its own - as this involves
-          file operations, it could become slow.
+            context_right_line (Optional[int]):
+                Right-side diff line to attach the inline comment to. Valid only
+                for changes and reviews topics. If this is specified, `context[file]`
+                must also be specified.
 
-        * context_version: ``int`` (optional)
-          With a ``reviews`` topic, this field specifies which version to attach
-          the comment to.
+            context_content (Optional[List[str]):
+                Optionally provide content of the specified line and its four
+                preceding lines. This is used to specify a short excerpt of context
+                in case the lines being commented on change during the review.
+                When not provided, Swarm makes an effort to build the content on
+                its own - as this involves file operations, it could become slow.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            context_version: ``int`` (optional)
+                With a ``reviews`` topic, this field specifies which version to
+                attach the comment to.
+
+        Returns:
+            dict: json response.
         """
         try:
             _type, _ = topic.split('/')
@@ -217,37 +229,43 @@ class Comments:
              task_state: Optional[str] = None,
              flags: Optional[List[str]] = None,
              silence_notification: Optional[bool] = None,
-             delay_notification: Optional[bool] = None) -> dict:
+             delay_notification: Optional[bool] = None
+             ) -> dict:
         """
         Edit a comment.
 
-        * comment_id:
-          ID of the comment to be edited.
+        Args:
+            comment_id (int):
+                ID of the comment to be edited.
 
-        * body:
-          Content of the comment.
+            body (str):
+                Content of the comment.
 
-        * topic: (optional)
-          Topic to comment on.
-          Examples: ``reviews/1234``, ``changes/1234``, ``jobs/job001234``
+            topic (Optional[str]):
+                Topic to comment on.
 
-        * task_state: ``str`` (optional)
-          Task state of the comment. Note that certain transitions (such as
-          moving from `open` to ``verified``) are not possible without an intermediate
-          step (``addressed``, in this case).
-          Examples: ``comment`` (not a task), ``open``, ``addressed``, ``verified``.
+                Examples: `reviews/1234`, `changes/1234`, `jobs/job001234`
 
-        * flags: ``List[str]`` (optional)
-          Flags on the comment. Typically set to ``closed`` to archive a comment.
+            task_state (Optional[str]):
+                Task state of the comment. Note that certain transitions, such
+                as moving from `open` to `verified` are not possible without an
+                intermediate step (`addressed`, in this case).
 
-        * silence_notification: ``bool`` (optional)
-          If set to '`true'` no notifications will ever be sent for this edited comment.
+                Examples: `comment` (not a task), `open`, `addressed`, `verified`.
 
-        * delay_notification: ``bool`` (optional)
-          If set to '`true'` notifications will be delayed
+            flags (Optional[List[str]]):
+                Flags on the comment. Typically set to `closed` to archive a
+                comment.
 
-        :raises: ``SwarmError``
-        :returns: ``dict``
+            silence_notification (Optional[bool]):
+                If set to `true` no notifications will ever be sent for this
+                edited comment.
+
+            delay_notification (Optional[bool]):
+                If set to `true` notifications will be delayed
+
+        Returns:
+            dict: json response.
         """
         data = dict(
             body=body,
@@ -281,12 +299,15 @@ class Comments:
         """
         Sends notification for comments.
 
-        * topic ``str``:
-          This is going to send a single notification for any comments that were
-          not notified immediately for the user authenticated for a given topic
-          they are posting for. Examples: ``reviews/1234``
+        Args:
+            topic (str):
+                This is going to send a single notification for any comments that
+                were not notified immediately for the user authenticated for a
+                given topic they are posting for.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+                Examples: `reviews/1234`
+
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('POST', 'comments', params=dict(topic=topic))

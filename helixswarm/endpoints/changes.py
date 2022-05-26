@@ -11,11 +11,12 @@ class Changes:
         """
         Get projects, and branches, affected by a given change id (**v8+**).
 
-        * change: ``int``
-          Change id.
+        Args:
+            change (int):
+                Change id.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request(
             'GET',
@@ -27,11 +28,12 @@ class Changes:
         """
         Get default reviewers for a given change id (**v8+**).
 
-        * change: ``int``
-          Change id.
+        Args:
+            change (int):
+                Change id.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request(
             'GET',
@@ -43,14 +45,16 @@ class Changes:
         """
         Performs checks on the change if workflow configuration requires it (**v9+**).
 
-        * change: ``int``
-          Change id to check.
+        Args:
+            change (int):
+                Change id to check.
 
-        * category: ``str``
-          The type of check. Must have a value of ``enforced``, ``strict`` or ``shelve``.
+            category (str):
+                The type of check. Must have a value of `enforced`, `strict` or
+                `shelve`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request(
             'GET',

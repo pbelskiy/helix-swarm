@@ -18,21 +18,24 @@ class Users:
         """
         Get list of users.
 
-        * fields: ``List[str]`` (optional)
-          List of fields to show for each user. Omitting this parameter or passing
-          an empty value shows all fields. Be aware the fields are case sensitive
-          for users. You can use one of the below: User, Type, Email, Update,
-          Access, FullName, JobView, Password, AuthMethod, Reviews.
+        Args:
+            fields (Optional[List[str]]):
+                List of fields to show for each user. Omitting this parameter or
+                passing an empty value shows all fields. Be aware the fields are
+                case sensitive for users. You can use one of the below: User,
+                Type, Email, Update, Access, FullName, JobView, Password,
+                AuthMethod, Reviews.
 
-        * users: ``List[str]`` (optional)
-          List of users to display. Omitting this parameter or passing an empty
-          value shows all users.
+            users (Optional[List[str]]):
+                List of users to display. Omitting this parameter or passing an
+                empty value shows all users.
 
-        * group: ``str`` (optional)
-          An optional to get users from a group. Cannot be used with users parameter.
+            group (Optional[str]):
+                An optional to get users from a group. Cannot be used with users
+                parameter.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[str, List[str]]]
 
@@ -54,10 +57,11 @@ class Users:
         execute unfollow all against any target user. Other users are only
         permitted to execute the call if they themselves are the target user
 
-        * name: ``str``
-          User name.
+        Args:
+            name (str):
+                User name.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('GET', 'users/{}/unfollowall'.format(name))

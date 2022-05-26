@@ -15,15 +15,16 @@ class Projects:
         Returns a list of projects in Swarm that are visible to the current user.
         Administrators will see all projects, including private ones.
 
-        * fields:  ``List[str]`` (optional)
-          List of fields to show for each group.
-          Omitting this parameter or passing an empty value shows all fields.
+        Args:
+            fields (Optional[List[str]]):
+                List of fields to show for each group. Omitting this parameter
+                or passing an empty value shows all fields.
 
-        * workflow: ``str`` (optional)
-          List only projects using a workflow.
+            workflow (Optional[str]):
+                List only projects using a workflow.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, str]
 
@@ -43,15 +44,16 @@ class Projects:
         """
         Retrieve information about a project.
 
-        * identifier: ``str``
-          Project identifier.
+        Args:
+            identifier (str):
+                Project identifier.
 
-        * fields:  ``List[str]`` (optional)
-          List of fields to show for each project.
-          Omitting this parameter or passing an empty value shows all fields.
+            fields (Optional[List[str]]):
+                List of fields to show for each project. Omitting this parameter
+                or passing an empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, str]
 
@@ -87,73 +89,74 @@ class Projects:
         """
         Creates a new project.
 
-        * name: ``str``
-          Project name (is also used to generate the Project ID).
+        Args:
+            name (str):
+                Project name (is also used to generate the Project ID).
 
-        * members: ``List[str]``
-          Array of project members.
+            members (List[str]):
+                Array of project members.
 
-        * subgroups: ``List[str]`` (optional)
-          Array of project subgroups.
+            subgroups (Optional[List[str]):
+                Array of project subgroups.
 
-        * owners: ``List[str]`` (optional)
-          Array of project owners.
+            owners (Optional[List[str]]):
+                Array of project owners.
 
-        * description: ``str`` (optional)
-          Project description.
+            description (Optional[str]):
+                Project description.
 
-        * private: ``bool`` (optional)
-          Private projects are visible only to: members, moderators, owners,
-          and administrators. Default: false
+            private (Optional[bool]):
+                Private projects are visible only to: members, moderators, owners,
+                and administrators. Default: false
 
-        * deploy: ``dict`` (optional)
-          Configuration for automated deployment.
+            deploy (Optional[dict]):
+                Configuration for automated deployment.
 
-          Example: {'enabled': True, 'url': 'http://localhost/?change={change}'}
+                Example: `{'enabled': True, 'url': 'http://localhost/?change={change}'}`
 
-        * tests:  ``dict`` (optional)
-          Configuration for testing, continuous integration.
+            tests (Optional[dict]):
+                Configuration for testing, continuous integration.
 
-          Example: {'url': '', 'enabled': False}
+                Example: `{'url': '', 'enabled': False}`
 
-        * branches: ``List[dict]`` (optional)
-          Branch definitions for this project.
+            branches (Optional[List[dict]]):
+                Branch definitions for this project.
 
-          Example:
+                Example:
 
-        .. code-block:: python
+                .. code-block:: python
 
-          [
-            {
-              'name': 'Branch One',
-              'paths': '//depot/main/TestProject/...'
-            }
-          ]
+                    [
+                        {
+                        'name': 'Branch One',
+                        'paths': '//depot/main/TestProject/...'
+                        }
+                    ]
 
-        * jobview: ``str`` (optional)
-          Jobview for associating certain jobs with this project.
+            jobview (Optional[str]):
+                Jobview for associating certain jobs with this project.
 
-          Example: 'subsystem=testproject'
+                Example: `subsystem=testproject`
 
-        * notify_commits: ``bool`` (optional)
-          Email members, moderators and followers when a change is committed.
+            notify_commits (Optional[bool]):
+                Email members, moderators and followers when a change is committed.
 
-        * notify_reviews: ``bool`` (optional)
-          Email members and moderators when a new review is requested.
+            notify_reviews (Optional[bool]):
+                Email members and moderators when a new review is requested.
 
-        * defaults: ``List[dict]`` (optional)
-          Array of defaults at a project level (for example default reviewers).
+            defaults (Optional[List[dict]]):
+                Array of defaults at a project level (for example default reviewers).
 
-          Example: [{'reviewers': {'user2': {'required': True}}]
+                Example: `[{'reviewers': {'user2': {'required': True}}]`
 
-        * retain_default_reviewers: ``bool`` (optional)
-          Retain the default reviewers.
+            retain_default_reviewers (Optional[bool]):
+                Retain the default reviewers.
 
-        * minimum_up_votes: ``str`` (optional)
-          Minimum number of up votes required.
+            minimum_up_votes (Optional[str]):
+                Minimum number of up votes required.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(
             name=name,
@@ -223,76 +226,80 @@ class Projects:
         """
         Edit a project.
 
-        * identifier: ``str``
-          Project ID
+        Args:
+            identifier (str):
+                Project ID.
 
-        * name: ``str`` (optional)
-          Project name, changing the project name does not change the project ID.
+            name (Optional[str]):
+                Project name, changing the project name does not change the
+                project ID.
 
-        * members: ``List[str]`` (optional)
-          Array of project members.
+            members (Optional[List[str]):
+                Array of project members.
 
-        * subgroups: ``List[str]`` (optional)
-          Array of project subgroups.
+            subgroups (Optional[List[str]):
+                Array of project subgroups.
 
-        * owners: ``List[str]`` (optional)
-          Array of project owners.
+            owners (Optional[List[str]):
+                Array of project owners.
 
-        * description: ``str`` (optional)
-          Project description.
+            description (Optional[str]):
+                Project description.
 
-        * private: ``bool`` (optional)
-          Private projects are visible only to: members, moderators, owners,
-          and administrators. Default: false
+            private (Optional[bool]):
+                Private projects are visible only to: members, moderators,
+                owners, and administrators.
 
-        * deploy: ``dict`` (optional)
-          Configuration for automated deployment.
+                Default: false
 
-          Example: {'enabled': True, 'url': 'http://localhost/?change={change}'}
+            deploy (Optional[dict]):
+                Configuration for automated deployment.
 
-        * tests:  ``dict`` (optional)
-          Configuration for testing, continuous integration.
+                Example: `{'enabled': True, 'url': 'http://localhost/?change={change}'}`
 
-          Example: {'url': '', 'enabled': False}
+            tests (Optional[dict]):
+                Configuration for testing, continuous integration.
 
-        * branches: ``List[dict]`` (optional)
-          Branch definitions for this project.
+                Example: `{'url': '', 'enabled': False}`
 
-          Example:
+            branches (Optional[List[dict]]):
+                Branch definitions for this project.
 
-          .. code-block:: python
+                Example:
 
-            [
-              {
-                'name': 'Branch One',
-                'paths': '//depot/main/TestProject/...'
-              }
-            ]
+                .. code-block:: python
 
-        * jobview: ``str`` (optional)
-          Jobview for associating certain jobs with this project.
+                    [
+                        {
+                            'name': 'Branch One',
+                            'paths': '//depot/main/TestProject/...'
+                        }
+                    ]
 
-          Example: 'subsystem=testproject'
+            jobview (Optional[str]):
+                Jobview for associating certain jobs with this project.
 
-        * notify_commits: ``bool`` (optional)
-          Email members, moderators and followers when a change is committed.
+                Example: `subsystem=testproject`
 
-        * notify_reviews: ``bool`` (optional)
-          Email members and moderators when a new review is requested.
+            notify_commits (Optional[bool]):
+                Email members, moderators and followers when a change is committed.
 
-        * defaults: ``List[dict]`` (optional)
-          Array of defaults at a project level (for example default reviewers).
+            notify_reviews (Optional[bool]):
+                Email members and moderators when a new review is requested.
 
-          Example: [{'reviewers': {'user2': {'required': True}}]
+            defaults (Optional[List[dict])
+                Array of defaults at a project level (for example default reviewers).
 
-        * retain_default_reviewers: ``bool`` (optional)
-          Retain the default reviewers.
+                Example: `[{'reviewers': {'user2': {'required': True}}]`
 
-        * minimum_up_votes: ``str`` (optional)
-          Minimum number of up votes required.
+            retain_default_reviewers (Optional[bool]):
+                Retain the default reviewers.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            minimum_up_votes (Optional[str]):
+                Minimum number of up votes required.
+
+        Returns:
+            dict: json response.
         """
         data = dict()  # type: Dict[str, Union[str, bool, dict, List[str], List[dict]]]
 
@@ -355,11 +362,12 @@ class Projects:
         name cannot be reused. If a project has owners set, only the owners can
         perform this action.
 
-        * identifier: ``str``
-          Project ID
+        Args:
+            identifier (str):
+                Project ID.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         response = self.swarm._request(
             'DELETE',

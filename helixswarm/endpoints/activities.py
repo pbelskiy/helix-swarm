@@ -50,20 +50,25 @@ class Activities:
                 empty value shows all fields.
 
         Returns:
-            dict: activities.
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[int, str]]
 
         if change:
             params['change'] = change
+
         if stream:
             params['stream'] = stream
+
         if category:
             params['type'] = category
+
         if after:
             params['after'] = after
+
         if limit:
             params['max'] = limit
+
         if fields:
             params['fields'] = ','.join(fields)
 
@@ -120,26 +125,34 @@ class Activities:
                 URL for `target`.
 
         Returns:
-            dict: request result.
+            dict: json response.
         """
         data = dict()  # type: Dict[str, Union[int, str, List[str]]]
 
         if category:
             data['type'] = category
+
         if user:
             data['user'] = user
+
         if action:
             data['action'] = action
+
         if target:
             data['target'] = target
+
         if topic:
             data['topic'] = topic
+
         if description:
             data['description'] = description
+
         if change:
             data['change'] = change
+
         if streams:
             data['streams'] = streams
+
         if link:
             data['link'] = link
 

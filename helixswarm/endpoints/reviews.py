@@ -30,105 +30,125 @@ class Reviews:
         """
         Get list of available reviews.
 
-        * after: ``int`` (optional)
-          A review ID to seek to. Reviews up to and including the specified ``id``
-          are excluded from the results and do not count towards ``limit``. Useful
-          for pagination. Commonly set to the ``lastSeen`` property from a previous
-          query.
+        Args:
+            after (Optional[int]):
+                A review ID to seek to. Reviews up to and including the specified
+                `id` are excluded from the results and do not count towards `limit`.
+                Useful for pagination. Commonly set to the `lastSeen` property
+                from a previous query.
 
-        * limit: ``int`` (optional)
-          Maximum number of reviews to return. This does not guarantee that ``limit``
-          reviews are returned. It does guarantee that the number of reviews
-          returned won’t exceed ``limit``. Server-side filtering may exclude some
-          reviews for permissions reasons. Default: 1000
+            limit (Optional[int]):
+                Maximum number of reviews to return. This does not guarantee that
+                `limit` reviews are returned. It does guarantee that the number
+                of reviews returned won't exceed `limit`. Server-side filtering
+                may exclude some reviews for permissions reasons.
 
-        * fields: ``List[str]`` (optional)
-          Fields to show, Omitting this parameter or passing an empty value
-          shows all fields.
+                Default: `1000`
 
-        * author: ``List[str]`` (optional)
-          One or more authors to limit reviews by.
-          Reviews with any of the specified authors are returned. (**API v1.2+**)
+            fields (Optional[List[str]):
+                Fields to show, Omitting this parameter or passing an empty value
+                shows all fields.
 
-        * changes: ``List[str]`` (optional)
-          One or more change IDs to limit reviews by.
-          Reviews associated with any of the specified changes are returned.
+            author (Optional[List[str]):
+                One or more authors to limit reviews by. Reviews with any of the
+                specified authors are returned. (**API v1.2+**)
 
-        * has_reviewers: ``bool`` (optional)
-          Limit reviews list to those with or without reviewers.
+            changes (Optional[List[str]):
+                One or more change IDs to limit reviews by. Reviews associated
+                with any of the specified changes are returned.
 
-        * ids: ``List[int]`` (optional)
-          One or more review IDs to fetch. Only the specified reviews are returned.
-          This filter cannot be combined with the ``limit`` parameter.
+            has_reviewers (Optional[bool):
+                Limit reviews list to those with or without reviewers.
 
-        * keywords: ``str`` (optional)
-          Keywords to limit reviews by. Only reviews where the description,
-          participants list or project list contain the specified keywords are returned.
+            ids (Optional[List[int]):
+                One or more review IDs to fetch. Only the specified reviews are
+                returned. This filter cannot be combined with the `limit`
+                parameter.
 
-        * participants: ``List[str]`` (optional)
-          One or more participants to limit reviews by.
-          Reviews with any of the specified participants are returned.
+            keywords (Optional[str]):
+                Keywords to limit reviews by. Only reviews where the description,
+                participants list or project list contain the specified keywords
+                are returned.
 
-        * projects: ``List[str]`` (optional)
-          One or more projects to limit reviews by. Reviews affecting any of the
-          specified projects are returned.
+            participants (Optional[List[str]):
+                One or more participants to limit reviews by. Reviews with any
+                of the specified participants are returned.
 
-        * states: ``List[str]`` (optional)
-          One or more states to limit reviews by. Reviews in any of the specified
-          states are returned.
+            projects (Optional[List[str]):
+                One or more projects to limit reviews by. Reviews affecting any
+                of the specified projects are returned.
 
-        * passes_tests: ``bool`` (optional)
-          Option to limit reviews by tests passing or failing.
+            states (Optional[List[str]):
+                One or more states to limit reviews by. Reviews in any of the
+                specified states are returned.
 
-        * not_updated_since: ``str`` (optional)
-          Option to fetch unchanged reviews. Requires the date to be in the format
-          YYYY-mm-dd, for example 2017-01-01. Reviews to be returned are determined
-          by looking at the last updated date of the review.
+            passes_tests (Optional[bool]):
+                Option to limit reviews by tests passing or failing.
 
-        * has_voted: ``str`` (optional)
-          Should have the value ``up`` or ``down`` to filter reviews that have been
-          voted up or down by the current authenticated user.
+            not_updated_since (Optional[str]):
+                Option to fetch unchanged reviews. Requires the date to be in
+                the format `YYYY-mm-dd`, for example 2017-01-01. Reviews to be
+                returned are determined by looking at the last updated date of
+                the review.
 
-        * my_comments: ``bool`` (optional)
-          Filtering reviews that include comments by the current authenticated user.
+            has_voted (Optional[str]):
+                Should have the value ``up`` or ``down`` to filter reviews that
+                have been voted up or down by the current authenticated user.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            my_comments (Optional[bool]):
+                Filtering reviews that include comments by the current authenticated user.
+
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[int, str, bool, List[str], List[int]]]
 
         if after:
             params['after'] = after
+
         if limit:
             params['max'] = limit
+
         if fields:
             params['fields'] = ','.join(fields)
+
         if authors:
             params['author'] = authors
             if float(self.swarm.version) < 2:
                 raise SwarmCompatibleError(
                     'author field is supported from API version >= 2'
                 )
+
         if changes:
             params['change'] = changes
+
         if has_reviewers is not None:
             params['hasReviewers'] = has_reviewers
+
         if ids:
             params['ids'] = ids
+
         if keywords:
             params['keywords'] = keywords
+
         if participants:
             params['participants'] = participants
+
         if projects:
             params['project'] = projects
+
         if states:
             params['state'] = states
+
         if passes_tests is not None:
             params['passesTests'] = passes_tests
+
         if not_updated_since:
             params['notUpdatedSince'] = not_updated_since
+
         if has_voted:
             params['hasVoted'] = has_voted
+
         if my_comments is not None:
             params['myComments'] = my_comments
 
@@ -139,8 +159,8 @@ class Reviews:
         """
         Gets reviews for the action dashboard for the authenticated user
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('GET', 'dashboards/action')
 
@@ -152,18 +172,19 @@ class Reviews:
         """
         Retrieve information about a review.
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id (int):
+                Review id getting information from.
 
-        * fields: ``List[str]`` (optional)
-          List of fields to show. Omitting this parameter or passing an empty
-          value shows all fields.
+            fields (Optional[List[str]]):
+                List of fields to show. Omitting this parameter or passing an
+                empty value shows all fields.
 
-        * callback: ``Callable`` (optional)
-          Function callback for support both sync and async syntax.
+            callback (Optional[Callable]):
+                Function callback for support both sync and async syntax.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, str]
 
@@ -187,15 +208,16 @@ class Reviews:
         """
         Retrieve information about a review.
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id (int):
+                Review id getting information from.
 
-        * fields: ``List[str]`` (optional)
-          List of fields to show. Omitting this parameter or passing an empty
-          value shows all fields.
+            fields (Optional[List[str]]):
+                List of fields to show. Omitting this parameter or passing an
+                empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self._get_info(review_id, fields)
 
@@ -208,17 +230,18 @@ class Reviews:
         """
         Get transitions for a review (**v9+**)
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id: ``int``
+                Review id getting information from.
 
-        * up_voters: ``str`` (optional)
-          A list of users whose vote up will be assumed when determining the
-          transitions. For example if a user has not yet voted but would be the
-          last required vote and asked for possible transitions we would want to
-          include 'approve'
+            up_voters  (Optional[str]):
+                A list of users whose vote up will be assumed when determining
+                the transitions. For example if a user has not yet voted but
+                would be the last required vote and asked for possible transitions
+                we would want to include 'approve'
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()
 
@@ -237,11 +260,12 @@ class Reviews:
         """
         Get latest revision and change (changelist) for a review.
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id (int):
+                Review id getting information from.
 
-        :returns: ``Tuple[int, int]`` revision and change respectively.
-        :raises: ``SwarmError``
+        Returns:
+            Tuple[int, int]: revision and change respectively.
         """
         def callback(response: dict) -> Tuple[int, int]:
             review = response.get('review')
@@ -283,23 +307,24 @@ class Reviews:
         """
         Create a review.
 
-        * fields: ``int``
-          Change ID to create a review from.
+        Args:
+            fields (int):
+                Change ID to create a review from.
 
-        * description: ``str`` (optional)
-          Description for the new review (defaults to change description).
+            description (Optional[str]):
+                Description for the new review (defaults to change description).
 
-        * reviewers: ``List[str]`` (optional)
-          A list of reviewers for the new review.
+            reviewers (Optional[List[str]]):
+                A list of reviewers for the new review.
 
-        * required_reviewers: ``List[str]`` (optional)
-          A list of required reviewers for the new review (**v1.1+**)
+            required_reviewers (Optional[List[str]]):
+                A list of required reviewers for the new review (**v1.1+**)
 
-        * reviewer_groups: ``List[str]`` (optional)
-          A list of required reviewers for the new review (**v7+**)
+            reviewer_groups (Optional[List[str]]):
+                A list of required reviewers for the new review (**v7+**)
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(change=change)  # type: Dict[str, Union[int, str, List[str]]]
 
@@ -335,24 +360,26 @@ class Reviews:
         """
         Set the vote for the authenticated user to be up, down or cleared.
 
-        * review_id: ``int``
-          Review ID.
+        Args:
+            review_id (int):
+                Review ID.
 
-        * vote: ``str``
-          Valid votes are 'up', 'down' and 'clear.
+            vote (str):
+                Valid votes are `up`, `down` and `clear`.
 
-        * version: ``str`` (optional)
-          Expected to be a valid review revision to vote on if supplied, ignored
-          if the revision does not exist and the vote will apply to the latest
-          revision.
+            version (Optional[str]):
+                Expected to be a valid review revision to vote on if supplied,
+                ignored if the revision does not exist and the vote will apply
+                to the latest revision.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict()  # type: Dict[str, str]
 
         if vote:
             data['vote[value]'] = vote
+
         if version:
             data['vote[version]'] = version
 
@@ -374,17 +401,18 @@ class Reviews:
         Add change to a review, links the given change to the review and
         schedules an update.
 
-        * review_id: ``int``
-          Review ID.
+        Args:
+            review_id (int):
+                Review ID.
 
-        * change: ``int``
-          Change ID.
+            change (int):
+                Change ID.
 
-        * mode: ``str``
-          The mode of operation, currently ``replace`` or `'append``.
+            mode (str):
+                The mode of operation, currently ]replace` or `append`.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict(
             change=change,
@@ -410,15 +438,18 @@ class Reviews:
         """
         Archiving the inactive reviews (**v6+**).
 
-        * not_updated_since: ``str``
-          Updated since date. Requires the date to be in the format YYYY-mm-dd
-          Example ``2017-01-01``
+        Args:
+            not_updated_since (str):
+                Updated since date. Requires the date to be in the format
+                `YYYY-mm-dd`
 
-        * description: ``str``
-          A description that is posted as a comment for archiving.
+                Example: `2017-01-01`
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            description (str):
+                A description that is posted as a comment for archiving.
+
+        Returns:
+            dict: json response.
         """
         data = dict(
             notUpdatedSince=not_updated_since,
@@ -436,17 +467,18 @@ class Reviews:
         """
         Archiving the inactive reviews (**v6+**).
 
-        * review_id: ``int``
-          Review ID.
+        Args:
+            review_id (int):
+                Review ID.
 
-        * author: ``str`` (optional)
-          The new author for the specified review.
+            author (Optional[str]):
+                The new author for the specified review.
 
-        * description: ``str`` (optional)
-          The new description for the specified review.
+            description (Optional[str]):
+                The new description for the specified review.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         if author is description is None:
             raise SwarmError('At least one of description or author are required')
@@ -475,15 +507,16 @@ class Reviews:
         """
         Clean up a review for the given id (**v6+**).
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id (int):
+                Review id getting information from.
 
-        * reopen: ``bool`` (optional)
-          Expected to be a boolean (defaulting to false). If true then an attempt
-          will be made to reopen files into a default changelist
+            reopen (Optional[bool]):
+                Expected to be a boolean (defaulting to false). If true then an
+                attempt will be made to reopen files into a default changelist
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict()
 
@@ -503,11 +536,12 @@ class Reviews:
         """
         Obliterate a review for the given id (**v9+**).
 
-        * review_id: ``int``
-          Review id getting information from.
+        Args:
+            review_id (int):
+                Review id getting information from.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         response = self.swarm._request(
             'POST',

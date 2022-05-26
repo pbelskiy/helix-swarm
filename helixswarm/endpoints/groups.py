@@ -18,29 +18,33 @@ class Groups:
             keywords: Optional[str] = None
             ) -> dict:
         """
-        Returns the complete list of groups in Swarm.
+        Get the complete list of groups.
 
-        * after: ``str`` (optional)
-          A group ID to seek to. Groups prior to and including the specified ID
-          are excluded from the results and do not count towards ``limit``.
-          Useful for pagination. Commonly set to the ``lastSeen`` property from
-          a previous query.
+        Args:
+            after (Optional[str]):
+                A group ID to seek to. Groups prior to and including the specified
+                ID are excluded from the results and do not count towards `limit`.
+                Useful for pagination. Commonly set to the `lastSeen` property from
+                a previous query.
 
-        * limit: ``int`` (optional)
-          Maximum number of groups to return. This does not guarantee that
-          ``limit`` groups are returned. It does guarantee that the number of
-          groups returned won’t exceed ``limit``. Default: 100.
+            limit (Optional[int]):
+                Maximum number of groups to return. This does not guarantee that
+                `limit` groups are returned. It does guarantee that the number of
+                groups returned won't exceed `limit`.
 
-        * fields:  ``List[str]`` (optional)
-          List of fields to show for each group.
-          Omitting this parameter or passing an empty value shows all fields.
+                Default: 100.
 
-        * keywords: ``str`` (optional)
-          Keywords to limit groups on. Only groups where the group ID, group name
-          (if set), or description contain the specified keywords are returned.
+            fields (Optional[List[str]]):
+                List of fields to show for each group. Omitting this parameter
+                or passing an empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+            keywords (Optional[str]):
+                Keywords to limit groups on. Only groups where the group ID,
+                group name (if set), or description contain the specified keywords
+                are returned.
+
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, Union[str, int]]
 
@@ -67,15 +71,16 @@ class Groups:
         """
         Retrieve information about a group.
 
-        * identifier: ``str``
-          Group identifier.
+        Args:
+            identifier (str):
+                Group identifier.
 
-        * fields:  ``List[str]`` (optional)
-          List of fields to show for each group.
-          Omitting this parameter or passing an empty value shows all fields.
+            fields (Optional[List[str]]):
+                List of fields to show for each group. Omitting this parameter
+                or passing an empty value shows all fields.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         params = dict()  # type: Dict[str, str]
 
@@ -107,42 +112,43 @@ class Groups:
         """
         Create a new group.
 
-        * identifier: ``str``
-          Group identifier.
+        Args:
+            identifier (str):
+                Group identifier.
 
-        * users: ``List[str]`` (optional)
-          An optional array of group users.
-          **At least one of Users, Owners, or Subgroups is required.**
+            users (Optional[List[str]):
+                An optional array of group users.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * owners: ``List[str]`` (optional)
-          An optional array of group owners.
-          **At least one of Users, Owners, or Subgroups is required.**
+            owners (Optional[List[str]]):
+                An optional array of group owners.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * subgroups: ``List[str]`` (optional)
-          An optional array of group subgroups.
-          **At least one of Users, Owners, or Subgroups is required.**
+            subgroups (Optional[List[str]):
+                An optional array of group subgroups.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * name: ``str`` (optional)
-          An optional full name for the group.
+            name (Optional[str]):
+                An optional full name for the group.
 
-        * description: ``str`` (optional)
-          An optional group description.
+            description (Optional[str]):
+                An optional group description.
 
-        * email_address: ``str`` (optional)
-          The email address for this group.
+            email_address (Optional[str]):
+                The email address for this group.
 
-        * notify_reviews: ``bool`` (optional)
-          Email members when a new review is requested.
+            notify_reviews (Optional[bool]):
+                Email members when a new review is requested.
 
-        * notify_commits: ``bool`` (optional)
-          Email members when a change is committed.
+            notify_commits (Optional[bool]):
+                Email members when a change is committed.
 
-        * use_mailing_list: ``bool`` (optional)
-          Whether to use the configured email address or expand individual
-          members addresses.
+            use_mailing_list (Optional[bool]):
+                Whether to use the configured email address or expand individual
+                members addresses.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict()  # type: Dict[str, Union[str, bool, List[str]]]
 
@@ -153,21 +159,28 @@ class Groups:
 
         if users:
             data['Users'] = users
+
         if owners:
             data['Owners'] = owners
+
         if subgroups:
             data['Subgroups'] = subgroups
 
         if name:
             data['config[name]'] = name
+
         if description:
             data['config[description]'] = description
+
         if email_address:
             data['config[emailAddress]'] = email_address
+
         if notify_reviews:
             data['config[emailFlags][reviews]'] = notify_reviews
+
         if notify_commits:
             data['config[emailFlags][commits]'] = notify_commits
+
         if use_mailing_list:
             data['config[useMailingList]'] = use_mailing_list
 
@@ -191,61 +204,70 @@ class Groups:
         Change the settings of a group, only super users and group owners can
         perform this action.
 
-        * identifier: ``str``
-          Group identifier.
+        Args:
+            identifier (str):
+                Group identifier.
 
-        * users: ``List[str]`` (optional)
-          An optional array of group users.
-          **At least one of Users, Owners, or Subgroups is required.**
+            users (Optional[List[str]):
+                An optional array of group users.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * owners: ``List[str]`` (optional)
-          An optional array of group owners.
-          **At least one of Users, Owners, or Subgroups is required.**
+            owners (Optional[List[str]):
+                An optional array of group owners.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * subgroups: ``List[str]`` (optional)
-          An optional array of group subgroups.
-          **At least one of Users, Owners, or Subgroups is required.**
+            subgroups (Optional[List[str]):
+                An optional array of group subgroups.
+                **At least one of Users, Owners, or Subgroups is required.**
 
-        * name: ``str`` (optional)
-          An optional full name for the group.
+            name (Optional[str]):
+                An optional full name for the group.
 
-        * description: ``str`` (optional)
-          An optional group description.
+            description (Optional[str]):
+                An optional group description.
 
-        * email_address: ``str`` (optional)
-          The email address for this group.
+            email_address (Optional[str]):
+                The email address for this group.
 
-        * notify_reviews: ``bool`` (optional)
-          Email members when a new review is requested.
+            notify_reviews (Optional[bool]):
+                Email members when a new review is requested.
 
-        * notify_commits: ``bool`` (optional)
-          Email members when a change is committed.
+            notify_commits (Optional[bool]):
+                Email members when a change is committed.
 
-        * use_mailing_list: ``bool`` (optional)
-          Whether to use the configured email address or expand individual
-          members addresses.
+            use_mailing_list (Optional[bool]):
+                Whether to use the configured email address or expand individual
+                members addresses.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         data = dict()  # type: Dict[str, Union[str, bool, List[str]]]
 
         if users:
             data['Users'] = users
+
         if owners:
             data['Owners'] = owners
+
         if subgroups:
             data['Subgroups'] = subgroups
+
         if name:
             data['config[name]'] = name
+
         if description:
             data['config[description]'] = description
+
         if email_address:
             data['config[emailAddress]'] = email_address
+
         if notify_reviews:
             data['config[emailFlags][reviews]'] = notify_reviews
+
         if notify_commits:
             data['config[emailFlags][commits]'] = notify_commits
+
         if use_mailing_list:
             data['config[useMailingList]'] = use_mailing_list
 
@@ -262,10 +284,11 @@ class Groups:
         """
         Delete a group, only super users and group owners can perform this action.
 
-        * identifier: ``str``
-          Group identifier.
+        Args:
+            identifier (str):
+                Group identifier.
 
-        :returns: ``dict``
-        :raises: ``SwarmError``
+        Returns:
+            dict: json response.
         """
         return self.swarm._request('DELETE', 'groups/{}'.format(identifier))
