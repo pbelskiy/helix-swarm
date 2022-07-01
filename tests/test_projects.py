@@ -30,7 +30,7 @@ def test_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.projects.get(
         fields=['id', 'description', 'members', 'name'],
@@ -58,7 +58,7 @@ def test_get_info():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.projects.get_info(
         'testproject2',
@@ -97,7 +97,7 @@ def test_create():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.projects.create(
         'testproject3',
@@ -149,7 +149,7 @@ def test_edit():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.projects.edit(
         'testproject3',
@@ -185,7 +185,7 @@ def test_delete():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.projects.delete('testproject4')
     assert 'id' in response

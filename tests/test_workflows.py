@@ -66,7 +66,7 @@ def test_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.get(
         fields=[
@@ -114,7 +114,7 @@ def test_get_info():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.get_info(
         1,
@@ -162,7 +162,7 @@ def test_create():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.create(
         'myWorkflow',
@@ -216,7 +216,7 @@ def test_edit():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.edit(
         1,
@@ -251,7 +251,7 @@ def test_delete():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.delete(1)
     assert 'messages' in response
@@ -292,7 +292,7 @@ def test_update():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.workflows.update(
         1,

@@ -24,7 +24,7 @@ def test_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.servers.get()
     assert 'servers' in response

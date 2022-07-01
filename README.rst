@@ -39,7 +39,7 @@ Get review info:
 
     from helixswarm import SwarmClient
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
     review = client.reviews.get_info(12345)
     print(review['review']['author'])
 
@@ -50,7 +50,7 @@ Add comment to review (async):
     import asyncio
     from helixswarm import SwarmAsyncClient
 
-    client = SwarmAsyncClient('http://server/api/v5', 'login', 'password')
+    client = SwarmAsyncClient('http://server/api/v5', 'user', 'password')
 
     async def example():
         await client.comments.add('reviews/12345', 'my awesome comment')
@@ -75,7 +75,7 @@ Update credentials handler:
 
     client = SwarmClient(
         'http://server/api/v9',
-        'login',
+        'user',
         'password',
         auth_update_callback=get_credentials
     )

@@ -29,7 +29,7 @@ class SwarmClient(Swarm):
                 URL of Swarm server, must include API version.
 
             user (str):
-                User name, login.
+                User name.
 
             password (str):
                 Password for user.
@@ -89,7 +89,7 @@ class SwarmClient(Swarm):
 
             auth_update_callback (Optional[Callable[[], Tuple[str, str]]])
                 Callback function which will be called on SwarmUnauthorizedError
-                to update login and password and retry request again.
+                to update user and password and retry request again.
 
         Returns:
             SwarmClient: class instance.

@@ -47,7 +47,7 @@ def test_retry_argument_validation():
     with pytest.raises(SwarmError):
         SwarmClient(
             'http://server/api/v9',
-            'login',
+            'user',
             'password',
             retry=dict(total=1, strange_argument=1)
         )
@@ -55,7 +55,7 @@ def test_retry_argument_validation():
     with pytest.raises(SwarmError):
         SwarmAsyncClient(
             'http://server/api/v9',
-            'login',
+            'user',
             'password',
             retry=dict(total=0)
         )
@@ -70,7 +70,7 @@ def test_response_invalid_json():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     with pytest.raises(SwarmError):
         client.get_version()
@@ -85,7 +85,7 @@ def test_response_non_ok():
         status=500
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     with pytest.raises(SwarmError):
         client.get_version()
@@ -103,7 +103,7 @@ def test_sync_client():
     try:
         client = SwarmClient(
             'http://server/api/v9',
-            'login',
+            'user',
             'password',
             timeout=10,
         )
@@ -121,7 +121,7 @@ def test_sync_client_retry():
     # so, just cover code of retry constructor
     client = SwarmClient(
         'http://server/api/v9',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=10,
@@ -138,7 +138,7 @@ async def test_async_client(aiohttp_mock):
     try:
         client = SwarmAsyncClient(
             'http://server/api/v9',
-            'login',
+            'user',
             'password',
             timeout=10,
         )
@@ -159,7 +159,7 @@ async def test_async_client(aiohttp_mock):
 async def test_async_client_retry(aiohttp_mock):
     client = SwarmAsyncClient(
         'http://server/api/v9',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=10,
@@ -188,7 +188,7 @@ async def test_async_client_retry(aiohttp_mock):
 async def test_async_client_retry_exception(aiohttp_mock):
     client = SwarmAsyncClient(
         'http://server/api/v9',
-        'login',
+        'user',
         'password',
         retry=dict(
             total=2,
@@ -209,7 +209,7 @@ async def test_async_client_retry_exception(aiohttp_mock):
 def test_update_auth():
 
     def callback():
-        return 'login_new', 'password_new'
+        return 'user_new', 'password_new'
 
     responses.add(
         responses.GET,
@@ -234,18 +234,18 @@ def test_update_auth():
 
     client = SwarmClient(
         'http://server/api/v9',
-        'login_old',
+        'user_old',
         'password_old',
         auth_update_callback=callback
     )
 
     version = client.get_version()
     assert version['year'] == '2018'
-    assert client.session.auth == ('login_old', 'password_old')
+    assert client.session.auth == ('user_old', 'password_old')
 
     version = client.get_version()
     assert version['year'] == '2018'
-    assert client.session.auth == ('login_new', 'password_new')
+    assert client.session.auth == ('user_new', 'password_new')
 
     client.close()
 
@@ -271,7 +271,7 @@ def test_check_auth():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.check_auth()
     assert 'results' in response
@@ -293,7 +293,7 @@ def test_check_auth_token():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.check_auth('TOKEN')
     assert 'results' in response
@@ -335,7 +335,7 @@ def test_get_auth_methods():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.get_auth_methods()
     assert 'results' in response
@@ -361,7 +361,7 @@ def test_init_auth():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.init_auth('METHOD')
     assert 'results' in response
@@ -387,7 +387,7 @@ def test_check_session():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.check_session()
     assert 'user' in response
@@ -413,7 +413,7 @@ def test_init_session():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.init_session()
     assert 'user' in response
@@ -432,7 +432,7 @@ def test_destroy_session():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.destroy_session()
     assert 'messages' in response
@@ -460,7 +460,7 @@ def test_login():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.login()
     assert 'user' in response
@@ -479,7 +479,7 @@ def test_login_saml():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.login(saml=True)
     assert 'isValid' in response
@@ -498,7 +498,7 @@ def test_logout():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.logout()
     assert 'messages' in response

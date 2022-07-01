@@ -25,7 +25,7 @@ def test_get_affects_projects():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'user', 'password')
 
     response = client.changes.get_affects_projects(1050)
     assert 'projects' in response['change']
@@ -55,7 +55,7 @@ def test_get_default_reviewers():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'user', 'password')
 
     response = client.changes.get_default_reviewers(1050)
     assert 'defaultReviewers' in response['change']
@@ -75,7 +75,7 @@ def test_get_check_status():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.changes.get_check_status(1050, 'enforced')
     assert 'status' in response

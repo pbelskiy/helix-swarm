@@ -47,7 +47,7 @@ def test_groups_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.groups.get(
         after='some-group',
@@ -80,7 +80,7 @@ def test_groups_get_info():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.groups.get_info(
         'my-group',
@@ -121,7 +121,7 @@ def test_group_create():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     with pytest.raises(SwarmError):
         client.groups.create('my-group')
@@ -169,7 +169,7 @@ def test_edit():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.groups.edit(
         'my-group',
@@ -199,7 +199,7 @@ def test_delete():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
 
     response = client.groups.delete('my-group')
     assert 'id' in response

@@ -38,7 +38,7 @@ def test_activity_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.activities.get(
         change=290,
@@ -86,7 +86,7 @@ def test_activity_create():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.activities.create(
         category='job',

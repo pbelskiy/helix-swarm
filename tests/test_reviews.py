@@ -58,7 +58,7 @@ def test_get():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'user', 'password')
 
     reviews = client.reviews.get(ids=[12206])
     assert len(reviews['reviews']) == 1
@@ -91,7 +91,7 @@ def test_get_parameters():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     reviews = client.reviews.get(
         after=60,
@@ -113,7 +113,7 @@ def test_get_parameters():
 
 
 def test_get_exceptions():
-    client = SwarmClient('http://server/api/v1.2', 'login', 'password')
+    client = SwarmClient('http://server/api/v1.2', 'user', 'password')
 
     # >= 2 API versions needed
     with pytest.raises(SwarmCompatibleError):
@@ -172,7 +172,7 @@ def test_get_info():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'user', 'password')
 
     fields = [
         'id', 'author', 'changes', 'commits', 'commitStatus', 'created',
@@ -198,7 +198,7 @@ def test_get_info_error():
         status=404
     )
 
-    client = SwarmClient('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'user', 'password')
     with pytest.raises(SwarmNotFoundError):
         client.reviews.get_info(12345)
 
@@ -242,7 +242,7 @@ def test_get_dashboards():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v6', 'login', 'password')
+    client = SwarmClient('http://server/api/v6', 'user', 'password')
 
     response = client.reviews.get_for_dashboard()
     assert 'reviews' in response
@@ -268,21 +268,21 @@ def test_get_transitions():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
     response = client.reviews.get_transitions(
         12345,
         up_voters='bruno'
     )
     assert 'transitions' in response
 
-    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.reviews.get_transitions(12345)
 
 
 @responses.activate
 def test_get_latest_revision_and_change():
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     responses.add(
         responses.GET,
@@ -318,7 +318,7 @@ def test_get_latest_revision_and_change():
 
 @pytest.mark.asyncio
 async def test_get_latest_revision_and_change_async(aiohttp_mock):
-    client = SwarmAsyncClient('http://server/api/v9', 'login', 'password')
+    client = SwarmAsyncClient('http://server/api/v9', 'user', 'password')
 
     aiohttp_mock.get(
         re.compile(r'.*/api/v\d+/reviews/12345'),
@@ -341,7 +341,7 @@ async def test_get_latest_revision_and_change_async(aiohttp_mock):
 
 @responses.activate
 def test_get_latest_revision_and_change_exception():
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     responses.add(
         responses.GET,
@@ -423,7 +423,7 @@ def test_create():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.create(
         10667,
@@ -435,11 +435,11 @@ def test_create():
 
 
 def test_create_exception():
-    client_v1 = SwarmClient('http://server/api/v1', 'login', 'password')
+    client_v1 = SwarmClient('http://server/api/v1', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client_v1.reviews.create(111, required_reviewers=['p.belskiy'])
 
-    client_v6 = SwarmClient('http://server/api/v6', 'login', 'password')
+    client_v6 = SwarmClient('http://server/api/v6', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client_v6.reviews.create(222, reviewer_groups=['master'])
 
@@ -490,7 +490,7 @@ def test_add_change():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.add_change(
         12345,
@@ -543,7 +543,7 @@ def test_update():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.update(
         12306,
@@ -571,7 +571,7 @@ def test_vote():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.vote(
         12345,
@@ -645,7 +645,7 @@ def test_archive():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.archive(
         not_updated_since='2016-06-30',
@@ -654,7 +654,7 @@ def test_archive():
 
     assert 'archivedReviews' in response
 
-    client = SwarmClient('http://server/api/v5', 'login', 'password')
+    client = SwarmClient('http://server/api/v5', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.reviews.archive(
             not_updated_since='2016-06-30',
@@ -680,12 +680,12 @@ def test_cleanup():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.cleanup(12345, reopen=True)
     assert 'complete' in response
 
-    client = SwarmClient('http://server/api/v5', 'login', 'password')
+    client = SwarmClient('http://server/api/v5', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.reviews.cleanup(12345)
 
@@ -705,11 +705,11 @@ def test_obliterate():
         status=200
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.reviews.obliterate(12345)
     assert 'message' in response
 
-    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.reviews.obliterate(12345)

@@ -35,7 +35,7 @@ def test_get():
         json=data_2
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.users.get(
         fields=['User', 'FullName'],
@@ -64,7 +64,7 @@ def test_unfollow_all():
         json=data
     )
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
 
     response = client.users.unfollow_all('p.belskiy')
 

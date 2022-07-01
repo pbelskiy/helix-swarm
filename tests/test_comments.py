@@ -29,7 +29,7 @@ def test_get():
 
     responses.add(responses.GET, re.compile(r'.*/comments'), json=data)
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
     response = client.comments.get(
         after=30,
         topic='reviews/911',
@@ -42,7 +42,7 @@ def test_get():
 
 
 def test_get_exception():
-    client = SwarmClient('http://server/api/v4', 'login', 'password')
+    client = SwarmClient('http://server/api/v4', 'user', 'password')
 
     with pytest.raises(SwarmCompatibleError):
         client.comments.get(ignore_archived=True)
@@ -79,7 +79,7 @@ def test_add():
 
     responses.add(responses.POST, re.compile(r'.*\/comments'), json=data)
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
     response = client.comments.add(
         'reviews/123',
         'Best. Comment. EVER!',
@@ -101,7 +101,7 @@ def test_add():
 
 
 def test_add_old_api():
-    client = SwarmClient('http://server/api/v2', 'login', 'password')
+    client = SwarmClient('http://server/api/v2', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.add('reviews/123', 'Best. Comment. EVER!')
 
@@ -127,7 +127,7 @@ def test_edit():
 
     responses.add(responses.PATCH, re.compile(r'.*\/comments/123'), json=data)
 
-    client = SwarmClient('http://server/api/v8', 'login', 'password')
+    client = SwarmClient('http://server/api/v8', 'user', 'password')
 
     response = client.comments.edit(
         123,
@@ -144,7 +144,7 @@ def test_edit():
 
 
 def test_edit_old_api():
-    client = SwarmClient('http://server/api/v1', 'login', 'password')
+    client = SwarmClient('http://server/api/v1', 'user', 'password')
     with pytest.raises(SwarmCompatibleError):
         client.comments.edit(123, 'Edited comment')
 
@@ -159,6 +159,6 @@ def test_notify():
 
     responses.add(responses.POST, re.compile(r'.*\/comments'), json=data)
 
-    client = SwarmClient('http://server/api/v9', 'login', 'password')
+    client = SwarmClient('http://server/api/v9', 'user', 'password')
     response = client.comments.notify('reviews/911')
     assert response['isValid'] is True
