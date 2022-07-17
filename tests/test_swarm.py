@@ -7,7 +7,6 @@ import pytest
 import responses
 
 from aioresponses import aioresponses
-from requests.packages.urllib3.util import retry
 
 from helixswarm import SwarmAsyncClient, SwarmClient, SwarmError
 

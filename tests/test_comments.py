@@ -19,7 +19,8 @@ def test_get():
             },
             '39': {
                 'id': 39,
-                'body': 'Chamber tote bag butcher, shirk truffle mode shabby chic single-origin coffee.',
+                'body': 'Chamber tote bag butcher, shirk truffle mode shabby '
+                        'chic single-origin coffee.',
                 'time': 1461164347,
                 'user': 'swarm_user'
             }
