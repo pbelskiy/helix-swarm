@@ -43,24 +43,19 @@ Get review info:
     review = client.reviews.get_info(12345)
     print(review['review']['author'])
 
-Add comment to review (async):
+Add comment to review in async way (be careful ``SwarmAsyncClient`` must be called inside async function):
 
 .. code:: python
 
     import asyncio
     from helixswarm import SwarmAsyncClient
 
-    client = SwarmAsyncClient('http://server/api/v5', 'user', 'password')
-
     async def example():
+        client = SwarmAsyncClient('http://server/api/v5', 'user', 'password')
         await client.comments.add('reviews/12345', 'my awesome comment')
 
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(example())
-    finally:
-        loop.run_until_complete(client.close())
-        loop.close()
+    asyncio.run(example())
+    
 
 Update credentials handler:
 
