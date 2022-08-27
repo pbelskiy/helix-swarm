@@ -15,7 +15,7 @@ from helixswarm.swarm import Response, Swarm, SwarmError
 
 class RetryClientSession:
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict):
+    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict) -> None:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
@@ -57,7 +57,7 @@ class SwarmAsyncClient(Swarm):
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None,
                  auth_update_callback: Optional[Callable[[], Awaitable[Tuple[str, str]]]] = None
-                 ):
+                 ) -> None:
         """
         Swarm async client class.
 

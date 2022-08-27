@@ -3,7 +3,7 @@ from helixswarm.helpers import minimal_version
 
 class Servers:
 
-    def __init__(self, swarm):
+    def __init__(self, swarm) -> None:
         self.swarm = swarm
 
     @minimal_version(9)

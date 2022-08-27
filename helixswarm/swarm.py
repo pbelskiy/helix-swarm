@@ -29,7 +29,7 @@ class Swarm(ABC):
 
     auth_update_callback = None
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.activities = Activities(self)
         self.changes = Changes(self)
         self.comments = Comments(self)

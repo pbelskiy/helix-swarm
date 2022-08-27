@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Union
 
 class Projects:
 
-    def __init__(self, swarm):
+    def __init__(self, swarm) -> None:
         self.swarm = swarm
 
     def get(self,
