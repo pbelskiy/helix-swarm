@@ -15,12 +15,12 @@ from helixswarm.swarm import Response, Swarm, SwarmError
 
 class RetryClientSession:
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop], options: dict) -> None:
+    def __init__(self, options: dict) -> None:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
 
-        self.session = ClientSession(loop=loop)
+        self.session = ClientSession()
 
     async def request(self, *args: Any, **kwargs: Any) -> ClientResponse:
         for total in range(self.total):
@@ -52,7 +52,6 @@ class SwarmAsyncClient(Swarm):
                  user: str,
                  password: str,
                  *,
-                 loop: Optional[asyncio.AbstractEventLoop] = None,
                  verify: bool = True,
                  timeout: Optional[float] = None,
                  retry: Optional[dict] = None,
@@ -70,9 +69,6 @@ class SwarmAsyncClient(Swarm):
 
             password (str):
                 Password for user.
-
-            loop (Optional[AbstractEventLoop]):
-                Asyncio current event loop.
 
             verify (Optional[bool]):
                 Verify SSL (default: true).
@@ -109,7 +105,6 @@ class SwarmAsyncClient(Swarm):
         """
         super().__init__()
 
-        self.loop = loop or asyncio.get_event_loop()
         self.host, self.version = self._get_host_and_api_version(url)
 
         self.auth = BasicAuth(user, password)
@@ -117,9 +112,9 @@ class SwarmAsyncClient(Swarm):
 
         if retry:
             self._validate_retry_argument(retry)
-            self.session = RetryClientSession(loop, retry)
+            self.session = RetryClientSession(retry)
         else:
-            self.session = ClientSession(loop=self.loop)
+            self.session = ClientSession()
 
         self.verify = verify
 
