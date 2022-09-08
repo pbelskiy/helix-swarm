@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+      TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -18,10 +21,15 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+
+    - name: Build and publish (helix-swarm)
       run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+
+    - name: Build and publish (helixswarm) alias
+       run: |
+        sed -i "" "s/NAME = 'helix-swarm'/NAME = 'helixswarm'/g" setup.py
+        sed -i "" "s/install helix-swarm/install helixswarm/g" README.rst
         python setup.py sdist bdist_wheel
         twine upload dist/*

@@ -3,7 +3,6 @@ import re
 
 from setuptools import setup, find_packages
 
-
 init_file_path = os.path.join(
     os.path.dirname(__file__),
     'helixswarm/__init__.py'
@@ -18,8 +17,10 @@ with open(init_file_path, encoding='utf-8') as f:
 with open('README.rst', encoding='utf-8') as f:
     README = f.read()
 
+NAME = 'helix-swarm'
+
 setup_args = dict(
-    name='helix-swarm',
+    name=NAME,
     version=version,
     description='Python client for Perforce Helix Swarm (review board)',
     long_description_content_type='text/x-rst',
@@ -40,7 +41,7 @@ setup_args = dict(
     author='Petr Belskiy',
     keywords=['helix', 'swarm', 'swarm review', 'perforce helix swarm'],
     url='https://github.com/pbelskiy/helix-swarm',
-    download_url='https://pypi.org/project/helix-swarm'
+    download_url='https://pypi.org/project/' + NAME
 )
 
 install_requires = [
