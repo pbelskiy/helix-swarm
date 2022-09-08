@@ -21,6 +21,14 @@ Python client for `Helix Swarm <https://www.perforce.com/manuals/swarm/>`_
 .. |Downloads status 2|
     image:: https://img.shields.io/pypi/dm/helixswarm?color=1&label=Downloads
 
+----
+
+Package supports sync and async syntax with same code base.
+
+.. code:: python
+
+    from helixswarm import SwarmAsyncClient, SwarmClient
+
 Documentation
 -------------
 
