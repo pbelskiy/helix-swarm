@@ -49,6 +49,8 @@ class SwarmClient(Swarm):
                 - factor: ``int`` Sleep factor between retries (default 1)
                     {factor} * (2 ** ({number of total retries} - 1))
                 - statuses: ``List[int]`` HTTP statues retries on. (default [])
+                - methods: ``List[str]`` list of HTTP methods to retry, idempotent
+                    methods are used by default.
 
                 Example:
 
@@ -114,7 +116,7 @@ class SwarmClient(Swarm):
             total=retry['total'],
             backoff_factor=retry.get('factor', 1),
             status_forcelist=retry.get('statuses', []),
-            method_whitelist=['GET', 'POST', 'PATCH'],
+            method_whitelist=['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'],
         ))
 
         self.session.mount('http://', adapter)

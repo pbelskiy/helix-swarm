@@ -19,6 +19,9 @@ class RetryClientSession:
         self.total = options['total']
         self.factor = options.get('factor', 1)
         self.statuses = options.get('statuses', [])
+        self.methods = options.get('methods', [
+            'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'
+        ])
 
         self.session = ClientSession()
 
@@ -30,6 +33,8 @@ class RetryClientSession:
                 if total + 1 == self.total:
                     raise SwarmError from e
             else:
+                if response.method.upper() not in self.methods:
+                    break
                 if response.status not in self.statuses:
                     break
 
@@ -85,6 +90,8 @@ class SwarmAsyncClient(Swarm):
                 - factor: ``int`` Sleep factor between retries (default 1)
                     {factor} * (2 ** ({number of total retries} - 1))
                 - statuses: ``List[int]`` HTTP statues retries on. (default [])
+                - methods: ``List[str]`` list of HTTP methods to retry, idempotent
+                    methods are used by default.
 
                 Example:
 
