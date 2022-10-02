@@ -37,10 +37,12 @@ Documentation
 Installation
 ------------
 
-There are two identical packages: ``helix-swarm`` and alias ``helixswarm``.
+There are two identical packages: ``helix-swarm`` and alias ``helixswarm``, alias
+was created one year later due name confusion, to be import name and package name will the same.
+
 ::
 
-    pip3 install helix-swarm
+    pip3 install helixswarm
 
 Examples
 --------
