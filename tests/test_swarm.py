@@ -6,8 +6,6 @@ import aiohttp
 import pytest
 import responses
 
-from aioresponses import aioresponses
-
 from helixswarm import SwarmAsyncClient, SwarmClient, SwarmError
 
 GET_VERSION_DATA = {
@@ -15,12 +13,6 @@ GET_VERSION_DATA = {
     'version': 'SWARM/2018.2/1705499 (2018/09/25)',
     'year': '2018'
 }
-
-
-@pytest.fixture
-def aiohttp_mock():
-    with aioresponses() as mock:
-        yield mock
 
 
 def test_get_host_and_api_version():

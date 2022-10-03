@@ -2,7 +2,8 @@ from typing import Any, Callable, Optional, Tuple
 
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from requests.packages.urllib3.util.retry import \
+    Retry  # pylint: disable=import-error
 
 from helixswarm.swarm import Response, Swarm
 

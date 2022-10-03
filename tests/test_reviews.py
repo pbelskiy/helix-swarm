@@ -3,8 +3,6 @@ import re
 import pytest
 import responses
 
-from aioresponses import aioresponses
-
 from helixswarm import (
     SwarmAsyncClient,
     SwarmClient,
@@ -12,12 +10,6 @@ from helixswarm import (
     SwarmError,
     SwarmNotFoundError,
 )
-
-
-@pytest.fixture
-def aiohttp_mock():
-    with aioresponses() as mock:
-        yield mock
 
 
 @responses.activate
