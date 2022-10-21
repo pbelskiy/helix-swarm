@@ -34,6 +34,8 @@ Documentation
 
 `Read the Docs <https://helix-swarm.readthedocs.io/en/latest/>`_
 
+`Official REST API PDF <https://github.com/pbelskiy/helix-swarm/blob/master/docs/swarm.pdf>`_
+
 Installation
 ------------
 
