@@ -1,6 +1,8 @@
+import re
+
 from functools import wraps
 
-from .exceptions import SwarmCompatibleError
+from .exceptions import SwarmCompatibleError, SwarmError
 
 
 def minimal_version(version):
@@ -24,3 +26,11 @@ def minimal_version(version):
 
         return _check_version
     return wrapper
+
+
+def get_review_id(review_url: str) -> int:
+    ret = re.compile(r'/(\d+)').findall(review_url)
+    if not ret:
+        raise SwarmError(f'Invalid review: {review_url}')
+
+    return int(ret[0])
