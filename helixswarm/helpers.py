@@ -31,6 +31,6 @@ def minimal_version(version):
 def get_review_id(review_url: str) -> int:
     ret = re.compile(r'/(\d+)').findall(review_url)
     if not ret:
-        raise SwarmError(f'Invalid review: {review_url}')
+        raise SwarmError('Invalid review: ' + review_url)
 
     return int(ret[0])
