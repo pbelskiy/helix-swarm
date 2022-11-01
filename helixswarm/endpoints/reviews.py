@@ -281,11 +281,7 @@ class Reviews:
             if 'change' not in latest_version:
                 raise SwarmError('no `change` field in latest versions block')
 
-            if 'archiveChange' in latest_version:
-                latest_change = int(latest_version['archiveChange'])
-            else:
-                latest_change = int(latest_version['change'])
-
+            latest_change = int(latest_version['change'])
             return latest_revision, latest_change
 
         response = self._get_info(
