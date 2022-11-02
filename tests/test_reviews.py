@@ -301,7 +301,7 @@ def test_get_latest_revision_and_change():
 
     revision, change = client.reviews.get_latest_revision_and_change(12345)
     assert revision == 2
-    assert change == 3
+    assert change == 2
 
     revision, change = client.reviews.get_latest_revision_and_change(555)
     assert revision == 1
@@ -326,7 +326,7 @@ async def test_get_latest_revision_and_change_async(aiohttp_mock):
 
     revision, change = await client.reviews.get_latest_revision_and_change(12345)
     assert revision == 2
-    assert change == 3
+    assert change == 2
 
     await client.close()
 
