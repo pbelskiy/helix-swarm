@@ -30,7 +30,6 @@ jobs:
 
     - name: Build and publish (helixswarm) alias
       run: |
-        sed -i "" "s/NAME = 'helix-swarm'/NAME = 'helixswarm'/g" setup.py
-        sed -i "" "s/install helix-swarm/install helixswarm/g" README.rst
+        sed -i "s/NAME = 'helix-swarm'/NAME = 'helixswarm'/g" setup.py
         python setup.py sdist bdist_wheel
         twine upload dist/*
