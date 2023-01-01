@@ -70,7 +70,7 @@ class Swarm(ABC):
             raise SwarmError from e
 
         # function callback used to support both sync and async syntax
-        fcb = fcb or (lambda response: response)
+        fcb = fcb or (lambda response: response)  # type: ignore
 
         if response.status == HTTPStatus.NOT_FOUND:
             # temporary workaround, need to check Swarm source code
