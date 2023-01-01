@@ -2,7 +2,7 @@ from .adapters.aio import SwarmAsyncClient
 from .adapters.sync import SwarmClient
 from .exceptions import SwarmCompatibleError, SwarmError, SwarmNotFoundError
 
-__version__ = '0.7.3'
+__version__ = '0.7.4'
 
 __all__ = (
     # adapters
