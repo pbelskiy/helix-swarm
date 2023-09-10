@@ -117,7 +117,7 @@ class SwarmClient(Swarm):
             total=retry['total'],
             backoff_factor=retry.get('factor', 1),
             status_forcelist=retry.get('statuses', []),
-            method_whitelist=['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'],
+            allowed_methods=['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'TRACE'],
         ))
 
         self.session.mount('http://', adapter)
