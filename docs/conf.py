@@ -77,6 +77,8 @@ html_static_path = ['_static']
 html_theme_options = {
     'logo': 'icon.svg',
     'logo_name': True,
+    'page_width': '60%',
+    'sidebar_width': '25%',
 }
 
 html_sidebars = {
