@@ -78,7 +78,7 @@ html_theme_options = {
     'logo': 'icon.svg',
     'logo_name': True,
     'page_width': '60%',
-    'sidebar_width': '25%',
+    'sidebar_width': '30%',
 }
 
 html_sidebars = {
