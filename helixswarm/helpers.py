@@ -1,12 +1,13 @@
 import re
 
 from functools import wraps
+from typing import Callable
 
 from .exceptions import SwarmCompatibleError, SwarmError
 
 
-def minimal_version(version):
-    def wrapper(f):
+def minimal_version(version: int):
+    def wrapper(f: Callable):
         @wraps(f)
         def _check_version(self, *args, **kwargs):
             if hasattr(self, 'swarm'):
@@ -18,10 +19,7 @@ def minimal_version(version):
                 return f(self, *args, **kwargs)
 
             raise SwarmCompatibleError(
-                'Unsupported with API v{} (needed v{}+)'.format(
-                    current_version,
-                    version
-                )
+                f'Unsupported with API v{current_version} (needed v{version}+)'
             )
 
         return _check_version
@@ -31,6 +29,6 @@ def minimal_version(version):
 def get_review_id(review_url: str) -> int:
     ret = re.compile(r'/(\d+)').findall(review_url)
     if not ret:
-        raise SwarmError('Invalid review: ' + review_url)
+        raise SwarmError(f'Invalid review: {review_url}')
 
     return int(ret[0])
