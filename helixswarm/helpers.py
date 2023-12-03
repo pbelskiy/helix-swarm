@@ -3,11 +3,11 @@ import re
 from functools import wraps
 from typing import Callable
 
-from .exceptions import SwarmCompatibleError, SwarmError
+from helixswarm.exceptions import SwarmCompatibleError, SwarmError
 
 
 def minimal_version(version: int):
-    def wrapper(f: Callable):
+    def wrapper(f: Callable) -> Callable:
         @wraps(f)
         def _check_version(self, *args, **kwargs):
             if hasattr(self, 'swarm'):
