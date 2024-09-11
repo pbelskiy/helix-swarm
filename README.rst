@@ -158,6 +158,7 @@ https://www.perforce.com/downloads/helix-swarm
 | `v1`_      | July 2014      | Initial                                                                     |
 +------------+----------------+-----------------------------------------------------------------------------+
 
+.. _v11: https://www.perforce.com/manuals/swarm/Content/Swarm/swarm-apidoc_endpoints-v-current.html
 .. _v10: https://www.perforce.com/manuals/swarm/Content/Swarm/swarm-apidoc_endpoints-v10.html
 .. _v9: https://www.perforce.com/manuals/v19.1/swarm/Content/Swarm/swarm-apidoc.html
 .. _v8: https://www.perforce.com/manuals/v17.4/swarm/#Swarm/swarm-apidoc.html
