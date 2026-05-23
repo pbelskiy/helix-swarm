@@ -309,10 +309,10 @@ def test_get_latest_revision_and_change():
 
 
 @pytest.mark.asyncio
-async def test_get_latest_revision_and_change_async(aiohttp_mock):
-    client = SwarmAsyncClient('http://server/api/v9', 'user', 'password')
+async def test_get_latest_revision_and_change_async(aiointercept_mock):
+    client = SwarmAsyncClient(f'{aiointercept_mock.server_url}/api/v9', 'user', 'password')
 
-    aiohttp_mock.get(
+    aiointercept_mock.get(
         re.compile(r'.*/api/v\d+/reviews/12345'),
         payload={
             'review': {

@@ -1,4 +1,4 @@
-aioresponses
+aiointercept
 pytest
 pytest-asyncio
 pytest-cov

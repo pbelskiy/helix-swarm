@@ -125,17 +125,17 @@ def test_sync_client_retry():
 
 
 @pytest.mark.asyncio
-async def test_async_client(aiohttp_mock):
+async def test_async_client(aiointercept_mock):
     try:
         client = SwarmAsyncClient(
-            'http://server/api/v9',
+            f'{aiointercept_mock.server_url}/api/v9',
             'user',
             'password',
             timeout=10,
         )
 
-        aiohttp_mock.get(
-            'http://server/api/v9/version',
+        aiointercept_mock.get(
+            f'{aiointercept_mock.server_url}/api/v9/version',
             payload=GET_VERSION_DATA,
             status=200,
         )
@@ -147,9 +147,9 @@ async def test_async_client(aiohttp_mock):
 
 
 @pytest.mark.asyncio
-async def test_async_client_retry(aiohttp_mock):
+async def test_async_client_retry(aiointercept_mock):
     client = SwarmAsyncClient(
-        'http://server/api/v9',
+        f'{aiointercept_mock.server_url}/api/v9',
         'user',
         'password',
         retry=dict(
@@ -158,14 +158,14 @@ async def test_async_client_retry(aiohttp_mock):
         )
     )
 
-    aiohttp_mock.get(
-        'http://server/api/v9/version',
+    aiointercept_mock.get(
+        f'{aiointercept_mock.server_url}/api/v9/version',
         payload={'error': 'Server error'},
         status=500,
     )
 
-    aiohttp_mock.get(
-        'http://server/api/v9/version',
+    aiointercept_mock.get(
+        f'{aiointercept_mock.server_url}/api/v9/version',
         payload=GET_VERSION_DATA,
         status=200,
     )
@@ -176,9 +176,9 @@ async def test_async_client_retry(aiohttp_mock):
 
 
 @pytest.mark.asyncio
-async def test_async_client_retry_exception(aiohttp_mock):
+async def test_async_client_retry_exception(aiointercept_mock):
     client = SwarmAsyncClient(
-        'http://server/api/v9',
+        f'{aiointercept_mock.server_url}/api/v9',
         'user',
         'password',
         retry=dict(
@@ -187,8 +187,14 @@ async def test_async_client_retry_exception(aiohttp_mock):
         )
     )
 
-    aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
-    aiohttp_mock.get('http://server/api/v9/version', exception=aiohttp.ClientError())
+    aiointercept_mock.get(
+        f'{aiointercept_mock.server_url}/api/v9/version',
+        exception=aiohttp.ClientError()
+    )
+    aiointercept_mock.get(
+        f'{aiointercept_mock.server_url}/api/v9/version',
+        exception=aiohttp.ClientError()
+    )
 
     with pytest.raises(SwarmError):
         await client.get_version()
